@@ -1,0 +1,17 @@
+<resources>
+    <!-- spacing -->
+    <dimen name="space_0">0dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_20">20dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+
+    <!-- radius -->
+    <dimen name="radius_m">8dp</dimen>
+    <dimen name="radius_l">14dp</dimen>
+    <dimen name="radius_xl">16dp</dimen>
+
+    <!-- text sizes -->
+    <dimen name="text_16">16sp</dimen>
+    <dimen name="text_20">20sp</dimen>
+</resources>

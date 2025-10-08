@@ -1,0 +1,62 @@
+<resources>
+
+    <style name="Theme.SecondChance" parent="Theme.Material3.Light.NoActionBar">
+        <!-- brand -->
+        <item name="colorPrimary">@color/normalDay</item>
+        <item name="colorOnPrimary">@color/whiteDay</item>
+
+        <!-- app background & bars -->
+        <item name="android:windowBackground">@color/lightDay</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/whiteDay</item>
+
+        <!-- default components -->
+        <item name="textInputStyle">@style/Widget.SecondChance.TextInputLayout</item>
+        <item name="materialButtonStyle">@style/Widget.SecondChance.Button.Primary</item>
+        <item name="textAppearanceBodyLarge">@style/Text.SecondChance.Body16</item>
+    </style>
+
+    <!-- Text mặc định 16sp -->
+    <style name="Text.SecondChance.Body16" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">@dimen/text_20</item>
+    </style>
+
+    <!-- TextInputLayout outlined (reusable) -->
+    <style name="Widget.SecondChance.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/selector_outline_orange</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+
+        <item name="boxCornerRadiusTopStart">@dimen/radius_m</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_m</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_m</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_m</item>
+
+        <item name="hintTextColor">@color/selector_outline_orange</item>
+        <item name="endIconTint">@color/selector_end_icon_orange</item>
+    </style>
+
+    <!-- MaterialButton primary (reusable) -->
+    <style name="Widget.SecondChance.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/normalDay</item>
+        <item name="android:textColor">@color/whiteDay</item>
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="strokeColor">@color/normalDay</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- Text link (Forgot / Signup) -->
+    <style name="Text.SecondChance.Link" parent="Text.SecondChance.Body16">
+        <item name="android:textColor">@color/normalDay</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- EditText 16sp cho form -->
+    <style name="Widget.SecondChance.EditText" parent="">
+        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:textColor">@color/darkerDay</item>
+    </style>
+</resources>

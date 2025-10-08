@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SecondChance</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="second">SECOND</string>
+    <string name="chance">CHANCE</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forgotpassword">Quên mật khẩu?</string>
+    <string name="register">Chưa có tài khoản? Đăng ký</string>
+    <string name="login">Đăng nhập</string>
+</resources>

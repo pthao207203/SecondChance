@@ -1,0 +1,14 @@
+<resources>
+
+    <style name="Theme.SecondChance" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/normalNight</item>
+        <item name="colorOnPrimary">@color/blackNight</item>
+        <item name="android:windowBackground">@color/darkNight</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/whiteNight</item>
+
+        <item name="textInputStyle">@style/Widget.SecondChance.TextInputLayout</item>
+        <item name="materialButtonStyle">@style/Widget.SecondChance.Button.Primary</item>
+        <item name="textAppearanceBodyLarge">@style/Text.SecondChance.Body16</item>
+    </style>
+</resources>
