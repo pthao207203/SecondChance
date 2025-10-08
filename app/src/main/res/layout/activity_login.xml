@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="0dp"
-    android:background="@color/lighterDay">
+    android:background="@color/lightDay">
 
     <!-- Logo + Title -->
     <ImageView
