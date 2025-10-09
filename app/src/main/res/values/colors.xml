@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="highLight1">#D1460B</color>
+    <color name="highLight2">#EA7700</color>
+    <color name="highLight3">#FFB703</color>
+    <color name="highLight4">#8ECAE6</color>
+    <color name="highLight5">#2571BC</color>
+    <color name="highLight6">#A09CAB</color>
+
+    <color name="whiteDay">#FFFFFF</color>
+    <color name="grayDay">#EFF1F5</color>
+    <color name="blackDay">#1C1B1F</color>
+    <color name="lighterDay">#FFF7F3</color>
+    <color name="lightDay">#FEEFE6</color>
+    <color name="lightHoverDay">#FDE7DA</color>
+    <color name="lightActiveDay">#FBCCB2</color>
+    <color name="normalDay">#F25C05</color>
+    <color name="normalHoverDay">#DA5305</color>
+    <color name="normalActiveDay">#C24A04</color>
+    <color name="darkDay">#B64504</color>
+    <color name="darkHoverDay">#913703</color>
+    <color name="darkActiveDay">#6D2902</color>
+    <color name="darkerDay">#441A02</color>
+
+    <color name="whiteNight">#1C1B1F</color>
+    <color name="grayNight">#441A02</color>
+    <color name="blackNight">#FFFFFF</color>
+    <color name="lighterNight">#6D2902</color>
+    <color name="lightNight">#913703</color>
+    <color name="lightHoverNight">#B64504</color>
+    <color name="lightActiveNight">#C24A04</color>
+    <color name="normalNight">#F25C05</color>
+    <color name="normalHoverNight">#F25C05</color>
+    <color name="normalActiveNight">#FBCCB2</color>
+    <color name="darkNight">#FDE7DA</color>
+    <color name="darkHoverNight">#FEEFE6</color>
+    <color name="darkActiveNight">#FFF7F3</color>
+    <color name="darkerNight">#EFF1F5</color>
+
+</resources>
