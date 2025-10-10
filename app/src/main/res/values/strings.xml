@@ -5,15 +5,9 @@
     <string name="title_notifications">Notifications</string>
     <string name="second">SECOND</string>
     <string name="chance">CHANCE</string>
-    <string name="phone">SĐT</string>
+    <string name="phone">Số điện thoại</string>
     <string name="password">Mật khẩu</string>
     <string name="forgotpassword">Quên mật khẩu?</string>
-    <string name="redirect_register">Chưa có tài khoản? Đăng ký</string>
+    <string name="register">Chưa có tài khoản? Đăng ký</string>
     <string name="login">Đăng nhập</string>
-    <string name="enter_otp_code">Nhập mã OTP</string>
-    <string name="account_name">Tên người dùng</string>
-    <string name="password_confirm">Xác nhận mật khẩu</string>
-    <string name="redirect_login">Đã có tài khoản? Đăng nhập</string>
-    <string name="confirm">Xác nhận</string>
-    <string name="register">Đăng ký</string>
 </resources>

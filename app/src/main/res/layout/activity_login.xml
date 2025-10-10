@@ -107,7 +107,7 @@
         style="@style/Text.SecondChance.Link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/redirect_register"
+        android:text="@string/register"
         app:layout_constraintTop_toBottomOf="@id/btnLogin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
