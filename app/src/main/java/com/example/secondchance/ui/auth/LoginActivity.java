@@ -1,10 +1,8 @@
-package com.example.secondchance.ui;
+package com.example.secondchance.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;

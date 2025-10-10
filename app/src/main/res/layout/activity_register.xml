@@ -5,15 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="0dp"
-    android:background="@color/lighterDay">
+    android:background="@color/lightDay">
+
+    <!-- Wave trang trí -->
+    <ImageView
+        android:id="@+id/wave"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:src="@drawable/frame1000002455"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+<!--    <View-->
+<!--        android:id="@+id/overlay"-->
+<!--        android:layout_width="380dp"-->
+<!--        android:layout_height="680dp"-->
+<!--        android:background="#80FFF7F3"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <!-- Logo + Title -->
     <ImageView
-        android:paddingHorizontal="24dp"
+        android:paddingHorizontal="40dp"
         android:id="@+id/imgLogo"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:src="@drawable/logo2chance"
         app:layout_constraintDimensionRatio="269:120"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,8 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/imgLogo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/space_12"
-        app:hintTextAppearance="@style/TIL.Hint.Large">
+        android:layout_marginTop="@dimen/space_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtPhone"
@@ -41,8 +61,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
-            android:maxLines="1"
-            android:textSize="20sp"/>
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Account Name -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:paddingHorizontal="40dp"
+        android:id="@+id/tilAccountName"
+        style="@style/Widget.SecondChance.TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/account_name"
+        app:layout_constraintTop_toBottomOf="@id/tilPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/space_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtAccountName"
+            style="@style/Widget.SecondChance.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password -->
@@ -55,11 +96,10 @@
         android:hint="@string/password"
         app:endIconMode="password_toggle"
         app:endIconTint="@color/normalDay"
-        app:layout_constraintTop_toBottomOf="@id/tilPhone"
+        app:layout_constraintTop_toBottomOf="@id/tilAccountName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/space_20"
-        app:hintTextAppearance="@style/TIL.Hint.Large">
+        android:layout_marginTop="@dimen/space_20">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtPassword"
@@ -67,39 +107,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:maxLines="1"
-            android:textSize="20sp"/>
+            android:maxLines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Forgot -->
-    <TextView
-        android:id="@+id/tvForgot"
-        style="@style/Text.SecondChance.Link"
-        android:layout_width="wrap_content"
+    <!-- Password -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:paddingHorizontal="40dp"
+        android:id="@+id/tilPasswordConfirm"
+        style="@style/Widget.SecondChance.TextInputLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/forgotpassword"
+        android:hint="@string/password_confirm"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/normalDay"
         app:layout_constraintTop_toBottomOf="@id/tilPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/space_20"
-        android:textSize="20sp"/>
+        android:layout_marginTop="@dimen/space_20">
 
-    <!-- Login button -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtPasswordConfirm"
+            style="@style/Widget.SecondChance.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Register button -->
     <com.google.android.material.button.MaterialButton
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegister"
         style="@style/Widget.SecondChance.Button.Primary"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:text="@string/login"
-        app:layout_constraintTop_toBottomOf="@id/tvForgot"
+        android:text="@string/register"
+        app:layout_constraintTop_toBottomOf="@id/tilPasswordConfirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/space_20"
+        android:layout_marginTop="@dimen/space_24"
         app:contentPaddingStart="@dimen/space_24"
-        app:contentPaddingEnd="@dimen/space_24"
-        android:textSize="20sp"/>
+        app:contentPaddingEnd="@dimen/space_24"/>
 
     <!-- Sign up -->
     <TextView
@@ -107,21 +156,11 @@
         style="@style/Text.SecondChance.Link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/redirect_register"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        android:text="@string/redirect_login"
+        app:layout_constraintTop_toBottomOf="@id/btnRegister"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/space_20"
-        android:textSize="20sp"/>
+        android:layout_marginTop="@dimen/space_20"/>
 
-    <!-- Wave trang trí -->
-    <ImageView
-        android:id="@+id/wave"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:src="@drawable/frame1000002455"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
