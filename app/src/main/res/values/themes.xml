@@ -23,7 +23,8 @@
     </style>
 
     <!-- TextInputLayout outlined (reusable) -->
-    <style name="Widget.SecondChance.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <style name="Widget.SecondChance.TextInputLayout"
+        parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/selector_outline_orange</item>
         <item name="boxStrokeWidth">2dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>

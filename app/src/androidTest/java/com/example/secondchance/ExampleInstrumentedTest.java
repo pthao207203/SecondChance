@@ -23,4 +23,8 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.example.secondchance", appContext.getPackageName());
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> d0ef108 ([Role Guest] Màn hình đăng nhập)
