@@ -34,8 +34,9 @@
         <item name="boxCornerRadiusBottomStart">@dimen/radius_m</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/radius_m</item>
 
-        <item name="hintTextColor">@color/selector_outline_orange</item>
+        <item name="android:textColorHint">@color/selector_hint_orange</item>
         <item name="endIconTint">@color/selector_end_icon_orange</item>
+        <item name="hintTextColor">@color/selector_hint_orange</item>
     </style>
 
     <!-- MaterialButton primary (reusable) -->
@@ -51,13 +52,14 @@
 
     <!-- Text link (Forgot / Signup) -->
     <style name="Text.SecondChance.Link" parent="Text.SecondChance.Body16">
-        <item name="android:textColor">@color/normalDay</item>
+        <item name="android:textColor">@color/darkDay</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <!-- EditText 16sp cho form -->
     <style name="Widget.SecondChance.EditText" parent="">
         <item name="android:textSize">@dimen/text_16</item>
-        <item name="android:textColor">@color/darkerDay</item>
+        <item name="android:textColor">@color/darkDay</item>
+        <item name="android:textColorHint">@color/selector_hint_orange</item>
     </style>
 </resources>

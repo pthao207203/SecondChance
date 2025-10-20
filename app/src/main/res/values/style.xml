@@ -3,7 +3,5 @@
     <style name="TIL.Hint.Large" parent="TextAppearance.Material3.BodyMedium">
         <!-- tăng size label khi COLLAPSED -->
         <item name="android:textSize">20sp</item> <!-- thử 16–18sp -->
-        <!-- tuỳ chọn: màu -->
-        <!-- <item name="android:textColor">?attr/colorOnSurface</item> -->
     </style>
 </resources>
