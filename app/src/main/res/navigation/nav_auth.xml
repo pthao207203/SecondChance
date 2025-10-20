@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_auth"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.secondchance.ui.auth.LoginFragment"
+        android:label="Đăng nhập">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.secondchance.ui.auth.RegisterFragment"
+        android:label="Đăng ký">
+        <action
+            android:id="@+id/action_register_to_otp"
+            app:destination="@id/otpFragment" />
+        <action
+            android:id="@+id/action_register_to_login"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/otpFragment"
+        android:name="com.example.secondchance.ui.auth.OtpFragment"
+        android:label="Nhập OTP" />
+</navigation>

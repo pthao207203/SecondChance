@@ -12,7 +12,7 @@
         android:theme="@style/Theme.SecondChance"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.auth.AuthActivity"
             android:exported="true"
             tools:ignore="Instantiatable">
             <intent-filter>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="331dp"
+        android:layout_height="186dp"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/logo2chance" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/Text.SecondChance.Link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:layout_below="@id/imgLogo"
+        android:text="@string/enter_otp_code"
+        android:textSize="20sp" />
+
+    <!-- Hộp OTP: CHÚ Ý width = match_parent và KHÔNG dùng constraint* -->
+    <LinearLayout
+        android:id="@+id/otpBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginTop="16dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center"
+        android:weightSum="6">
+
+        <EditText
+            android:id="@+id/edtOtp1"
+            style="@style/OtpCell"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtOtp2"
+            style="@style/OtpCell"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtOtp3"
+            style="@style/OtpCell"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtOtp4"
+            style="@style/OtpCell"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtOtp5"
+            style="@style/OtpCell"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtOtp6"
+            style="@style/OtpCell"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
+
+    <!-- Confirm -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmOtp"
+        style="@style/Widget.SecondChance.Button.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@id/otpBox"
+        android:layout_marginTop="@dimen/space_12"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/confirm"
+        android:textSize="20sp"/>
+</RelativeLayout>

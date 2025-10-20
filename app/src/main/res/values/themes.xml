@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.SecondChance" parent="Theme.Material3.Light.NoActionBar">
         <!-- brand -->
@@ -61,5 +61,31 @@
         <item name="android:textSize">@dimen/text_16</item>
         <item name="android:textColor">@color/darkDay</item>
         <item name="android:textColorHint">@color/selector_hint_orange</item>
+    </style>
+
+    <!-- OTP Cell -->
+    <style name="OtpCell">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:includeFontPadding">false</item>
+
+        <!-- Nhập mỗi ô 1 số -->
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">1</item>
+        <item name="android:digits">0123456789</item>
+
+        <!-- Nền trong suốt + viền cam qua drawable -->
+        <item name="android:background">@color/otp_cell_bg</item>
+        <!-- Tắt tint mặc định để không bị overlay màu -->
+        <item name="android:backgroundTint">@null</item>
+
+        <!-- Chặn autofill/gợi ý -->
+        <item name="android:importantForAutofill" tools:targetApi="26">no</item>
+        <item name="android:autofillHints" tools:targetApi="26" />
     </style>
 </resources>
