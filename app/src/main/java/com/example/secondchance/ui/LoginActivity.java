@@ -31,11 +31,11 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
-    if (!Prefs.getToken(this).isEmpty()) {
-      startActivity(new Intent(this, MainActivity.class));
-      finish();
-      return;
-    }
+//    if (!Prefs.getToken(this).isEmpty()) {
+//      startActivity(new Intent(this, MainActivity.class));
+//      finish();
+//      return;
+//    }
     
     b = ActivityLoginBinding.inflate(getLayoutInflater());
     setContentView(b.getRoot());
