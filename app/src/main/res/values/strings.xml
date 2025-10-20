@@ -8,6 +8,12 @@
     <string name="phone">Số điện thoại</string>
     <string name="password">Mật khẩu</string>
     <string name="forgotpassword">Quên mật khẩu?</string>
-    <string name="register">Chưa có tài khoản? Đăng ký</string>
+    <string name="redirect_register">Chưa có tài khoản? Đăng ký</string>
+    <string name="redirect_login">Đã có tài khoản? Đăng nhập</string>
     <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+    <string name="repassword">Nhập lại mật khẩu</string>
+    <string name="name">Tên</string>
+    <string name="enter_otp_code">Nhập mã OTP</string>
+    <string name="confirm">Xác nhận</string>
 </resources>
