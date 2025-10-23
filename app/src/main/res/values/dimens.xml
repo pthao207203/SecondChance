@@ -12,6 +12,7 @@
     <dimen name="radius_xl">16dp</dimen>
 
     <!-- text sizes -->
+    <dimen name="text_13">13sp</dimen>
     <dimen name="text_16">16sp</dimen>
     <dimen name="text_20">20sp</dimen>
 </resources>

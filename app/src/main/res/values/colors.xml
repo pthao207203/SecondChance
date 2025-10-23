@@ -6,6 +6,14 @@
     <color name="highLight4">#8ECAE6</color>
     <color name="highLight5">#2571BC</color>
     <color name="highLight6">#A09CAB</color>
+    <color name="highLight7">#02DE35</color>
+    <color name="highLight8">#099304</color>
+    <color name="highlight1blur">#F1C6B3</color>
+    <color name="highlight3blur">#FFE9B1</color>
+    <color name="highlight4blur">#DCEFF7</color>
+    <color name="highlight6blur">#CFCDD4</color>
+    <color name="highlight7blur">#B1F5C1</color>
+
 
     <color name="whiteDay">#FFFFFF</color>
     <color name="grayDay">#EFF1F5</color>

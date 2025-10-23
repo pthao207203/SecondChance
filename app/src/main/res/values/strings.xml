@@ -16,4 +16,6 @@
     <string name="name">Tên</string>
     <string name="enter_otp_code">Nhập mã OTP</string>
     <string name="confirm">Xác nhận</string>
+    <string name="Name_product">Tên sản phẩm</string>
+    <string name="auctionTitle">Tiêu đề Đấu giá</string>
 </resources>

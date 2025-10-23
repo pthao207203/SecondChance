@@ -50,10 +50,10 @@ public class LoginFragment extends Fragment {
     nav = NavHostFragment.findNavController(this);
     
     // Nếu đã có token thì vào Main luôn (bật lại nếu bạn muốn)
-    // if (!Prefs.getToken(requireContext()).isEmpty()) {
-    //     goToMainAndFinish();
-    //     return;
-    // }
+     if (!Prefs.getToken(requireContext()).isEmpty()) {
+         goToMainAndFinish();
+         return;
+     }
     
     b.btnLogin.setOnClickListener(v -> tryLogin());
     

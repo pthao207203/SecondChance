@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="product"
+            type="com.example.secondchance.ui.card.ProductCard" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.SecondChance.Card.Auction"
+        android:id="@+id/auction_card_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lightDay"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:gravity="center"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:contentPadding="8dp"
+        app:strokeColor="@color/normalDay"
+        app:strokeWidth="1dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Hình ảnh sản phẩm -->
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="match_parent"
+                android:layout_height="129dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="@{product.title}"
+            android:scaleType="centerCrop"
+            android:src="@{product.imageRes}" />
+
+            <!-- Tên sản phẩm -->
+            <TextView
+                android:id="@+id/product_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/product_image"
+                android:layout_marginTop="4dp"
+                android:text="@{product.title}"
+                android:textColor="@color/darkerDay"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Mô tả -->
+            <TextView
+                android:id="@+id/product_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/product_title"
+                android:layout_marginTop="4dp"
+                android:text="@{product.description}"
+                android:textColor="@color/darkerDay"
+                android:textSize="13sp" />
+
+            <!-- Biểu tượng thời gian -->
+            <ImageView
+                android:id="@+id/time_icon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_below="@id/product_description"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="4dp"
+                android:contentDescription="time"
+                android:src="@drawable/timer" />
+
+            <!-- Thời gian còn lại -->
+            <TextView
+                android:id="@+id/time_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/time_icon"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/time_icon"
+                android:text="@{`Còn lại ` + product.timeRemaining}"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold" />
+
+            <!-- Thẻ Đấu giá -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/auction_type_card"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/time_icon"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/lightActiveDay"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="2dp"
+                    android:text="Đấu giá"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="13sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Giá -->
+            <TextView
+                android:id="@+id/price_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/auction_type_card"
+                android:layout_alignBottom="@id/auction_type_card"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:text="@{product.price}"
+                android:textColor="@color/darkerDay"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Đơn vị tiền tệ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/price_value"
+                android:layout_alignBottom="@id/price_value"
+                android:layout_marginEnd="2dp"
+                android:layout_toStartOf="@id/price_value"
+                android:gravity="center_vertical"
+                android:text="đ"
+                android:textColor="@color/normalDay"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

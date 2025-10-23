@@ -1,33 +1,574 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize">
+    android:background="@color/whiteDay"
+    android:fitsSystemWindows="true"
+    android:paddingHorizontal="0dp">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
+    <include
+        android:id="@+id/header"
+        layout="@layout/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
-
-    <fragment
-        android:id="@+id/nav_host_fragment_activity_main"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mobile_navigation" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toTopOf="@id/menu"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:dividerPadding="8dp">
+
+            <!-- Auction section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Đấu giá"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/Text.SecondChance.Note13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xem tất cả"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.AuctionCurrent"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/auctionImage"
+                            android:layout_width="98dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="4dp"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="nhan"
+                            android:src="@drawable/nhan1" />
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="115dp"
+                            android:layout_weight="1"
+                            android:background="@color/normalDay"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="8dp"
+                            android:paddingRight="16dp"
+                            android:paddingBottom="8dp">
+
+                            <LinearLayout
+                                android:id="@+id/countdown_timer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    style="@style/Widget.SecondChance.Card.Number"
+                                    android:id="@+id/hours_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/lightDay"
+                                    android:gravity="center"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="0dp">
+                                    <TextView
+                                        android:id="@+id/hours_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="4dp"
+                                        android:text="02"
+                                        android:textColor="@color/darkerDay"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <TextView
+                                    android:id="@+id/hours_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="4dp"
+                                    android:text="h"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="16sp" />
+
+                                <com.google.android.material.card.MaterialCardView
+                                    style="@style/Widget.SecondChance.Card.Number"
+                                    android:id="@+id/minutes_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/lightDay"
+                                    android:gravity="center"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="0dp">
+                                    <TextView
+                                        android:id="@+id/minutes_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="4dp"
+                                        android:text="39"
+                                        android:textColor="@color/darkerDay"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <TextView
+                                    android:id="@+id/minutes_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:layout_marginEnd="4dp"
+                                    android:text="m"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="16sp" />
+
+                                <com.google.android.material.card.MaterialCardView
+                                    style="@style/Widget.SecondChance.Card.Number"
+                                    android:id="@+id/seconds_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:backgroundTint="@color/lightDay"
+                                    android:gravity="center"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="0dp">
+                                    <TextView
+                                        android:id="@+id/seconds_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center"
+                                        android:padding="4dp"
+                                        android:text="12"
+                                        android:textColor="@color/darkerDay"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <TextView
+                                    android:id="@+id/seconds_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="4dp"
+                                    android:text="s"
+                                    android:textColor="@android:color/white"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/product_name"
+                                style="@style/Text.SecondChance.Body16"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/countdown_timer"
+                                android:layout_marginBottom="4dp"
+                                android:text="Vòng hoa hướng dương vàng"
+                                android:textColor="@color/whiteDay" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_above="@+id/current_price_layout"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Số lượng:"
+                                    android:textColor="@color/whiteDay"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="x1"
+                                    android:textColor="@color/whiteDay"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/current_price_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/labelCurrentPrice"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Giá hiện tại:"
+                                    android:textColor="@color/whiteDay"
+                                    android:textSize="13dp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/currentPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₫8.500.000"
+                                    android:textColor="@color/whiteDay"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Functions section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.SecondChance.Card.Number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/highlight4blur"
+                        android:gravity="center"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/highLight5"
+                        app:strokeWidth="2dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="Định lượng bằng AI"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="13sp"
+                            android:textStyle="normal" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.SecondChance.Card.Number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/highlight7blur"
+                        android:gravity="center"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/highLight8"
+                        app:strokeWidth="2dp"
+                        app:shapeAppearance="@style/ShapeAppearance.MaterialCardView.BottomLeftCornerOnly">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="43dp"
+                            android:gravity="center"
+                            android:text="Thương lượng"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="13sp"
+                            android:textStyle="normal" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.SecondChance.Card.Number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/highlight3blur"
+                        android:gravity="center"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/highLight3"
+                        app:strokeWidth="2dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="43dp"
+                            android:gravity="center"
+                            android:text="Trở thành người bán"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="13sp"
+                            android:textStyle="normal" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.SecondChance.Card.Number"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/highlight1blur"
+                        android:gravity="center"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/highLight1"
+                        app:strokeWidth="2dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="43dp"
+                            android:gravity="center"
+                            android:text="Xem đơn hàng của bạn"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="13sp"
+                            android:textStyle="normal" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <!-- Icon 1 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__1_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Icon 2 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__2_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__3_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__4_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__5_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__6_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__7_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/lighterDay"
+                    app:cardCornerRadius="999dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/vector__8_"
+                        android:contentDescription="abc" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+            <View
+                android:layout_width="277dp"
+                android:layout_height="2dp"
+                android:background="@color/darkerDay"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
+
+
+
+            <!-- You might like section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_marginBottom="8dp"
+                android:text="Có thể bạn sẽ thích"
+                android:textStyle="bold" />
+
+            <!-- Nhúng CardListFragment tại đây -->
+            <fragment
+                android:id="@+id/cardListFragment"
+                android:name="com.example.secondchance.ui.card.CardListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_recycler_card" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/menu"
+        layout="@layout/menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

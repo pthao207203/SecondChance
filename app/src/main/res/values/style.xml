@@ -4,4 +4,11 @@
         <!-- tăng size label khi COLLAPSED -->
         <item name="android:textSize">20sp</item> <!-- thử 16–18sp -->
     </style>
+    <style name="ShapeAppearance.MaterialCardView.BottomLeftCornerOnly" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">24dp</item> <!-- Bo góc dưới trái -->
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
 </resources>
