@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.SecondChance.Card.Base" parent="Widget.Material3.CardView.Elevated">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:radius">@dimen/radius_m</item>
+        <item name="android:layout_marginHorizontal">0dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+</resources>

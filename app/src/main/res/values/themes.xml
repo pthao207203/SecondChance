@@ -6,7 +6,7 @@
         <item name="colorOnPrimary">@color/whiteDay</item>
 
         <!-- app background & bars -->
-        <item name="android:windowBackground">@color/lightDay</item>
+        <item name="android:windowBackground">@color/whiteDay</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/whiteDay</item>
@@ -14,12 +14,24 @@
         <!-- default components -->
         <item name="textInputStyle">@style/Widget.SecondChance.TextInputLayout</item>
         <item name="materialButtonStyle">@style/Widget.SecondChance.Button.Primary</item>
+        <item name="textAppearanceBodyLargeEmphasized">@style/Text.SecondChance.Title20</item>
         <item name="textAppearanceBodyLarge">@style/Text.SecondChance.Body16</item>
+        <item name="textAppearanceBodySmall">@style/Text.SecondChance.Note13</item>
+    </style>
+
+    <!-- Text tiêu đề 20sp -->
+    <style name="Text.SecondChance.Title20" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">@dimen/text_20</item>
     </style>
 
     <!-- Text mặc định 16sp -->
     <style name="Text.SecondChance.Body16" parent="TextAppearance.Material3.BodyLarge">
-        <item name="android:textSize">@dimen/text_20</item>
+        <item name="android:textSize">@dimen/text_16</item>
+    </style>
+
+    <!-- Text nhỏ ghi chú  -->
+    <style name="Text.SecondChance.Note13" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">@dimen/text_13</item>
     </style>
 
     <!-- TextInputLayout outlined (reusable) -->
@@ -88,4 +100,61 @@
         <item name="android:importantForAutofill" tools:targetApi="26">no</item>
         <item name="android:autofillHints" tools:targetApi="26" />
     </style>
+    <!-- Title text -->
+
+    <style name="Text.SecondChance.Title.Small" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/darkerDay</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Card-->
+    <style name="Widget.SecondChance.Card.Base" parent="Widget.Material3.CardView.Elevated">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:radius">@dimen/radius_m</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.AuctionCurrent" parent="Widget.SecondChance.Card.Base">
+        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:textColor">@color/whiteDay</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.Auction" parent="Widget.SecondChance.Card.Base">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/darkerDay</item>
+        <item name="android:backgroundTint">@color/whiteDay</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.Negotiation" parent="Widget.SecondChance.Card.Base">
+        <item name="android:backgroundTint">@color/lighterDay</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.Fixed" parent="Widget.SecondChance.Card.Base">
+        <item name="android:backgroundTint">@color/lighterDay</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.Number" parent="Widget.SecondChance.Card.Base">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Widget.SecondChance.Card.Menu" parent="Widget.SecondChance.Card.Base">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+    <style name="Widget.SecondChance.Card.Header" parent="Widget.SecondChance.Card.Base">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+    <style name="Widget.SecondChance.Card.BorderBottom" parent="Widget.SecondChance.Card.Base">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@drawable/borderbottom</item>
+    </style>
+
+
+
 </resources>
