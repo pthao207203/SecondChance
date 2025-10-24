@@ -2,13 +2,15 @@ package com.example.secondchance;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.secondchance.databinding.ActivityMainBinding;
+import com.example.secondchance.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
@@ -18,25 +20,25 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
-    Log.d("MainActivityDebug", "MainActivity onCreate called with activity_main.xml");
+    Log.d("MainActivityDebug", "MainActivity onCreate called");
 
-    // Xử lý click cho các mục menu
-    LinearLayout navHome = findViewById(R.id.nav_home);
-    LinearLayout navAi = findViewById(R.id.nav_ai);
-    LinearLayout navNegotiate = findViewById(R.id.nav_negotiate);
-    LinearLayout navMe = findViewById(R.id.nav_me);
+    if (savedInstanceState == null) {
+      loadFragment(new HomeFragment(), false);
+    }
 
-    if (navHome != null) {
-      navHome.setOnClickListener(v -> Toast.makeText(this, "Trang chủ", Toast.LENGTH_SHORT).show());
+    binding.menu.navHome.setOnClickListener(v -> loadFragment(new HomeFragment(), false));
+    binding.menu.navAi.setOnClickListener(v -> Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show());
+    binding.menu.navNegotiate.setOnClickListener(v -> Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show());
+
+  }
+
+  private void loadFragment(Fragment fragment, boolean addToBackStack) {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    fragmentTransaction.replace(binding.fragmentContainer.getId(), fragment);
+    if (addToBackStack) {
+      fragmentTransaction.addToBackStack(null);
     }
-    if (navAi != null) {
-      navAi.setOnClickListener(v -> Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show());
-    }
-    if (navNegotiate != null) {
-      navNegotiate.setOnClickListener(v -> Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show());
-    }
-    if (navMe != null) {
-      navMe.setOnClickListener(v -> Toast.makeText(this, "Tôi", Toast.LENGTH_SHORT).show());
-    }
+    fragmentTransaction.commit();
   }
 }
