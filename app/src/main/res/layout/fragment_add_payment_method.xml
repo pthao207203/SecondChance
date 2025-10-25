@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnAdd">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+        <!-- Name Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Họ và tên"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="textPersonName|textCapWords" />
+
+        <!-- Bank Name Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ngân hàng"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etBankName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="text" />
+
+        <!-- Account Number Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số ngân hàng"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etAccountNumber"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="number" />
+
+        <!-- Set as Default Checkbox -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+
+            android:layout_marginBottom="24dp">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbSetAsDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CustomCheckBox"
+                android:padding="0dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đặt làm ngân hàng mặc định"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_normalday_solid"
+        android:text="THÊM"
+        android:textColor="@color/whiteDay"
+        android:textSize="@dimen/text_20"
+        android:textStyle="bold" />
+</RelativeLayout>

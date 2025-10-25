@@ -22,6 +22,10 @@
         <item name="cornerSizeBottomLeft">@dimen/card_corner_radius</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
+    <style name="CustomCheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/selector_checkbox</item>
+        <item name="buttonTint">@null</item>
+    </style>
 
     <style name="ShapeAppearance.App.Card.TopRightCorner" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
