@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/whiteDay">
+
+    <!-- Profile Info Item -->
+    <LinearLayout
+        android:id="@+id/btnSetLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ngôn ngữ: Tiếng Việt, Tiếng Anh"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay" />
+
+        <CheckBox
+            android:id="@+id/swLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/selector_switch"
+            app:buttonTint="@color/switch_track_color2"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mặc định Tiếng Việt"
+        android:textSize="@dimen/text_16"
+        android:textColor="@color/blackDay"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Account Settings Item -->
+    <LinearLayout
+        android:id="@+id/btnSetTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Chế độ sáng"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay" />
+
+        <CheckBox
+            android:id="@+id/swTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/selector_switch"
+            app:buttonTint="@color/switch_track_color2"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mặc định sáng"
+        android:textSize="@dimen/text_16"
+        android:textColor="@color/blackDay"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+
+</LinearLayout>

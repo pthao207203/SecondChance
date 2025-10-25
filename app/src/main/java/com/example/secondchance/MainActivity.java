@@ -2,41 +2,51 @@ package com.example.secondchance;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.secondchance.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
+  private NavController navController;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
-    Log.d("MainActivityDebug", "MainActivity onCreate called with activity_main.xml");
+    Log.d("MainActivityDebug", "MainActivity onCreate called");
 
-    // Xử lý click cho các mục menu
-    LinearLayout navHome = findViewById(R.id.nav_home);
-    LinearLayout navAi = findViewById(R.id.nav_ai);
-    LinearLayout navNegotiate = findViewById(R.id.nav_negotiate);
-    LinearLayout navMe = findViewById(R.id.nav_me);
+    // Lấy NavController từ NavHostFragment
+    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+            .findFragmentById(R.id.fragment_container);
+    if (navHostFragment != null) {
+      navController = navHostFragment.getNavController();
+    }
 
-    if (navHome != null) {
-      navHome.setOnClickListener(v -> Toast.makeText(this, "Trang chủ", Toast.LENGTH_SHORT).show());
-    }
-    if (navAi != null) {
-      navAi.setOnClickListener(v -> Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show());
-    }
-    if (navNegotiate != null) {
-      navNegotiate.setOnClickListener(v -> Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show());
-    }
-    if (navMe != null) {
-      navMe.setOnClickListener(v -> Toast.makeText(this, "Tôi", Toast.LENGTH_SHORT).show());
-    }
+    // Setup bottom navigation
+    binding.menu.navHome.setOnClickListener(v -> {
+      if (navController != null) {
+        navController.navigate(R.id.navigation_home);
+      }
+    });
+
+    binding.menu.navAi.setOnClickListener(v ->
+            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()
+    );
+
+    binding.menu.navNegotiate.setOnClickListener(v ->
+            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()
+    );
+
+    binding.menu.navMe.setOnClickListener(v -> {
+      if (navController != null) {
+        navController.navigate(R.id.navigation_profile);
+      }
+    });
   }
 }
