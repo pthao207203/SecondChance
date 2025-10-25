@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whiteDay">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnUpdate"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Avatar Section -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_circle"
+                android:contentDescription="Avatar" />
+
+            <ImageView
+                android:id="@+id/btnEditAvatar"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignStart="@id/ivAvatar"
+                android:layout_alignTop="@id/ivAvatar"
+                android:layout_alignEnd="@id/ivAvatar"
+                android:layout_alignBottom="@id/ivAvatar"
+                android:padding="6dp"
+                android:contentDescription="Chỉnh sửa avatar" />
+        </RelativeLayout>
+
+        <!-- Name Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Họ và tên"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="textPersonName" />
+
+        <!-- Phone Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SĐT"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="phone" />
+
+        <!-- Email Field -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_light_active_outline"
+            android:paddingHorizontal="16dp"
+            android:hint="\@gmail.com"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay"
+            android:inputType="textEmailAddress" />
+
+        <!-- Default Address Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="361dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Địa chỉ mặc định"
+                android:textColor="@color/darkerDay"
+                android:textSize="@dimen/text_16"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnEditAddress"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_pen"
+                android:contentDescription="Chỉnh sửa"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/tvDefaultAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thôn Cá, xã Biệt, quận bay, thành phố Fish Can Fly, nước Fish Fly"
+                    android:textSize="@dimen/text_16"
+                    android:textColor="@color/darkerDay"
+                    android:lineSpacingExtra="2dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Default Bank Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ngân hàng mặc định"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnEditBank"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_pen"
+                android:contentDescription="Chỉnh sửa"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/tvDefaultBank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Momo 0333 xxx 333"
+                    android:textSize="@dimen/text_16"
+                    android:textColor="@color/darkerDay" />
+            </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Update Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_normalday_solid"
+        android:text="CẬP NHẬT"
+        android:textColor="@color/whiteDay"
+        android:textSize="@dimen/text_20"
+        android:textStyle="bold" />
+</RelativeLayout>
