@@ -4,11 +4,38 @@
         <!-- tăng size label khi COLLAPSED -->
         <item name="android:textSize">20sp</item> <!-- thử 16–18sp -->
     </style>
-    <style name="ShapeAppearance.MaterialCardView.BottomLeftCornerOnly" parent="">
+
+    <dimen name="card_corner_radius">12dp</dimen>
+
+    <style name="ShapeAppearance.App.Card.BottomRightCorner" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeBottomLeft">24dp</item> <!-- Bo góc dưới trái -->
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">@dimen/card_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Card.BottomLeftCorner" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">@dimen/card_corner_radius</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Card.TopRightCorner" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">@dimen/card_corner_radius</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Card.TopLeftCorner" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/card_corner_radius</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 </resources>
