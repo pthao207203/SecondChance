@@ -8,18 +8,94 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Trang chủ"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.secondchance.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_profile"
+        android:name="com.example.secondchance.ui.profile.ProfileFragment"
+        android:label="Hồ sơ"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_profile_to_editProfile"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.secondchance.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/settingFragment"
+        android:name="com.example.secondchance.ui.profile.SettingFragment"
+        android:label="Cài đặt"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_setting_to_editProfile"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_setting_to_accountSettings"
+            app:destination="@id/accountSettingFragment" />
+        <action
+            android:id="@+id/action_setting_to_systemSettings"
+            app:destination="@id/settingSystemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.secondchance.ui.profile.EditProfileFragment"
+        android:label="Chỉnh sửa hồ sơ"
+        tools:layout="@layout/fragment_edit_profile">
+        <action
+            android:id="@+id/action_editProfile_to_addressList"
+            app:destination="@id/addressListFragment" />
+        <action
+            android:id="@+id/action_editProfile_to_paymentMethod"
+            app:destination="@id/paymentMethodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountSettingFragment"
+        android:name="com.example.secondchance.ui.profile.AccountSettingFragment"
+        android:label="Cài đặt tài khoản"
+        tools:layout="@layout/fragment_account_settings" />
+
+    <fragment
+        android:id="@+id/settingSystemFragment"
+        android:name="com.example.secondchance.ui.profile.SettingSystemFragment"
+        android:label="Cài đặt hệ thống"
+        tools:layout="@layout/fragment_setting_system" />
+
+    <!-- Address Management -->
+    <fragment
+        android:id="@+id/addressListFragment"
+        android:name="com.example.secondchance.ui.profile.AddressListFragment"
+        android:label="Danh sách địa chỉ"
+        tools:layout="@layout/fragment_address_list">
+        <action
+            android:id="@+id/action_addressList_to_addAddress"
+            app:destination="@id/addAddressFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addAddressFragment"
+        android:name="com.example.secondchance.ui.profile.AddAddressFragment"
+        android:label="Thêm địa chỉ mới"
+        tools:layout="@layout/fragment_add_address" />
+
+    <!-- Payment Method Management -->
+    <fragment
+        android:id="@+id/paymentMethodFragment"
+        android:name="com.example.secondchance.ui.profile.PaymentMethodFragment"
+        android:label="Danh sách ngân hàng"
+        tools:layout="@layout/fragment_payment_method">
+        <action
+            android:id="@+id/action_paymentMethod_to_addBank"
+            app:destination="@id/addBankFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBankFragment"
+        android:name="com.example.secondchance.ui.profile.AddBankFragment"
+        android:label="Thêm ngân hàng mới"
+        tools:layout="@layout/fragment_add_payment_method" />
+
 </navigation>
