@@ -1,28 +1,33 @@
 package com.example.secondchance;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.NavDestination;
-import androidx.navigation.fragment.NavHostFragment;
 import com.example.secondchance.databinding.ActivityMainBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator; // THÊM IMPORT NÀY
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
   private NavController navController;
   private SharedViewModel sharedViewModel;
+  private boolean backBusy = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+      Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e);
+    });
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
@@ -61,6 +66,63 @@ public class MainActivity extends AppCompatActivity {
         }
       }
     });
+
+    // LẮNG NGHE VIEWPAGER TỪ STATUSORDERFRAGMENT ĐỂ KẾT NỐI TABLAYOUT
+    sharedViewModel.getViewPager().observe(this, viewPager -> {
+
+      // Lấy TabLayout từ binding (đảm bảo ID là 'order_tabs_layout')
+      TabLayout mainTabLayout = binding.orderTabsLayout;
+
+      if (viewPager != null) {
+        // ViewPager đã sẵn sàng, kết nối nó với TabLayout
+        Log.d("MainActivity", "ViewPager received, attaching TabLayoutMediator.");
+        String[] titles = sharedViewModel.getTabTitles();
+
+        // Gắn Mediator
+        new TabLayoutMediator(mainTabLayout, viewPager, (tab, position) -> {
+          tab.setText(titles[position]);
+        }).attach();
+
+        // Thêm listener (logic này được chuyển từ StatusOrderFragment sang)
+        mainTabLayout.clearOnTabSelectedListeners();
+        mainTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+          @Override
+          public void onTabSelected(TabLayout.Tab tab) {
+            int position = tab.getPosition();
+            String newTitle = "Đơn hàng " + titles[position];
+            sharedViewModel.updateTitle(newTitle); // Cập nhật title
+            if (viewPager.getCurrentItem() != position) {
+              viewPager.setCurrentItem(position, true); // Đồng bộ ViewPager
+            }
+          }
+          @Override public void onTabUnselected(TabLayout.Tab tab) {}
+          @Override public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+        // Đồng bộ Tab khi ViewPager được vuốt
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+          @Override
+          public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            if (mainTabLayout.getSelectedTabPosition() != position) {
+              mainTabLayout.selectTab(mainTabLayout.getTabAt(position));
+            }
+          }
+        });
+
+        // Set tab ban đầu
+        int currentItem = viewPager.getCurrentItem();
+        if (mainTabLayout.getSelectedTabPosition() != currentItem) {
+          // Dùng post để đảm bảo TabLayout đã sẵn sàng
+          mainTabLayout.post(() -> mainTabLayout.selectTab(mainTabLayout.getTabAt(currentItem)));
+        }
+
+      } else {
+        // Khi StatusOrderFragment bị hủy (viewPager == null)
+        Log.d("MainActivity", "ViewPager cleared, detaching TabLayout.");
+        mainTabLayout.clearOnTabSelectedListeners();
+      }
+    });
   }
 
   // cập nhật GIAO DIỆN header (ẩn/hiện)
@@ -97,32 +159,35 @@ public class MainActivity extends AppCompatActivity {
       tvTitle.setVisibility(View.VISIBLE);
       Log.d("MainActivity", "Header: Show Back/Title");
 
-      // Cập nhật Tiêu đề Header VÀ Back
+      // Back mặc định
+      wireBackIcon(iconBack);
+
+      // Tiêu đề
       if (destinationId == R.id.navigation_order) {
-        iconBack.setOnClickListener(v -> {
-          try {
-            navController.navigate(R.id.action_order_to_profileFragment);
-            Log.d("MainActivity", "Back button clicked: Navigating via action_order_to_profileFragment");
-          } catch (Exception e) {
-            Log.w("MainActivity", "Back action failed, falling back to navigateUp()", e);
-            navController.navigateUp(); // Fallback nếu action bị lỗi
-          }
-        });
-
-        String currentOrderTitle = sharedViewModel.getCurrentTitle().getValue();
-        tvTitle.setText(currentOrderTitle != null ? currentOrderTitle : "Đơn hàng");
+        String t = sharedViewModel.getCurrentTitle().getValue();
+        tvTitle.setText(t != null ? t : "Đơn hàng");
         Log.d("MainActivity", "Header Title (Order): " + tvTitle.getText());
-
       } else {
-        // Các màn hình khác (Profile, Chi tiết, AI...) dùng navigateUp()
-        iconBack.setOnClickListener(v -> navController.navigateUp());
-
         CharSequence label = destination.getLabel();
         tvTitle.setText(label != null ? label : "");
         Log.d("MainActivity", "Header Title (Other): " + label);
       }
     }
   }
+
+  private void wireBackIcon(View iconBack) {
+    iconBack.setOnClickListener(v -> {
+      if (backBusy) return;
+      backBusy = true;
+      v.postDelayed(() -> backBusy = false, 400);
+      try {
+        if (!navController.popBackStack()) navController.navigateUp();
+      } catch (Exception e) {
+        Log.e("MainActivity", "Back navigate error", e);
+      }
+    });
+  }
+
   // sự kiện click cho 3 icon trên header
   private void setupIconClickListeners() {
     binding.headerMain.iconCart.setOnClickListener(v -> openCartScreen());
@@ -162,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
+  // --- Các hàm xử lý chung khi click icon ---
   private void openCartScreen() {
     Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
     // TODO: mở màn hình Giỏ hàng

@@ -431,7 +431,8 @@
                     android:paddingHorizontal="5dp"
                     android:text="0" android:textColor="@color/whiteDay"
                     android:textSize="10sp"
-                    android:visibility="gone" tools:visibility="visible"
+                    android:visibility="gone"
+                    tools:visibility="visible"
                     tools:text="17"/>
             </LinearLayout>
 
