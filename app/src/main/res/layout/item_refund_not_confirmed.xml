@@ -96,6 +96,9 @@
             android:text="Chưa xác nhận"
             android:textColor="@color/darkerDay"
             android:textStyle="bold"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_dot"
+            app:drawableTint="@color/darkerDay"
+            android:drawablePadding="4dp"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
