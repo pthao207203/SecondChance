@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fitsSystemWindows="true"
-    tools:context=".ui.order.OrderFragment">
+    tools:context=".ui.order.StatusOrderFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"

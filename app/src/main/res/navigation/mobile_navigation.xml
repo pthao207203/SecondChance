@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/navigation_order"
-        android:name="com.example.secondchance.ui.order.OrderFragment"
+        android:name="com.example.secondchance.ui.order.StatusOrderFragment"
         android:label="Đơn hàng"
         tools:layout="@layout/activity_status_orders">
         <argument
