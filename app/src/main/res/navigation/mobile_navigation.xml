@@ -8,8 +8,29 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
-        android:label="Trang chủ"
+        android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
+    <action
+        android:id="@+id/action_homeFragment_to_negotiationFragment"
+        app:destination="@id/navigation_negotiation" />
+
+    <fragment
+        android:id="@+id/navigation_negotiation"
+        android:name="com.example.secondchance.ui.negotiation.NegotiationFragment"
+        android:label="Thương lượng"
+        tools:layout="@layout/fragment_negotiation" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.example.secondchance.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.secondchance.ui.notifications.NotificationsFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/navigation_profile"
@@ -22,6 +43,122 @@
         <action
             android:id="@+id/action_profile_to_editProfile"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profile_to_orderFragment"
+            app:destination="@id/navigation_order" />
+        <action
+            android:id="@+id/action_profile_to_productTab"
+            app:destination="@id/productTabFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_order"
+        android:name="com.example.secondchance.ui.order.StatusOrderFragment"
+        android:label="Đơn hàng"
+        tools:layout="@layout/activity_status_orders">
+        <argument
+            android:name="selectedTab"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_orderFragment_to_confirmOrderDetailFragment"
+            app:destination="@id/navigation_confirm_order_detail" />
+        <action
+            android:id="@+id/action_orderFragment_to_deliveringOrderDetailFragment"
+            app:destination="@id/navigation_delivering_order_detail" />
+        <action
+            android:id="@+id/action_orderFragment_to_boughtOrderDetailFragment"
+            app:destination="@id/navigation_bought_order_detail" />
+        <action
+            android:id="@+id/action_orderFragment_to_canceledOrderDetailFragment"
+            app:destination="@id/navigation_canceled_order_detail" />
+        <action
+            android:id="@+id/action_orderFragment_to_refundOrderDetailFragment"
+            app:destination="@id/navigation_refund_order_detail" />
+        <action
+            android:id="@+id/action_order_to_profileFragment"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_order"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_confirm_order_detail"
+        android:name="com.example.secondchance.ui.order.ConfirmOrderDetailFragment"
+        android:label="Chi tiết đơn hàng"
+        tools:layout="@layout/fragment_confirm_order_detail">
+
+        <argument android:name="orderId"
+            app:argType="string" />
+
+        <argument android:name="orderType"
+            app:argType="com.example.secondchance.data.model.Order$OrderType" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_delivering_order_detail"
+        android:name="com.example.secondchance.ui.order.DeliveringOrderDetailFragment"
+        android:label="Chi tiết đơn hàng đang giao"
+        tools:layout="@layout/fragment_delivering_order_detail">
+
+        <argument android:name="orderId"
+            app:argType="string" />
+
+        <argument android:name="deliveryStatus"
+            app:argType="com.example.secondchance.data.model.Order$DeliveryOverallStatus" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_bought_order_detail"
+        android:name="com.example.secondchance.ui.order.BoughtOrderDetailFragment"
+        android:label="Chi tiết đơn đã mua"
+        tools:layout="@layout/fragment_bought_order_detail">
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+        <argument
+            android:name="isEvaluated"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_boughtOrderDetailFragment_to_createOrderReturnRequestFragment"
+            app:destination="@id/navigation_create_order_return_request" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_create_order_return_request"
+        android:name="com.example.secondchance.ui.order.CreateOrderReturnRequestFragment"
+        android:label="Tạo yêu cầu hoàn trả"
+        tools:layout="@layout/fragment_create_order_return_request">
+
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_canceled_order_detail"
+        android:name="com.example.secondchance.ui.order.CanceledOrderDetailFragment"
+        android:label="Chi tiết đơn đã hủy"
+        tools:layout="@layout/fragment_canceled_order_detail">
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_refund_order_detail"
+        android:name="com.example.secondchance.ui.order.RefundOrderDetailFragment"
+        android:label="Chi tiết hoàn trả"
+        tools:layout="@layout/fragment_refund_order_detail_detail">
+        <argument android:name="orderId" app:argType="string" />
+        <argument
+            android:name="refundStatus"
+            app:argType="com.example.secondchance.data.model.Order$RefundStatus" />
+        <action
+            android:id="@+id/action_refundOrderDetail_to_createRefundFragment"
+            app:destination="@id/navigation_create_order_return_request" />
     </fragment>
 
     <fragment
@@ -52,6 +189,7 @@
             android:id="@+id/action_editProfile_to_paymentMethod"
             app:destination="@id/paymentMethodFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/accountSettingFragment"
         android:name="com.example.secondchance.ui.profile.AccountSettingFragment"
@@ -98,4 +236,409 @@
         android:label="Thêm ngân hàng mới"
         tools:layout="@layout/fragment_add_payment_method" />
 
+    <!-- PRODUCT MANAGEMENT SYSTEM -->
+    <!-- Product Tab Fragment - Main entry point -->
+    <fragment
+        android:id="@+id/productTabFragment"
+        android:name="com.example.secondchance.ui.product.ProductTabFragment"
+        android:label="Quản lý sản phẩm"
+        tools:layout="@layout/fragment_product_tab">
+
+        <!-- Actions to Add Product screens -->
+        <action
+            android:id="@+id/action_productTab_to_addFixed"
+            app:destination="@id/addProductFixedFragment" />
+        <action
+            android:id="@+id/action_productTab_to_addNegotiable"
+            app:destination="@id/addProductNegotiableFragment" />
+        <action
+            android:id="@+id/action_productTab_to_addAuction"
+            app:destination="@id/addProductAuctionFragment" />
+
+        <!-- Actions to Detail screens -->
+        <action
+            android:id="@+id/action_productList_to_productDetail"
+            app:destination="@id/productDetailFixedFragment" />
+        <action
+            android:id="@+id/action_productList_to_productDetailFixed"
+            app:destination="@id/productDetailFixedFragment" />
+        <action
+            android:id="@+id/action_productList_to_productDetailNegotiable"
+            app:destination="@id/productDetailNegotiableFragment" />
+        <action
+            android:id="@+id/action_productList_to_productDetailAuction"
+            app:destination="@id/productDetailAuctionFragment" />
+        <action
+            android:id="@+id/action_productList_to_productDetailDeleted"
+            app:destination="@id/productDetailDeletedFragment" />
+    </fragment>
+
+    <!-- ============================================ -->
+    <!-- FIXED PRODUCT FLOW (COMPLETE) -->
+    <!-- ============================================ -->
+
+    <!-- Add Product Fixed -->
+    <fragment
+        android:id="@+id/addProductFixedFragment"
+        android:name="com.example.secondchance.ui.product.add.AddProductFixedFragment"
+        android:label="Thêm sản phẩm - Giá cố định"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="fixed" />
+        <action
+            android:id="@+id/action_addProductFixed_to_preview"
+            app:destination="@id/productPreviewFixedFragment" />
+        <action
+            android:id="@+id/action_addProductFixed_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Edit Product Fixed -->
+    <fragment
+        android:id="@+id/editProductFixedFragment"
+        android:name="com.example.secondchance.ui.product.add.EditProductFragment"
+        android:label="Chỉnh sửa - Giá cố định"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="fixed" />
+        <action
+            android:id="@+id/action_editProductFixed_to_preview"
+            app:destination="@id/productPreviewFixedFragment" />
+        <action
+            android:id="@+id/action_editProductFixed_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Detail Fixed -->
+    <fragment
+        android:id="@+id/productDetailFixedFragment"
+        android:name="com.example.secondchance.ui.product.detail.ProductDetailFixedFragment"
+        android:label="Chi tiết - Giá cố định"
+        tools:layout="@layout/fragment_product_detail_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="price"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_detailFixed_to_editFixed"
+            app:destination="@id/editProductFixedFragment" />
+    </fragment>
+
+    <!-- Preview Fixed -->
+    <fragment
+        android:id="@+id/productPreviewFixedFragment"
+        android:name="com.example.secondchance.ui.product.preview.ProductPreviewFixedFragment"
+        android:label="Xem trước - Giá cố định"
+        tools:layout="@layout/fragment_product_fixed_preview">
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="preview" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="fixed" />
+        <argument
+            android:name="isPreview"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_previewFixed_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- ============================================ -->
+    <!-- NEGOTIABLE PRODUCT FLOW (COMPLETE) -->
+    <!-- ============================================ -->
+
+    <!-- Add Product Negotiable -->
+    <fragment
+        android:id="@+id/addProductNegotiableFragment"
+        android:name="com.example.secondchance.ui.product.add.AddProductNegotiableFragment"
+        android:label="Thêm sản phẩm - Thương lượng"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="negotiable" />
+        <action
+            android:id="@+id/action_addProductNegotiable_to_preview"
+            app:destination="@id/productPreviewNegotiableFragment" />
+        <action
+            android:id="@+id/action_addProductNegotiable_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Edit Product Negotiable -->
+    <fragment
+        android:id="@+id/editProductNegotiableFragment"
+        android:name="com.example.secondchance.ui.product.add.EditProductFragment"
+        android:label="Chỉnh sửa - Thương lượng"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="negotiable" />
+        <action
+            android:id="@+id/action_editProductNegotiable_to_preview"
+            app:destination="@id/productPreviewNegotiableFragment" />
+        <action
+            android:id="@+id/action_editProductNegotiable_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Detail Negotiable -->
+    <fragment
+        android:id="@+id/productDetailNegotiableFragment"
+        android:name="com.example.secondchance.ui.product.detail.ProductDetailNegotiableFragment"
+        android:label="Chi tiết - Thương lượng"
+        tools:layout="@layout/fragment_product_detail_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="price"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_detailNegotiable_to_editNegotiable"
+            app:destination="@id/editProductNegotiableFragment" />
+    </fragment>
+
+    <!-- Preview Negotiable -->
+    <fragment
+        android:id="@+id/productPreviewNegotiableFragment"
+        android:name="com.example.secondchance.ui.product.preview.ProductPreviewNegotiableFragment"
+        android:label="Xem trước - Thương lượng"
+        tools:layout="@layout/fragment_product_fixed_preview">
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="preview" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="negotiable" />
+        <argument
+            android:name="isPreview"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_previewNegotiable_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- ============================================ -->
+    <!-- AUCTION PRODUCT FLOW (COMPLETE) -->
+    <!-- ============================================ -->
+
+    <!-- Add Product Auction -->
+    <fragment
+        android:id="@+id/addProductAuctionFragment"
+        android:name="com.example.secondchance.ui.product.add.AddProductAuctionFragment"
+        android:label="Thêm sản phẩm - Đấu giá"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="auction" />
+        <action
+            android:id="@+id/action_addProductAuction_to_preview"
+            app:destination="@id/productPreviewAuctionFragment" />
+        <action
+            android:id="@+id/action_addProductAuction_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Edit Product Auction -->
+    <fragment
+        android:id="@+id/editProductAuctionFragment"
+        android:name="com.example.secondchance.ui.product.add.EditProductFragment"
+        android:label="Chỉnh sửa - Đấu giá"
+        tools:layout="@layout/fragment_add_product_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="auction" />
+        <action
+            android:id="@+id/action_editProductAuction_to_preview"
+            app:destination="@id/productPreviewAuctionFragment" />
+        <action
+            android:id="@+id/action_editProductAuction_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- Detail Auction -->
+    <fragment
+        android:id="@+id/productDetailAuctionFragment"
+        android:name="com.example.secondchance.ui.product.detail.ProductDetailAuctionFragment"
+        android:label="Chi tiết - Đấu giá"
+        tools:layout="@layout/fragment_product_detail_fixed">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="price"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_detailAuction_to_editAuction"
+            app:destination="@id/editProductAuctionFragment" />
+    </fragment>
+
+    <!-- Preview Auction -->
+    <fragment
+        android:id="@+id/productPreviewAuctionFragment"
+        android:name="com.example.secondchance.ui.product.preview.ProductPreviewAuctionFragment"
+        android:label="Xem trước - Đấu giá"
+        tools:layout="@layout/fragment_product_fixed_preview">
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="preview" />
+        <argument
+            android:name="productType"
+            app:argType="string"
+            android:defaultValue="auction" />
+        <argument
+            android:name="isPreview"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_previewAuction_to_productList"
+            app:destination="@id/productTabFragment"
+            app:popUpTo="@id/productTabFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <!-- ============================================ -->
+    <!-- DELETED PRODUCT FLOW -->
+    <!-- ============================================ -->
+
+    <!-- Detail Deleted -->
+    <fragment
+        android:id="@+id/productDetailDeletedFragment"
+        android:name="com.example.secondchance.ui.product.detail.ProductDetailDeletedFragment"
+        android:label="Chi tiết - Đã xóa"
+        tools:layout="@layout/fragment_product_detail_deleted">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="price"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/auctionSessionFragment"
+        android:name="com.example.secondchance.ui.product.AuctionSessionFragment"
+        android:label="Phiên đấu giá"
+        tools:layout="@layout/fragment_auction_session">
+        <argument
+            android:name="productId"
+            app:argType="string" />
+        <argument
+            android:name="productName"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="currentPrice"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="quantity"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="endTime"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
+    <action
+        android:id="@+id/action_productDetailAuction_to_auctionSession"
+        app:destination="@id/auctionSessionFragment" />
 </navigation>
