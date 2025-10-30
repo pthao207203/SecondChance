@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    android:layout_marginBottom="12dp"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#F5F5F5">
+
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="113dp"
+            android:layout_height="109dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_flower" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giỏ gỗ cắm hoa"
+            android:textStyle="bold"
+            android:textColor="#222222"
+            android:textSize="15sp"
+            android:layout_toEndOf="@id/imgProduct"
+            android:layout_marginStart="12dp"
+            android:layout_toStartOf="@+id/tvPrice"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₫ 50.000"
+            android:textStyle="bold"
+            android:textColor="#D26E2D"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvPrice"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="10dp"
+            android:text="x1"
+            android:textColor="#222222"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSubtitleFixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giá cố định"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_below="@id/tvTitle"
+            android:layout_toEndOf="@id/imgProduct"
+            android:layout_marginStart="12dp"/>
+
+        <TextView
+            android:id="@+id/tvSubtitleDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSubtitleFixed"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/imgProduct"
+            android:text="Đã tạo ngày: 17/06/2025"
+            android:textColor="#666666"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSubtitleDate"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="7dp"
+            android:text="Đã xác nhận"
+            android:textColor="#D26E2D"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvAuctionInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSubtitleDate"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toEndOf="@id/imgProduct"
+            android:layout_toStartOf="@id/tvStatus"
+            android:text="Đơn đã xác nhận không thể hủy"
+            android:textColor="#666666"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

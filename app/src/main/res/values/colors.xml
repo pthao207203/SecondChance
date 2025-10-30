@@ -29,6 +29,8 @@
     <color name="darkHoverDay">#913703</color>
     <color name="darkActiveDay">#6D2902</color>
     <color name="darkerDay">#441A02</color>
+    <color name="darker">#552002</color>
+
 
     <color name="whiteNight">#1C1B1F</color>
     <color name="grayNight">#441A02</color>
@@ -44,5 +46,14 @@
     <color name="darkHoverNight">#FEEFE6</color>
     <color name="darkActiveNight">#FFF7F3</color>
     <color name="darkerNight">#EFF1F5</color>
+
+    <color name="info_box_bg">#F5F5F5</color>
+    <color name="light_blue_bg">#8ECAE6</color>
+    <color name="bg_app">#F8F8F8</color>
+    <color name="orange_primary">#E56D2D</color>
+    <color name="orange_dark">#D26E2D</color>
+    <color name="text_primary">#222222</color>
+    <color name="text_secondary">#666666</color>
+    <color name="light_blue">#E8F5FF</color>
 
 </resources>

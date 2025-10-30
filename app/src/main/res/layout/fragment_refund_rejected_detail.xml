@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#F5F5F5"
+                android:padding="16dp">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:background="#A09CAB">
+                        <ImageView
+                            android:id="@+id/imgProduct"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/sample_flower" />
+                        <TextView
+                            android:id="@+id/tvPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₫ 50.000"
+                            android:textColor="#D26E2D"
+                            android:textStyle="bold"
+                            android:layout_alignParentEnd="true" />
+                        <TextView
+                            android:id="@+id/tvTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/imgProduct"
+                            android:layout_toStartOf="@id/tvPrice"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="Giỏ gỗ cắm hoa"
+                            android:textColor="#222222"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvTitle"
+                            android:layout_toEndOf="@id/imgProduct"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="4dp"
+                            android:text="Số lượng: 1"
+                            android:textColor="#666666"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:id="@+id/tvDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvQuantity"
+                            android:layout_toEndOf="@id/imgProduct"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="4dp"
+                            android:text="Giỏ hoa loại 1 new 99%, của hàng abc thành phố Xuân Hợp he he"
+                            android:textColor="#666666"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ảnh/ video phản ánh"
+                    android:textColor="#222222"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/sample_flower"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp"/>
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/sample_flower"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp"/>
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/sample_flower"
+                        android:scaleType="centerCrop"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nguyên nhân"
+                    android:textColor="@color/darkerDay"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sản phẩm khác mô tả, hoàn toàn không giống..."
+                    android:textColor="@color/darkerDay"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+            </LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/light_blue_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Yêu cầu hoàn đã bị từ chối"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="8dp"/>
+                    <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cảm ơn bạn đã chỉ ra lỗi sai trong sản phẩm, tuy nhiên những lỗi này không phải đến từ cửa hàng có thể xảy ra trong quá trình vận hành và những lỗi khác đã hoàn thành trong phần mô tả, cảm ơn bạn đã hỗ trợ cửa hàng."
+                    android:textColor="@color/darkerDay"
+                    android:lineSpacingExtra="4dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnResendRequest"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Gửi lại"
+                        android:textColor="@color/orange_primary"
+                        app:strokeColor="@color/orange_primary"
+                        app:cornerRadius="8dp"
+                        android:backgroundTint="@android:color/transparent" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReturnToPostOffice"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="0dp"
+                android:text="Đồng ý"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="#E56D2D"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.NavController;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
@@ -107,8 +109,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
-        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
+        // Lấy NavController
+        final NavController navController = Navigation.findNavController(view);
 
+        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
         view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
         view.findViewById(R.id.tvName).setOnClickListener(editProfileClickListener);
 
@@ -136,21 +140,49 @@ public class ProfileFragment extends Fragment {
         );
 
         // Order History
-        view.findViewById(R.id.btnPending).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Xác nhận: " + tvPendingCount.getText(), Toast.LENGTH_SHORT).show()
-        );
+        LinearLayout btnPending = view.findViewById(R.id.btnPending);
+        if (btnPending != null) {
+            btnPending.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 0);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
 
-        view.findViewById(R.id.btnShipping).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Đang giao: " + tvShippingCount.getText(), Toast.LENGTH_SHORT).show()
-        );
+        LinearLayout btnShipping = view.findViewById(R.id.btnShipping);
+        if (btnShipping != null) {
+            btnShipping.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 1);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
 
-        view.findViewById(R.id.btnPurchased).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Đã mua", Toast.LENGTH_SHORT).show()
-        );
+        LinearLayout btnPurchased = view.findViewById(R.id.btnPurchased);
+        if (btnPurchased != null) {
+            btnPurchased.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 2);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
+        LinearLayout btnCancelled = view.findViewById(R.id.btnCancelled);
+        if (btnCancelled != null) {
+            btnCancelled.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 3);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
 
-        view.findViewById(R.id.btnCancelled).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Đã hủy", Toast.LENGTH_SHORT).show()
-        );
+        LinearLayout btnRefund = view.findViewById(R.id.btnRefund);
+        if (btnRefund != null) {
+            btnRefund.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 4);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
 
         // Become Seller
         view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v ->

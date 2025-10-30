@@ -1,16 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="Trang chủ" />
 
-    <item
-        android:id="@+id/navigation_home"
-        android:title="@string/title_home" />
+    <item android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_lightbulb"
+        android:title="AI định giá" />
 
-    <item
-        android:id="@+id/navigation_dashboard"
-        android:title="@string/title_dashboard" />
+    <item android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_refresh"
+        android:title="Thương lượng" />
 
-    <item
-        android:id="@+id/navigation_notifications"
-        android:title="@string/title_notifications" />
-
+    <item android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_person"
+        android:title="Tôi" />
 </menu>

@@ -14,7 +14,7 @@
         android:theme="@style/Theme.SecondChance"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.auth.AuthActivity"
             android:exported="true"
             tools:ignore="Instantiatable">
             <intent-filter>
@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-<!--        <activity android:name=".MainActivity" />-->
+
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
