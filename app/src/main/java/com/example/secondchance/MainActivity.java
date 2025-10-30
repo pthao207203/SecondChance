@@ -20,9 +20,13 @@ public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
   private NavController navController;
   private SharedViewModel sharedViewModel;
+  private boolean backBusy = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+      Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e);
+    });
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
@@ -96,32 +100,37 @@ public class MainActivity extends AppCompatActivity {
       iconBack.setVisibility(View.VISIBLE);
       tvTitle.setVisibility(View.VISIBLE);
       Log.d("MainActivity", "Header: Show Back/Title");
-
-      // Cập nhật Tiêu đề Header VÀ Back
+      
+      // Back mặc định
+      wireBackIcon(iconBack);
+//      iconBack.setOnClickListener(v -> {
+//        if (!navController.popBackStack()) navController.navigateUp();
+//      });
+      
+      // Tiêu đề
       if (destinationId == R.id.navigation_order) {
-        iconBack.setOnClickListener(v -> {
-          try {
-            navController.navigate(R.id.action_order_to_profileFragment);
-            Log.d("MainActivity", "Back button clicked: Navigating via action_order_to_profileFragment");
-          } catch (Exception e) {
-            Log.w("MainActivity", "Back action failed, falling back to navigateUp()", e);
-            navController.navigateUp(); // Fallback nếu action bị lỗi
-          }
-        });
-
-        String currentOrderTitle = sharedViewModel.getCurrentTitle().getValue();
-        tvTitle.setText(currentOrderTitle != null ? currentOrderTitle : "Đơn hàng");
+        String t = sharedViewModel.getCurrentTitle().getValue();
+        tvTitle.setText(t != null ? t : "Đơn hàng");
         Log.d("MainActivity", "Header Title (Order): " + tvTitle.getText());
-
       } else {
-        // Các màn hình khác (Profile, Chi tiết, AI...) dùng navigateUp()
-        iconBack.setOnClickListener(v -> navController.navigateUp());
-
         CharSequence label = destination.getLabel();
         tvTitle.setText(label != null ? label : "");
         Log.d("MainActivity", "Header Title (Other): " + label);
       }
     }
+  }
+  private void wireBackIcon(View iconBack) {
+    iconBack.setOnClickListener(v -> {
+      if (backBusy) return;
+      backBusy = true;
+      v.postDelayed(() -> backBusy = false, 400); // debounce 400ms
+      
+      try {
+        if (!navController.popBackStack()) navController.navigateUp();
+      } catch (Exception e) {
+        Log.e("MainActivity", "Back navigate error", e);
+      }
+    });
   }
   // sự kiện click cho 3 icon trên header
   private void setupIconClickListeners() {
