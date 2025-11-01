@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="2dp"
+        android:dashGap="4dp"
+        android:dashWidth="4dp"
+        android:color="@color/normalDay" />
+    <corners android:radius="@dimen/radius_m" />
+    <solid android:color="@color/whiteDay" />
+</shape>
