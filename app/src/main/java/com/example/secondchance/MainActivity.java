@@ -1,6 +1,8 @@
 package com.example.secondchance;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -29,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
       Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e);
     });
     super.onCreate(savedInstanceState);
+    
+    AppCompatDelegate.setApplicationLocales(
+      LocaleListCompat.forLanguageTags("vi")
+    );
+    
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
 
