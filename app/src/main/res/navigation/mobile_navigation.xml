@@ -3,13 +3,52 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_home" >
+
+        <action
+        android:id="@+id/action_home_navigation_detail_product"
+        app:destination="@id/navigation_detail_product" />
+
+        <action
+        android:id="@+id/action_home_to_auction"
+        app:destination="@id/navigation_auction" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/navigation_detail_product"
+        android:name="com.example.secondchance.ui.card.DetailProductFragment"
+        android:label="Chi tiết"
+        tools:layout="@layout/fragment_detail_product" >
+    <action
+        android:id="@+id/action_detail_product_to_shop_home"
+        app:destination="@id/navigation_shop_home" />
+    <action
+        android:id="@+id/action_detail_product_to_rule_auction"
+        app:destination="@id/navigation_rule_auction" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_rule_auction"
+        android:name="com.example.secondchance.ui.auction.RuleAuctionFragment"
+        android:label="Quy tắc đấu giá"
+        tools:layout="@layout/fragment_rule_auction" >
+        <action
+            android:id="@+id/action_rule_auction_to_auction_detail"
+            app:destination="@id/navigation_auction_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_auction_detail"
+        android:name="com.example.secondchance.ui.auction.AuctionDetailFragment"
+        android:label="Chi tiết đấu giá"
+        tools:layout="@layout/fragment_auction_detail" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -37,6 +76,9 @@
         <action
             android:id="@+id/action_profile_to_orderFragment"
             app:destination="@id/navigation_order" />
+        <action
+            android:id="@+id/action_profile_to_rule_seller"
+            app:destination="@id/fragment_rule_seller" />
     </fragment>
 
     <fragment
@@ -206,5 +248,62 @@
         android:name="com.example.secondchance.ui.profile.AddBankFragment"
         android:label="Thêm ngân hàng mới"
         tools:layout="@layout/fragment_add_payment_method" />
+
+     <!-- Trang cửa hàng (Shop Home) -->
+    <fragment
+        android:id="@+id/navigation_shop_home"
+        android:name="com.example.secondchance.ui.shop.ShopHomeFragment"
+        android:label="Trang cửa hàng"
+        tools:layout="@layout/fragment_shop_home">
+        <action
+            android:id="@+id/action_shop_home_to_comment"
+            app:destination="@id/fragment_comment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_comment"
+        android:name="com.example.secondchance.ui.comment.CommentFragment"
+        android:label="Đánh giá" />
+
+    <fragment android:id="@+id/fragment_rule_seller"
+        android:name="com.example.secondchance.ui.profile.RuleSellerFragment"
+        android:label="Quy tắc người bán"
+        tools:layout="@layout/fragment_rule_seller">
+
+        <action
+            android:id="@+id/action_rule_seller_to_fill_info_seller"
+            app:destination="@id/fragment_fill_info_seller" />
+    </fragment>
+
+        <!-- FillInfoSellerFragment – GIỮ NGUYÊN -->
+    <fragment
+    android:id="@+id/fragment_fill_info_seller"
+    android:name="com.example.secondchance.ui.profile.FillInfoSellerFragment"
+    android:label="Thông tin người bán"
+    tools:layout="@layout/fragment_fill_info_seller" >
+
+        <action
+            android:id="@+id/action_fill_info_seller_to_my_shop_home"
+            app:destination="@id/fragment_my_shop_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_my_shop_home"
+        android:name="com.example.secondchance.ui.shop.MyShopHomeFragment"
+        android:label="Cửa hàng của tôi"
+        tools:layout="@layout/fragment_my_shop_home" />
+
+    <fragment
+        android:id="@+id/navigation_auction"
+        android:name="com.example.secondchance.ui.auction.AuctionFragment"
+        android:label="Các sản phẩm đấu giá"
+        tools:layout="@layout/fragment_auction">
+
+        <action
+            android:id="@+id/action_auction_to_detail_product"
+            app:destination="@id/navigation_detail_product" />
+
+    </fragment>
+
+
 
 </navigation>

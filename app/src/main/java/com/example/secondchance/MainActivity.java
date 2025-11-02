@@ -14,7 +14,15 @@ import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.secondchance.databinding.ActivityMainBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.ui.home.HomeFragment;
 import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+
+
+
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
@@ -30,6 +38,42 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
+    Log.d("MainActivityDebug", "MainActivity onCreate called");
+
+//     Lấy NavController từ NavHostFragment
+//    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+//            .findFragmentById(R.id.fragment_container);
+//    if (navHostFragment != null) {
+//      navController = navHostFragment.getNavController();
+//    }
+
+    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
+      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+      navController.navigate(R.id.navigation_home);
+    });
+
+
+
+    // Setup bottom navigation
+//    binding.menu.navHome.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_home);
+//      }
+//    });
+//
+//    binding.menu.navAi.setOnClickListener(v ->
+//            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navNegotiate.setOnClickListener(v ->
+//            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navMe.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_profile);
+//      }
+//    });
 
     // Khởi tạo SharedViewModel
     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
@@ -100,13 +144,13 @@ public class MainActivity extends AppCompatActivity {
       iconBack.setVisibility(View.VISIBLE);
       tvTitle.setVisibility(View.VISIBLE);
       Log.d("MainActivity", "Header: Show Back/Title");
-      
+
       // Back mặc định
       wireBackIcon(iconBack);
 //      iconBack.setOnClickListener(v -> {
 //        if (!navController.popBackStack()) navController.navigateUp();
 //      });
-      
+
       // Tiêu đề
       if (destinationId == R.id.navigation_order) {
         String t = sharedViewModel.getCurrentTitle().getValue();
@@ -124,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
       if (backBusy) return;
       backBusy = true;
       v.postDelayed(() -> backBusy = false, 400); // debounce 400ms
-      
+
       try {
         if (!navController.popBackStack()) navController.navigateUp();
       } catch (Exception e) {
