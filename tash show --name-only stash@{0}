@@ -1,0 +1,400 @@
+[1mdiff --git a/app/build.gradle b/app/build.gradle[m
+[1mindex 3f256b7..dc03fb0 100644[m
+[1m--- a/app/build.gradle[m
+[1m+++ b/app/build.gradle[m
+[36m@@ -30,6 +30,7 @@[m [mandroid {[m
+     buildFeatures {[m
+         viewBinding true[m
+     }[m
+[32m+[m
+     packagingOptions {[m
+         exclude 'META-INF/androidx.cardview_cardview.version'[m
+     }[m
+[36m@@ -41,10 +42,13 @@[m [mandroid {[m
+ }[m
+ [m
+ dependencies {[m
+[32m+[m
+[32m+[m[32m    implementation libs.appcompat[m
+     implementation libs.cardview.v7[m
+     implementation libs.circleimageview[m
+[31m-    implementation 'com.google.android.material:material:1.13.0'[m
+[32m+[m[32m    implementation libs.material[m
+     implementation libs.databinding.runtime[m
+[32m+[m[32m    implementation libs.firebase.analytics[m
+     implementation libs.lifecycle.livedata.ktx[m
+     implementation libs.lifecycle.viewmodel.ktx[m
+     implementation libs.navigation.fragment[m
+[36m@@ -55,7 +59,7 @@[m [mdependencies {[m
+ [m
+     // Glide[m
+     implementation 'com.github.bumptech.glide:glide:4.16.0'[m
+[31m-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'[m
+[32m+[m[32m    annotationProcessor libs.compiler[m
+ [m
+     // Retrofit[m
+     implementation libs.retrofit[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/MainActivity.java b/app/src/main/java/com/example/secondchance/MainActivity.java[m
+[1mindex 04a3ac1..09ea49d 100644[m
+[1m--- a/app/src/main/java/com/example/secondchance/MainActivity.java[m
+[1m+++ b/app/src/main/java/com/example/secondchance/MainActivity.java[m
+[36m@@ -14,7 +14,15 @@[m [mimport androidx.navigation.NavDestination;[m
+ import androidx.navigation.fragment.NavHostFragment;[m
+ import com.example.secondchance.databinding.ActivityMainBinding;[m
+ import com.example.secondchance.viewmodel.SharedViewModel;[m
+[32m+[m[32mimport com.example.secondchance.ui.home.HomeFragment;[m
+ import com.google.android.material.tabs.TabLayout;[m
+[32m+[m[32mimport androidx.fragment.app.Fragment;[m
+[32m+[m[32mimport androidx.fragment.app.FragmentManager;[m
+[32m+[m[32mimport androidx.fragment.app.FragmentTransaction;[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m
+ [m
+ public class MainActivity extends AppCompatActivity {[m
+   private ActivityMainBinding binding;[m
+[36m@@ -30,6 +38,42 @@[m [mpublic class MainActivity extends AppCompatActivity {[m
+     super.onCreate(savedInstanceState);[m
+     binding = ActivityMainBinding.inflate(getLayoutInflater());[m
+     setContentView(binding.getRoot());[m
+[32m+[m[32m    Log.d("MainActivityDebug", "MainActivity onCreate called");[m
+[32m+[m
+[32m+[m[32m//     Lấy NavController từ NavHostFragment[m
+[32m+[m[32m//    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()[m
+[32m+[m[32m//            .findFragmentById(R.id.fragment_container);[m
+[32m+[m[32m//    if (navHostFragment != null) {[m
+[32m+[m[32m//      navController = navHostFragment.getNavController();[m
+[32m+[m[32m//    }[m
+[32m+[m
+[32m+[m[32m    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {[m
+[32m+[m[32m      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);[m
+[32m+[m[32m      navController.navigate(R.id.navigation_home);[m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m    // Setup bottom navigation[m
+[32m+[m[32m//    binding.menu.navHome.setOnClickListener(v -> {[m
+[32m+[m[32m//      if (navController != null) {[m
+[32m+[m[32m//        navController.navigate(R.id.navigation_home);[m
+[32m+[m[32m//      }[m
+[32m+[m[32m//    });[m
+[32m+[m[32m//[m
+[32m+[m[32m//    binding.menu.navAi.setOnClickListener(v ->[m
+[32m+[m[32m//            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()[m
+[32m+[m[32m//    );[m
+[32m+[m[32m//[m
+[32m+[m[32m//    binding.menu.navNegotiate.setOnClickListener(v ->[m
+[32m+[m[32m//            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()[m
+[32m+[m[32m//    );[m
+[32m+[m[32m//[m
+[32m+[m[32m//    binding.menu.navMe.setOnClickListener(v -> {[m
+[32m+[m[32m//      if (navController != null) {[m
+[32m+[m[32m//        navController.navigate(R.id.navigation_profile);[m
+[32m+[m[32m//      }[m
+[32m+[m[32m//    });[m
+ [m
+     // Khởi tạo SharedViewModel[m
+     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);[m
+[36m@@ -100,13 +144,13 @@[m [mpublic class MainActivity extends AppCompatActivity {[m
+       iconBack.setVisibility(View.VISIBLE);[m
+       tvTitle.setVisibility(View.VISIBLE);[m
+       Log.d("MainActivity", "Header: Show Back/Title");[m
+[31m-      [m
+[32m+[m
+       // Back mặc định[m
+       wireBackIcon(iconBack);[m
+ //      iconBack.setOnClickListener(v -> {[m
+ //        if (!navController.popBackStack()) navController.navigateUp();[m
+ //      });[m
+[31m-      [m
+[32m+[m
+       // Tiêu đề[m
+       if (destinationId == R.id.navigation_order) {[m
+         String t = sharedViewModel.getCurrentTitle().getValue();[m
+[36m@@ -124,7 +168,7 @@[m [mpublic class MainActivity extends AppCompatActivity {[m
+       if (backBusy) return;[m
+       backBusy = true;[m
+       v.postDelayed(() -> backBusy = false, 400); // debounce 400ms[m
+[31m-      [m
+[32m+[m
+       try {[m
+         if (!navController.popBackStack()) navController.navigateUp();[m
+       } catch (Exception e) {[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailCardFragment.java b/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailCardFragment.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..ec7c86d[m
+[1m--- /dev/null[m
+[1m+++ b/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailCardFragment.java[m
+[36m@@ -0,0 +1,44 @@[m
+[32m+[m[32mpackage com.example.secondchance.ui.auction;[m
+[32m+[m
+[32m+[m[32mimport android.os.Bundle;[m
+[32m+[m[32mimport android.view.LayoutInflater;[m
+[32m+[m[32mimport android.view.View;[m
+[32m+[m[32mimport android.view.ViewGroup;[m
+[32m+[m[32mimport androidx.annotation.NonNull;[m
+[32m+[m[32mimport androidx.annotation.Nullable;[m
+[32m+[m[32mimport androidx.databinding.DataBindingUtil; // QUAN TRỌNG: Dùng cái này[m
+[32m+[m[32mimport androidx.fragment.app.Fragment;[m
+[32m+[m[32mimport com.example.secondchance.R; // Đảm bảo bạn import R[m
+[32m+[m
+[32m+[m[32m// 1. Import class Binding của bạn (từ tên file item_auction_goingon_card.xml)[m
+[32m+[m[32mimport com.example.secondchance.databinding.ItemAuctionGoingonCardBinding;[m
+[32m+[m
+[32m+[m[32mpublic class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI[m
+[32m+[m
+[32m+[m[32m    private ItemAuctionGoingonCardBinding binding;[m
+[32m+[m
+[32m+[m[32m    @Nullable[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public View onCreateView(@NonNull LayoutInflater inflater,[m
+[32m+[m[32m                             @Nullable ViewGroup container,[m
+[32m+[m[32m                             @Nullable Bundle savedInstanceState) {[m
+[32m+[m
+[32m+[m[32m        // 3. Dùng DataBindingUtil.inflate vì file XML của bạn có thẻ <layout>[m
+[32m+[m[32m        binding = DataBindingUtil.inflate(inflater, R.layout.item_auction_goingon_card, container, false);[m
+[32m+[m
+[32m+[m[32m        // 4. (Tùy chọn) Gán dữ liệu (DataBinding)[m
+[32m+[m[32m        // Ví dụ: Lấy ID sản phẩm từ argument, gọi ViewModel, rồi gán[m
+[32m+[m[32m        // AuctionGoingOn data = viewModel.getAuctionDetails(auctionId);[m
+[32m+[m[32m        // binding.setRequest(data);[m
+[32m+[m[32m        // binding.setHasReply(false);[m
+[32m+[m
+[32m+[m[32m        // 5. Trả về root của layout đã binding[m
+[32m+[m[32m        return binding.getRoot();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void onDestroyView() {[m
+[32m+[m[32m        super.onDestroyView();[m
+[32m+[m[32m        binding = null; // Tránh memory leak[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailFragment.java b/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailFragment.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..8afc659[m
+[1m--- /dev/null[m
+[1m+++ b/app/src/main/java/com/example/secondchance/ui/auction/AuctionDetailFragment.java[m
+[36m@@ -0,0 +1,22 @@[m
+[32m+[m[32mpackage com.example.secondchance.ui.auction;[m
+[32m+[m
+[32m+[m[32mimport android.os.Bundle;[m
+[32m+[m[32mimport android.view.LayoutInflater;[m
+[32m+[m[32mimport android.view.View;[m
+[32m+[m[32mimport android.view.ViewGroup;[m
+[32m+[m
+[32m+[m[32mimport androidx.annotation.NonNull;[m
+[32m+[m[32mimport androidx.annotation.Nullable;[m
+[32m+[m[32mimport androidx.fragment.app.Fragment;[m
+[32m+[m
+[32m+[m[32mimport com.example.secondchance.R;[m
+[32m+[m
+[32m+[m[32mpublic class AuctionDetailFragment extends Fragment {[m
+[32m+[m[32m    @Nullable[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public View onCreateView(@NonNull LayoutInflater inflater,[m
+[32m+[m[32m                             @Nullable ViewGroup container,[m
+[32m+[m[32m                             @Nullable Bundle savedInstanceState) {[m
+[32m+[m[32m        return inflater.inflate(R.layout.fragment_auction_detail, container, false);[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/ui/auction/AuctionFragment.java b/app/src/main/java/com/example/secondchance/ui/auction/AuctionFragment.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..aabdb66[m
+[1m--- /dev/null[m
+[1m+++ b/app/src/main/java/com/example/secondchance/ui/auction/AuctionFragment.java[m
+[36m@@ -0,0 +1,45 @@[m
+[32m+[m[32mpackage com.example.secondchance.ui.auction;[m
+[32m+[m
+[32m+[m[32mimport android.os.Bundle;[m
+[32m+[m[32mimport android.view.LayoutInflater;[m
+[32m+[m[32mimport android.view.View;[m
+[32m+[m[32mimport android.view.ViewGroup;[m
+[32m+[m
+[32m+[m[32mimport androidx.annotation.NonNull;[m
+[32m+[m[32mimport androidx.annotation.Nullable;[m
+[32m+[m[32mimport androidx.fragment.app.Fragment;[m
+[32m+[m
+[32m+[m[32mimport com.example.secondchance.databinding.FragmentAuctionBinding;[m
+[32m+[m
+[32m+[m[32mpublic class AuctionFragment extends Fragment {[m
+[32m+[m
+[32m+[m[32m    private FragmentAuctionBinding binding;[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,[m
+[32m+[m[32m                             Bundle savedInstanceState) {[m
+[32m+[m[32m        binding = FragmentAuctionBinding.inflate(inflater, container, false);[m
+[32m+[m[32m        return binding.getRoot();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {[m
+[32m+[m[32m        super.onViewCreated(view, savedInstanceState);[m
+[32m+[m
+[32m+[m[32m        // Có thể thêm logic load dữ liệu, filter, refresh...[m
+[32m+[m[32m        // Ví dụ: load danh sách đấu giá từ API[m
+[32m+[m[32m        loadAuctionData();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    private void loadAuctionData() {[m
+[32m+[m[32m        // Gọi API hoặc load từ local[m
+[32m+[m[32m        // Sau khi có dữ liệu → truyền vào AuctionGoingOnFragment[m
+[32m+[m[32m        // (nếu cần, dùng ChildFragmentManager)[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void onDestroyView() {[m
+[32m+[m[32m        super.onDestroyView();[m
+[32m+[m[32m        binding = null;[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOn.java b/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOn.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..336d210[m
+[1m--- /dev/null[m
+[1m+++ b/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOn.java[m
+[36m@@ -0,0 +1,35 @@[m
+[32m+[m[32m// ui/auction/AuctionGoingOn.java[m
+[32m+[m[32mpackage com.example.secondchance.ui.auction;[m
+[32m+[m
+[32m+[m[32mimport java.util.Date;[m
+[32m+[m
+[32m+[m[32mpublic class AuctionGoingOn {[m
+[32m+[m[32m    private String productName;[m
+[32m+[m[32m    private String currentPrice;[m
+[32m+[m[32m    private int quantity;[m
+[32m+[m[32m    private String imageUrl; // hoặc int nếu dùng drawable[m
+[32m+[m[32m    private long endTimeMillis; // thời gian kết thúc (milliseconds)[m
+[32m+[m
+[32m+[m[32m    // Constructor[m
+[32m+[m[32m    public AuctionGoingOn(String productName, String currentPrice, int quantity, String imageUrl, long endTimeMillis) {[m
+[32m+[m[32m        this.productName = productName;[m
+[32m+[m[32m        this.currentPrice = currentPrice;[m
+[32m+[m[32m        this.quantity = quantity;[m
+[32m+[m[32m        this.imageUrl = imageUrl;[m
+[32m+[m[32m        this.endTimeMillis = endTimeMillis;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    // Getters[m
+[32m+[m[32m    public String getProductName() { return productName; }[m
+[32m+[m[32m    public String getCurrentPrice() { return currentPrice; }[m
+[32m+[m[32m    public int getQuantity() { return quantity; }[m
+[32m+[m[32m    public String getImageUrl() { return imageUrl; }[m
+[32m+[m[32m    public long getEndTimeMillis() { return endTimeMillis; }[m
+[32m+[m
+[32m+[m[32m    // Setters (nếu cần)[m
+[32m+[m[32m    public void setProductName(String productName) { this.productName = productName; }[m
+[32m+[m[32m    public void setCurrentPrice(String currentPrice) { this.currentPrice = currentPrice; }[m
+[32m+[m[32m    public void setQuantity(int quantity) { this.quantity = quantity; }[m
+[32m+[m[32m    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }[m
+[32m+[m[32m    public void setEndTimeMillis(long endTimeMillis) { this.endTimeMillis = endTimeMillis; }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOnAdapter.java b/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOnAdapter.java[m
+[1mnew file mode 100644[m
+[1mindex 0000000..65765af[m
+[1m--- /dev/null[m
+[1m+++ b/app/src/main/java/com/example/secondchance/ui/auction/AuctionGoingOnAdapter.java[m
+[36m@@ -0,0 +1,165 @@[m
+[32m+[m[32m// ui/auction/AuctionGoingOnAdapter.java[m
+[32m+[m[32mpackage com.example.secondchance.ui.auction;[m
+[32m+[m
+[32m+[m[32mimport android.os.Bundle;[m
+[32m+[m[32mimport android.os.CountDownTimer;[m
+[32m+[m[32mimport android.view.LayoutInflater;[m
+[32m+[m[32mimport android.view.View;[m
+[32m+[m[32mimport android.view.ViewGroup;[m
+[32m+[m[32mimport android.widget.ImageView;[m
+[32m+[m[32mimport android.widget.TextView;[m
+[32m+[m
+[32m+[m[32mimport androidx.annotation.NonNull;[m
+[32m+[m[32mimport androidx.navigation.Navigation;[m
+[32m+[m[32mimport androidx.recyclerview.widget.RecyclerView;[m
+[32m+[m
+[32m+[m[32mimport com.bumptech.glide.Glide;[m
+[32m+[m[32mimport com.example.secondchance.R;[m
+[32m+[m[32mimport com.example.secondchance.databinding.ItemAuctionGoingonCardBinding;[m
+[32m+[m[32mimport com.example.secondchance.ui.card.ProductCard;[m
+[32m+[m
+[32m+[m[32mimport java.text.DecimalFormat;[m
+[32m+[m[32mimport java.util.List;[m
+[32m+[m[32mimport java.util.concurrent.TimeUnit;[m
+[32m+[m
+[32m+[m[32mpublic class AuctionGoingOnAdapter extends RecyclerView.Adapter<AuctionGoingOnAdapter.AuctionViewHolder> {[m
+[32m+[m
+[32m+[m[32m    private List<AuctionGoingOn> auctionList;[m
+[32m+[m
+[32m+[m[32m    public AuctionGoingOnAdapter(List<AuctionGoingOn> auctionList) {[m
+[32m+[m[32m        this.auctionList = auctionList;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @NonNull[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public AuctionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {[m
+[32m+[m[32m        ItemAuctionGoingonCardBinding binding = ItemAuctionGoingonCardBinding.inflate([m
+[32m+[m[32m                LayoutInflater.from(parent.getContext()), parent, false);[m
+[32m+[m[32m        return new AuctionViewHolder(binding);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public void onBindViewHolder(@NonNull AuctionViewHolder holder, int position) {[m
+[32m+[m[32m        AuctionGoingOn item = auctionList.get(position);[m
+[32m+[m[32m        holder.bind(item);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    @Override[m
+[32m+[m[32m    public int getItemCount() {[m
+[32m+[m[32m        return auctionList != null ? auctionList.size() : 0;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    static class AuctionViewHolder extends RecyclerView.ViewHolder {[m
+[32m+[m[32m        private final ItemAuctionGoingonCardBinding binding;[m
+[32m+[m[32m        private CountDownTimer countDownTimer;[m
+[32m+[m
+[32m+[m[32m        public AuctionViewHolder(ItemAuctionGoingonCardBinding binding) {[m
+[32m+[m[32m            super(binding.getRoot());[m
+[32m+[m[32m            this.binding = binding;[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        // ... bên trong class AuctionViewHolder ...[m
+[32m+[m
+[32m+[m[32m        public void bind(AuctionGoingOn auction) {[m
+[32m+[m[32m            // Bind dữ liệu[m
+[32m+[m[32m            binding.productName.setText(auction.getProductName());[m
+[32m+[m[32m            binding.currentPrice.setText(auction.getCurrentPrice());[m
+[32m+[m
+[32m+[m[32m            // SỬA LẠI: Truy cập trực tiếp qua Data Binding[m
+[32m+[m[32m            // Bỏ hết 2 dòng findViewById(android.R.id...) gây crash[m
+[32m+[m[32m            binding.quantityText.setText("x" + auction.getQuantity());[m
+[32m+[m
+[32m+[m[32m            // Load ảnh (dùng Glide hoặc Picasso)[m
+[32m+[m[32m            Glide.with(binding.getRoot().getContext())[m
+[32m+[m[32m                    .load(auction.getImageUrl())[m
+[32m+[m[32m                    .placeholder(com.example.secondchance.R.drawable.nhan1)[m
+[32m+[m[32m                    .into(binding.auctionImage);[m
+[32m+[m
+[32m+[m[32m            binding.getRoot().setOnClickListener(v -> {[m
+[32m+[m[32m                // 1. Tạo đối tượng ProductCard (Code này của bạn đã đúng)[m
+[32m+[m[32m                ProductCard productToPass = new ProductCard();[m
+[32m+[m[32m                productToPass.setTitle(auction.getProductName());[m
+[32m+[m[32m                productToPass.setPrice(auction.getCurrentPrice());[m
+[32m+[m[32m                productToPass.setQuantity(auction.getQuantity());[m
+[32m+[m[32m                productToPass.setProductType(ProductCard.ProductType.AUCTION);[m
+[32m+[m[32m                // productToPass.setImageRes(...); // (Nếu bạn cần)[m
+[32m+[m
+[32m+[m[32m                // === 2. THÊM PHẦN TÍNH TOÁN VÀ SET THỜI GIAN ===[m
+[32m+[m[32m                long millisLeft = auction.getEndTimeMillis() - System.currentTimeMillis();[m
+[32m+[m[32m                String timeString;[m
+[32m+[m[32m                if (millisLeft > 0) {[m
+[32m+[m[32m                    long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(millisLeft);[m
+[32m+[m[32m                    long minutes = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(millisLeft) % 60;[m
+[32m+[m[32m                    long seconds = java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(millisLeft) % 60;[m
+[32m+[m
+[32m+[m[32m                    // Tạo chuỗi, ví dụ: "02:39:12"[m
+[32m+[m[32m                    timeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);[m
+[32m+[m[32m       
