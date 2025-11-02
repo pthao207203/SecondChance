@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
 import android.widget.LinearLayout;
 
+
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 
@@ -185,9 +186,9 @@ public class ProfileFragment extends Fragment {
         }
 
         // Become Seller
-        view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Trở thành người bán", Toast.LENGTH_SHORT).show()
-        );
+        view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v -> {
+            navController.navigate(R.id.action_profile_to_rule_seller);
+        });
     }
 
     public void updateBadgeCounts(int pendingCount, int shippingCount) {

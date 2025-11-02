@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whiteDay"
+    android:fitsSystemWindows="true">
+
+    <!-- ====================== SCROLL CONTENT ====================== -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ==================== USER INFO ==================== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+
+                <!-- Email -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    >
+                    <TextView
+                        android:id="@+id/titleruleauction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="NGUYÊN TẮC TRỞ THÀNH NGƯỜI BÁN"
+                        android:gravity="center"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
+                    <TextView
+                        android:id="@+id/ruleauction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="1. Mục đích
+Quy định này được ban hành nhằm đảm bảo hoạt động đấu giá diễn ra minh bạch, công bằng, đúng pháp luật và bảo vệ quyền lợi của tất cả các bên tham gia.
+
+2. Đối tượng áp dụng
+Người tham gia đấu giá (sau đây gọi là “Người tham gia”).
+Ban tổ chức hoặc đơn vị tổ chức đấu giá (sau đây gọi là “Ban tổ chức”).
+Các bên có liên quan khác theo quy định.
+
+3. Nguyên tắc chung
+Tự nguyện tham gia, không ép buộc.
+Minh bạch, công bằng, công khai thông tin.
+Giá trả hợp lệ phải tuân thủ theo bước giá và thời gian quy định.
+Quyết định của Ban tổ chức là cuối cùng.
+
+4. Đăng ký tham gia
+Người tham gia cần cung cấp thông tin cá nhân/đơn vị chính xác.
+Người tham gia phải chấp nhận toàn bộ Quy định đấu giá trước khi tham gia.
+Một người tham gia có thể đăng ký nhiều sản phẩm (nếu Ban tổ chức cho phép).
+
+5. Hình thức đấu giá
+Hình thức: Đấu giá trực tiếp/đấu giá trực tuyến (tùy theo thông báo).
+Thời gian: Được công bố trước ít nhất … ngày.
+Bước giá: Mức tăng tối thiểu mỗi lần trả giá là … (VNĐ).
+Người trả giá cao nhất khi kết thúc thời gian đấu giá sẽ là người trúng đấu giá.
+
+6. Thanh toán và nhận tài sản
+Người trúng đấu giá phải thanh toán đủ số tiền trong vòng … ngày kể từ ngày công bố kết quả.
+Nếu không thanh toán đúng hạn, Ban tổ chức có quyền hủy kết quả và chuyển quyền mua cho người trả giá liền kề.
+Tài sản sẽ được bàn giao khi Người trúng đấu giá hoàn tất nghĩa vụ thanh toán.
+
+"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ==================== ACTION BUTTONS ==================== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    app:cardBackgroundColor="@color/lighterDay"
+                    android:layout_marginBottom="16dp"
+                    app:cardElevation="0dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_weight="1"
+                        android:text="Tôi đồng ý những quy tắc trên"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/normalDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="normal" />
+                    <ImageView
+                        android:id="@+id/checkbox"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_checkbox_unchecked"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="star" />
+
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnNext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/normalDay"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="@color/normalDay">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:gravity="center"
+                        android:text="TIẾP TỤC"
+                        android:textColor="@color/lighterDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
