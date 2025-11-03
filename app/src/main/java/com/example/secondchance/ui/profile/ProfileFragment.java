@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment {
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
         btnTest = view.findViewById(R.id.btn_test);
-
+        btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
     }
 
     private void observeViewModel() {
@@ -118,11 +118,10 @@ public class ProfileFragment extends Fragment {
         // Lấy NavController
         final NavController navController = Navigation.findNavController(view);
 
-        btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
+        //btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
 
         View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
 
-        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
         view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
         view.findViewById(R.id.tvName).setOnClickListener(editProfileClickListener);
 
@@ -195,6 +194,7 @@ public class ProfileFragment extends Fragment {
         }
 
         // Become Seller
+       // btnBecomeSeller.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_rule_seller));
         view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v -> {
             navController.navigate(R.id.action_profile_to_rule_seller);
         });
@@ -213,7 +213,7 @@ public class ProfileFragment extends Fragment {
             btnBecomeSeller.setOnClickListener(v -> {
                 // TODO: Implement become seller logic
                 Navigation.findNavController(v)
-                        .navigate(R.id.action_profile_to_productTab);
+                        .navigate(R.id.action_profile_to_rule_seller);
             });
         }
     }

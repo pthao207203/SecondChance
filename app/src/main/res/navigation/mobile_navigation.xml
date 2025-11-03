@@ -9,10 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
     <action
         android:id="@+id/action_homeFragment_to_negotiationFragment"
         app:destination="@id/navigation_negotiation" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_negotiation"
@@ -27,12 +28,10 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.secondchance.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
-        android:label="Trang chủ"
-        tools:layout="@layout/fragment_home" >
+        android:id="@+id/navigation_profile"
+        android:name="com.example.secondchance.ui.profile.ProfileFragment"
+        android:label="Hồ sơ"
+        tools:layout="@layout/fragment_profile">
 
         <action
         android:id="@+id/action_home_navigation_detail_product"
@@ -43,6 +42,30 @@
         <action
             android:id="@+id/action_homeFragment_to_negotiationFragment"
             app:destination="@id/navigation_negotiation" />
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_profile_to_editProfile"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profile_to_orderFragment"
+            app:destination="@id/navigation_order" />
+        <action
+            android:id="@+id/action_profile_to_productTab"
+            app:destination="@id/productTabFragment" />
+        <action
+            android:id="@+id/action_profile_to_rule_seller"
+            app:destination="@id/navigation_rule_seller" />
+    </fragment>
+    <fragment android:id="@+id/navigation_rule_seller"
+        android:name="com.example.secondchance.ui.profile.RuleSellerFragment"
+        android:label="Quy tắc người bán"
+        tools:layout="@layout/fragment_rule_seller">
+
+        <action
+            android:id="@+id/action_rule_seller_to_fill_info_seller"
+            app:destination="@id/fragment_fill_info_seller" />
     </fragment>
     <fragment
         android:id="@+id/navigation_detail_product"
@@ -59,11 +82,6 @@
         android:id="@+id/action_detail_product_to_negotiation"
         app:destination="@id/navigation_negotiation" />
     </fragment>
-    <fragment
-        android:id="@+id/navigation_negotiation"
-        android:name="com.example.secondchance.ui.negotiation.NegotiationFragment"
-        android:label="Thương lượng"
-        tools:layout="@layout/fragment_negotiation" />
 
     <fragment
         android:id="@+id/navigation_rule_auction"
@@ -81,36 +99,12 @@
         android:label="Chi tiết đấu giá"
         tools:layout="@layout/fragment_auction_detail" />
 
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.secondchance.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.secondchance.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
-
-    <fragment
-        android:id="@+id/navigation_profile"
-        android:name="com.example.secondchance.ui.profile.ProfileFragment"
-        android:label="Hồ sơ"
-        tools:layout="@layout/fragment_profile">
-        <action
-            android:id="@+id/action_profile_to_settings"
-            app:destination="@id/settingFragment" />
-        <action
-            android:id="@+id/action_profile_to_editProfile"
-            app:destination="@id/editProfileFragment" />
-        <action
-            android:id="@+id/action_profile_to_orderFragment"
-            app:destination="@id/navigation_order" />
-        <action
-            android:id="@+id/action_profile_to_productTab"
-            app:destination="@id/productTabFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/navigation_order"
@@ -729,16 +723,6 @@
         android:id="@+id/fragment_comment"
         android:name="com.example.secondchance.ui.comment.CommentFragment"
         android:label="Đánh giá" />
-
-    <fragment android:id="@+id/fragment_rule_seller"
-        android:name="com.example.secondchance.ui.profile.RuleSellerFragment"
-        android:label="Quy tắc người bán"
-        tools:layout="@layout/fragment_rule_seller">
-
-        <action
-            android:id="@+id/action_rule_seller_to_fill_info_seller"
-            app:destination="@id/fragment_fill_info_seller" />
-    </fragment>
 
         <!-- FillInfoSellerFragment – GIỮ NGUYÊN -->
     <fragment
