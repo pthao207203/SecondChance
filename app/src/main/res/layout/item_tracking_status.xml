@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <FrameLayout
+        android:id="@+id/dot_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentStart="true"> <ImageView
+        android:id="@+id/dotInactive"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:src="@drawable/ic_inactive_tracking" />
+
+        <ImageView
+            android:id="@+id/dotActive"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_active" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/dot_container"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7h00, 26/06/2025"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_13"/>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đã đến bưu cục Trần Thị ABC, của tỉnh TP.HCM"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"/>
+    </LinearLayout>
+
+</RelativeLayout>

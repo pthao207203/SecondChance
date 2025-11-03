@@ -1,14 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/whiteDay"
-    android:paddingTop="8dp"
-    >
+    android:paddingTop="8dp">
 
-    <!-- Hàng trên: Tìm kiếm + Icon -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_row"
         android:layout_width="match_parent"
@@ -19,7 +16,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Ô tìm kiếm -->
+        <ImageView
+            android:id="@+id/icon_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone" android:clickable="true" android:focusable="true" android:padding="4dp" app:tint="@color/darkerDay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_header_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tiêu đề"
+            android:textColor="#E56D2D"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:visibility="gone" android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/icon_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icon_cart"/>
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_container"
             style="@style/Widget.SecondChance.Card.Header"
@@ -28,8 +49,7 @@
             app:cardCornerRadius="8dp"
             android:backgroundTint="@color/lightDay"
             android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/icon_cart"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@id/icon_cart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -63,40 +83,43 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Icon giỏ hàng -->
         <ImageView
             android:id="@+id/icon_cart"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_cart"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             app:layout_constraintEnd_toStartOf="@id/icon_chat"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="8dp"/>
-
-        <!-- Icon chat -->
         <ImageView
             android:id="@+id/icon_chat"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/communication"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             app:layout_constraintEnd_toStartOf="@id/icon_notify"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="8dp"/>
-
-        <!-- Icon thông báo -->
         <ImageView
             android:id="@+id/icon_notify"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/communication__1_"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Hàng dưới: Đường kẻ mảnh -->
     <View
         android:id="@+id/bottom_line"
         android:layout_width="0dp"

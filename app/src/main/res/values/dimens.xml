@@ -15,4 +15,10 @@
     <dimen name="text_13">13sp</dimen>
     <dimen name="text_16">16sp</dimen>
     <dimen name="text_20">20sp</dimen>
+
+    <dimen name="padding_default">12dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="corner_medium">10dp</dimen>
+    <dimen name="product_image">64dp</dimen>
+
 </resources>
