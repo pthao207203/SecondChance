@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,11 +15,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.lifecycle.ViewModelProvider;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
 import com.example.secondchance.databinding.FragmentRefundOrderBinding;
-
+import com.example.secondchance.viewmodel.SharedViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class RefundFragment extends Fragment {
     private FragmentRefundOrderBinding binding;
     private RefundOrdersAdapter adapter;
     private final List<Order> dummyOrderList = new ArrayList<>();
-    
+    private SharedViewModel sharedViewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,12 +39,14 @@ public class RefundFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
         binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         
         loadDummyData();
-        
-        // Điều hướng trực tiếp từ fragment qua NavController (không gọi parent)
+
+        // Điều hướng trực tiếp từ fragment qua NavController
         adapter = new RefundOrdersAdapter(dummyOrderList, (orderId, refundStatus) -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
@@ -60,20 +62,38 @@ public class RefundFragment extends Fragment {
         });
         
         binding.rvDeliveringOrders.setAdapter(adapter);
+
+        observeViewModel();
     }
-    
+
+    private void observeViewModel() {
+        if (sharedViewModel == null) return;
+
+        sharedViewModel.getRefreshLists().observe(getViewLifecycleOwner(), shouldRefresh -> {
+            if (shouldRefresh != null && shouldRefresh) {
+
+                Log.d("RefundFragment", "Nhận lệnh refresh, tải lại dữ liệu...");
+
+                // Gọi lại hàm tải dữ liệu c
+                loadDummyData();
+
+                // Đánh dấu là đã xử lý xong
+                sharedViewModel.clearRefreshRequest();
+            }
+        });
+    }
     private void loadDummyData() {
         dummyOrderList.clear();
-        dummyOrderList.add(new Order("REFUND001", "Giỏ gỗ cắm hoa", "₫ 50.000", null, null,
+        dummyOrderList.add(new Order("REFUND001", "Giỏ gỗ cắm hoa", "50.000", null, null,
           "Đã giao 17/6/2025", "Chưa xác nhận", null, null, false,
           Order.RefundStatus.NOT_CONFIRMED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND002", "Tranh sơn mài", "₫ 250.000", null, null,
+        dummyOrderList.add(new Order("REFUND002", "Tranh sơn mài", "250.000", null, null,
           "Đã giao 19/6/2025", "Đã xác nhận", null, null, false,
           Order.RefundStatus.CONFIRMED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND003", "Bình gốm cổ", "₫ 150.000", null, null,
+        dummyOrderList.add(new Order("REFUND003", "Bình gốm cổ", "150.000", null, null,
           "Đã giao 18/6/2025", "Đã từ chối", null, null, false,
           Order.RefundStatus.REJECTED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND004", "Nhẫn kim cương", "₫ 500.000", null, null,
+        dummyOrderList.add(new Order("REFUND004", "Nhẫn kim cương", "500.000", null, null,
           "Đã giao 20/6/2025", "Hoàn trả thành công", null, null, false,
           Order.RefundStatus.SUCCESSFUL, Order.DeliveryOverallStatus.DELIVERED));
         
@@ -88,14 +108,13 @@ public class RefundFragment extends Fragment {
         super.onDestroyView();
     }
     
-    // ================= Adapter =================
+    // Adapter
     
-    /** Callback click item. */
+    //Callback click item
     private interface OnOrderClickListener {
         void onClick(String orderId, @Nullable Order.RefundStatus refundStatus);
     }
-    
-    /** Adapter hỗ trợ 4 view type theo RefundStatus. */
+
     private static class RefundOrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         
         private final List<Order> items;
@@ -147,8 +166,7 @@ public class RefundFragment extends Fragment {
         
         @Override
         public int getItemCount() { return items != null ? items.size() : 0; }
-        
-        /** ViewHolder dùng chung cho 4 layout (các id phải trùng giữa các item_*.xml). */
+
         private static class RefundViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;

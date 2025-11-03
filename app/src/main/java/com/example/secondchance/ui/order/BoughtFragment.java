@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -16,11 +16,11 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
-
+import androidx.lifecycle.ViewModelProvider;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
 import com.example.secondchance.databinding.FragmentBoughtOrderBinding;
-
+import com.example.secondchance.viewmodel.SharedViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,8 @@ public class BoughtFragment extends Fragment {
     private FragmentBoughtOrderBinding binding;
     private BoughtOrdersAdapter adapter;
     private final List<Order> dummyOrderList = new ArrayList<>();
-    
+    private SharedViewModel sharedViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,7 +41,8 @@ public class BoughtFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         // RecyclerView
         binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         
@@ -63,21 +65,33 @@ public class BoughtFragment extends Fragment {
         });
         
         binding.rvDeliveringOrders.setAdapter(adapter);
+        observeViewModel();
     }
-    
+    private void observeViewModel() {
+        if (sharedViewModel == null) return;
+
+        sharedViewModel.getRefreshLists().observe(getViewLifecycleOwner(), shouldRefresh -> {
+            if (shouldRefresh != null && shouldRefresh) {
+
+                Log.d("BoughtFragment", "Nhận lệnh refresh, tải lại dữ liệu...");
+
+                loadDummyData();
+
+                sharedViewModel.clearRefreshRequest();
+            }
+        });
+    }
     private void loadDummyData() {
         dummyOrderList.clear();
-        // Chú ý: đảm bảo constructor Order phù hợp với app bạn.
-        dummyOrderList.add(new Order("BOUGHT001", "Giỏ gỗ cắm hoa", "₫ 50.000", "x1", null, "Đã giao 17/6/2025", "Chưa đánh giá", null, null, false, null, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("BOUGHT002", "Tranh sơn mài", "₫ 250.000", "x1", null, "Đã giao 19/6/2025", "Đã đánh giá", null, null, true,  null, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("BOUGHT003", "Bình gốm cổ", "₫ 150.000", "x1", null, "Đã giao 18/6/2025", "Chưa đánh giá", null, null, false, null, Order.DeliveryOverallStatus.DELIVERED));
+        dummyOrderList.add(new Order("BOUGHT001", "Giỏ gỗ cắm hoa", "50.000", "x1", null, "Đã giao 17/6/2025", "Chưa đánh giá", null, null, false, null, Order.DeliveryOverallStatus.DELIVERED));
+        dummyOrderList.add(new Order("BOUGHT002", "Tranh sơn mài", "250.000", "x1", null, "Đã giao 19/6/2025", "Đã đánh giá", null, null, true,  null, Order.DeliveryOverallStatus.DELIVERED));
+        dummyOrderList.add(new Order("BOUGHT003", "Bình gốm cổ", "150.000", "x1", null, "Đã giao 18/6/2025", "Chưa đánh giá", null, null, false, null, Order.DeliveryOverallStatus.DELIVERED));
         
         if (adapter != null) adapter.notifyDataSetChanged();
     }
     
     @Override
     public void onDestroyView() {
-        // Dọn rác vòng đời để tránh leak/rebind sai
         if (binding != null) {
             binding.rvDeliveringOrders.setAdapter(null);
         }
@@ -86,14 +100,12 @@ public class BoughtFragment extends Fragment {
         super.onDestroyView();
     }
     
-    // ======================= Adapter =======================
-    
-    /** Interface click cho item. */
+    // Adapter
+
     private interface OnOrderClickListener {
         void onOrderClick(String orderId, boolean isEvaluated);
     }
-    
-    /** Adapter hỗ trợ 2 viewType: đã đánh giá / chưa đánh giá. */
+
     private static class BoughtOrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         
         private final List<Order> items;
@@ -141,7 +153,7 @@ public class BoughtFragment extends Fragment {
             return items != null ? items.size() : 0;
         }
         
-        // ---------- ViewHolder: Chưa đánh giá ----------
+        //  ViewHolder: Chưa đánh giá
         private static class NotEvaluatedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;
@@ -171,7 +183,7 @@ public class BoughtFragment extends Fragment {
             }
         }
         
-        // ---------- ViewHolder: Đã đánh giá ----------
+        //  ViewHolder: Đã đánh giá
         private static class EvaluatedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;

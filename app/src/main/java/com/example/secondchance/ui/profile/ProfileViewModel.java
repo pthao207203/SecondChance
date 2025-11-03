@@ -1,7 +1,6 @@
 package com.example.secondchance.ui.profile;
 
 import android.net.Uri;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -18,7 +17,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<String> emailLiveData = new MutableLiveData<>();
 
 
-    // ==================== PROFILE INFO ====================
+    // PROFILE INFO
     public LiveData<String> getName() {
         return nameLiveData;
     }
@@ -52,7 +51,7 @@ public class ProfileViewModel extends ViewModel {
     }
 
 
-    // ==================== ADDRESS METHODS ====================
+    //ADDRESS METHODS
 
     public LiveData<List<AddressItem>> getAddressList() {
         return addressListLiveData;
@@ -116,7 +115,7 @@ public class ProfileViewModel extends ViewModel {
         return currentList.isEmpty() ? null : currentList.get(0);
     }
 
-    // ==================== PAYMENT METHOD METHODS ====================
+    // PAYMENT METHOD METHODS
 
     public LiveData<List<PaymentMethodItem>> getPaymentMethodList() {
         return paymentMethodListLiveData;

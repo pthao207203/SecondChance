@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="7h00, 26/06/2025"
             android:textColor="@color/darkerDay"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_13"/>
 
         <TextView
             android:id="@+id/tvStatus"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Đã đến bưu cục Trần Thị ABC, của tỉnh TP.HCM"
             android:textColor="@color/darkerDay"
-            android:textSize="14sp"/>
+            android:textSize="@dimen/text_16"/>
     </LinearLayout>
 
 </RelativeLayout>

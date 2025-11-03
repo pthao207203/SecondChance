@@ -1,4 +1,4 @@
-package com.example.secondchance.ui.home;
+package com.example.secondchance.ui.home; // Hoặc package tương ứng của bạn
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.secondchance.R;
 import com.example.secondchance.ui.card.ProductCard;
+import com.google.android.material.card.MaterialCardView; // 👈 THÊM IMPORT NÀY
 
 public class HomeFragment extends Fragment {
 
@@ -64,6 +65,29 @@ public class HomeFragment extends Fragment {
                 bundle
         );
       });
+    }
+
+    // 1. Tìm MaterialCardView "Thương lượng" bằng ID bạn đã thêm ở Bước 3.1
+    MaterialCardView cardNegotiation = view.findViewById(R.id.card_negotiation);
+
+    // 2. Gán sự kiện click cho nó
+    if (cardNegotiation != null) {
+      cardNegotiation.setOnClickListener(v -> {
+        try {
+          // 3. Tìm NavController từ View
+          NavController navController = Navigation.findNavController(v);
+
+          // 4. Điều hướng bằng Action đã định nghĩa ở Bước 3.3
+          navController.navigate(R.id.action_homeFragment_to_negotiationFragment);
+
+        } catch (Exception e) {
+          // In lỗi nếu không thể điều hướng (ví dụ: action sai tên)
+          Log.e("HomeFragment", "Lỗi điều hướng: ", e);
+        }
+      });
+    } else {
+      // Cảnh báo nếu không tìm thấy ID
+      Log.w("HomeFragment", "Không tìm thấy View với ID: card_negotiation");
     }
   }
 }

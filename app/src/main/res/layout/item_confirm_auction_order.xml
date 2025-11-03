@@ -4,23 +4,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    android:layout_marginBottom="12dp"
-    android:background="#FFFFFF">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    android:layout_marginBottom="10dp"
+    android:background="@color/grayDay">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="#F5F5F5">
+        android:padding="8dp"
+        android:background="@color/grayDay">
 
         <ImageView
             android:id="@+id/imgProduct"
-            android:layout_width="113dp"
-            android:layout_height="109dp"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
             android:scaleType="centerCrop"
             android:src="@drawable/sample_flower" />
+
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="500.000"
+            android:textSize="@dimen/text_20"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:id="@+id/tvđ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="đ"
+            android:textSize="@dimen/text_20"
+            android:layout_marginEnd="5dp"
+            android:textStyle="bold"
+            android:textColor="@color/normalDay"
+            android:layout_toStartOf="@id/tvPrice" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -28,21 +49,12 @@
             android:layout_height="wrap_content"
             android:text="Giỏ gỗ cắm hoa"
             android:textStyle="bold"
-            android:textColor="#222222"
-            android:textSize="15sp"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"
             android:layout_toEndOf="@id/imgProduct"
-            android:layout_marginStart="12dp"
-            android:layout_toStartOf="@+id/tvPrice"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:id="@+id/tvPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="₫ 50.000"
-            android:textStyle="bold"
-            android:textColor="#D26E2D"
-            android:layout_alignParentEnd="true"/>
+            android:layout_marginStart="8dp"
+            android:layout_toStartOf="@id/tvđ"
+            android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/tvQuantity"
@@ -53,8 +65,8 @@
             android:layout_marginTop="19dp"
             android:layout_marginEnd="10dp"
             android:text="x1"
-            android:textColor="#222222"
-            android:textSize="14sp"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold" />
 
         <TextView
@@ -62,23 +74,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đấu giá"
-            android:textColor="#666666"
-            android:textSize="12sp"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_13"
             android:layout_below="@id/tvTitle"
             android:layout_toEndOf="@id/imgProduct"
-            android:layout_marginStart="12dp"/>
+            android:layout_marginStart="8dp"/>
 
         <TextView
             android:id="@+id/tvSubtitleDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSubtitleFixed"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/imgProduct"
             android:text="Đã tạo ngày: 17/06/2025"
-            android:textColor="#666666"
-            android:textSize="12sp" />
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_13" />
 
         <TextView
             android:id="@+id/tvStatus"
@@ -86,24 +98,25 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSubtitleDate"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="7dp"
+            android:layout_marginTop="8dp"
             android:text="Đã xác nhận"
-            android:textColor="#D26E2D"
-            android:textSize="12sp" />
+            android:textColor="@color/normalDay"
+            android:textSize="@dimen/text_13"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvAuctionInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSubtitleDate"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="7dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_toEndOf="@id/imgProduct"
             android:layout_toStartOf="@id/tvStatus"
             android:text="Đơn đấu giá không thể hủy"
-            android:textColor="#666666"
-            android:textSize="12sp" />
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_13" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
