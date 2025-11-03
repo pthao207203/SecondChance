@@ -137,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/light_blue_bg"
+                app:cardBackgroundColor="@color/highlight4blur"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -151,7 +151,6 @@
                         android:layout_height="wrap_content"
                         android:text="Bạn đã hoàn trả đơn hàng, số tiền đã thanh toán sẽ được hoàn lại ví"
                         android:textColor="@color/darkerDay"
-                        android:textStyle="bold"
                         android:layout_marginTop="0dp"
                         android:layout_marginBottom="8dp"/>
                 </LinearLayout>

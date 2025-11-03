@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,11 +13,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
 import com.example.secondchance.databinding.FragmentDeliveringBinding;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +40,7 @@ public class DeliveringFragment extends Fragment {
         
         loadDummyData();
         
-        // Điều hướng trực tiếp bằng NavController (không phụ thuộc parent)
+        // Điều hướng trực tiếp bằng NavController
         adapter = new DeliveringAdapter(orderList, (orderId, deliveryStatus) -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
@@ -71,20 +68,20 @@ public class DeliveringFragment extends Fragment {
     
     private void loadDummyData() {
         orderList.clear();
-        orderList.add(new Order("DELIV001", "Nhẫn kim cương hữu hạn", "₫ 50.000", "x1",
+        orderList.add(new Order("DELIV001", "Nhẫn kim cương hữu hạn", "50.000", "x1",
           "Giá cố định", "17/06/2025", "Đã đến bưu cục...", "Giỏ hoa loại 1 new 99%...",
           null, false, null, Order.DeliveryOverallStatus.AT_POST_OFFICE));
-        orderList.add(new Order("DELIV002", "Vòng tay vàng 24K", "₫ 150.000", "x2",
+        orderList.add(new Order("DELIV002", "Vòng tay vàng 24K", "150.000", "x2",
           "Giá cố định", "17/06/2025", "Đang trên đường giao...", "Giỏ hoa loại 1 new 99%...",
           null, false, null, Order.DeliveryOverallStatus.DELIVERING));
-        orderList.add(new Order("DELIV003", "Bông tai ngọc trai", "₫ 75.000", "x1",
+        orderList.add(new Order("DELIV003", "Bông tai ngọc trai", "75.000", "x1",
           "Giá cố định", "17/06/2025", "Đã đến bưu cục...", "Giỏ hoa loại 1 new 99%...",
           null, false, null, Order.DeliveryOverallStatus.AT_POST_OFFICE));
         
         if (adapter != null) adapter.notifyDataSetChanged();
     }
     
-    // ================= Adapter =================
+    // Adapter
     
     private interface OnOrderClick {
         void openDetail(String orderId, @Nullable Order.DeliveryOverallStatus deliveryStatus);

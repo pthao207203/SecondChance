@@ -137,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/light_blue_bg"
+                app:cardBackgroundColor="@color/highlight4blur"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
@@ -171,7 +171,7 @@
                         android:textColor="@color/orange_primary"
                         app:strokeColor="@color/orange_primary"
                         app:cornerRadius="8dp"
-                        android:backgroundTint="@android:color/transparent" />
+                        android:backgroundTint="@color/lightDay" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

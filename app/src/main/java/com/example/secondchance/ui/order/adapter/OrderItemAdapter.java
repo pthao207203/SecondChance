@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.OrderItem;
-
 import java.util.List;
 
 public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.OrderItemViewHolder> {
-
     private Context context;
     private List<OrderItem> itemList;
-
     public OrderItemAdapter(Context context, List<OrderItem> itemList) {
         this.context = context;
         this.itemList = itemList;
@@ -27,7 +24,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
     @NonNull
     @Override
     public OrderItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Nạp layout item_order_detail_product.xml
         View view = LayoutInflater.from(context).inflate(R.layout.item_detail_order, parent, false);
         return new OrderItemViewHolder(view);
     }
@@ -37,7 +33,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
         OrderItem item = itemList.get(position);
         holder.bind(item);
     }
-
     @Override
     public int getItemCount() {
         return itemList == null ? 0 : itemList.size();
@@ -50,14 +45,13 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         public OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Ánh xạ View từ item_order_detail_product.xml
             ivProduct = itemView.findViewById(R.id.ivProduct);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDesc = itemView.findViewById(R.id.tvDesc);
             tvPrice = itemView.findViewById(R.id.tvPrice);
         }
 
-        // Hàm gán dữ liệu
+        // gán dữ liệu
         void bind(OrderItem item) {
             tvTitle.setText(item.getTitle());
             tvDesc.setText(item.getDescription());

@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="TabLayout">
+        <attr name="tabSelectedBackground" format="reference" />
+    </declare-styleable>
+</resources>

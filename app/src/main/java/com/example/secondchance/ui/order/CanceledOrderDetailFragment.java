@@ -21,7 +21,6 @@ public class CanceledOrderDetailFragment extends Fragment {
     private static final String TAG = "CanceledDetailFrag";
     private FragmentCanceledOrderDetailBinding binding;
     private String receivedOrderId;
-    // Adapter cho danh sách sản phẩm
     private OrderItemAdapter productAdapter;
     private List<OrderItem> productList = new ArrayList<>();
 
@@ -77,7 +76,7 @@ public class CanceledOrderDetailFragment extends Fragment {
     private void loadCanceledOrderDetails(String orderId) {
         Log.d(TAG, "Placeholder: Load canceled order details for " + orderId);
         // TODO: Gọi API/Database lấy thông tin chi tiết đơn hàng ĐÃ HỦY
-        // Cập nhật danh sách sản phẩm
+
         loadDummyProductData();
         if (productAdapter != null) {
             productAdapter.notifyDataSetChanged();
@@ -90,7 +89,7 @@ public class CanceledOrderDetailFragment extends Fragment {
     // load sản phẩm giả
     private void loadDummyProductData() {
         productList.clear();
-        productList.add(new OrderItem(R.drawable.nhan1, "Sản phẩm đã hủy 1", "Mô tả...", "₫ 10.000"));
+        productList.add(new OrderItem(R.drawable.nhan1, "Sản phẩm đã hủy 1", "Mô tả...", "10.000"));
     }
 
 

@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat; // Import để lấy màu
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.secondchance.R;
-import com.example.secondchance.data.model.TrackingStatus; // Import lớp TrackingStatus
+import com.example.secondchance.data.model.TrackingStatus;
 
 import java.util.List;
 
@@ -19,13 +18,10 @@ public class TrackingStatusAdapter extends RecyclerView.Adapter<TrackingStatusAd
 
     private Context context;
     private List<TrackingStatus> statusList;
-
     public TrackingStatusAdapter(Context context, List<TrackingStatus> statusList) {
         this.context = context;
         this.statusList = statusList;
     }
-
-
 
     @NonNull
     @Override
@@ -60,19 +56,15 @@ public class TrackingStatusAdapter extends RecyclerView.Adapter<TrackingStatusAd
         void bind(TrackingStatus status) {
             tvTimestamp.setText(status.getTimestamp());
             tvStatus.setText(status.getStatusDescription());
-
-            // Hiển thị đúng dấu chấm và màu chữ
             if (status.isActive()) {
                 dotActive.setVisibility(View.VISIBLE);
                 dotInactive.setVisibility(View.GONE);
-                // Lấy màu highLight5 từ resources
                 int activeColor = ContextCompat.getColor(context, R.color.highLight5);
                 tvTimestamp.setTextColor(activeColor);
                 tvStatus.setTextColor(activeColor);
             } else {
                 dotActive.setVisibility(View.GONE);
                 dotInactive.setVisibility(View.VISIBLE);
-                // Lấy màu text_secondary hoặc màu xám nào đó
                 int inactiveColor = ContextCompat.getColor(context, R.color.text_secondary);
                 tvTimestamp.setTextColor(inactiveColor);
                 tvStatus.setTextColor(inactiveColor);

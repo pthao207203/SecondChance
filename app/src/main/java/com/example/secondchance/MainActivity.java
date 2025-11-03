@@ -11,9 +11,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavDestination;
+import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.example.secondchance.databinding.ActivityMainBinding;
-import com.example.secondchance.databinding.MenuBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.ui.home.HomeFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -24,6 +30,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 
+import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.R;
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
@@ -132,9 +140,19 @@ public class MainActivity extends AppCompatActivity {
       int destinationId = destination.getId();
       Log.d("MainActivity", "Updating UI visibility for ID: " + destinationId);
 
-      View searchContainer = binding.headerMain.searchContainer;
-      View iconBack = binding.headerMain.iconBack;
-      TextView tvTitle = binding.headerMain.tvHeaderTitle;
+    View searchContainer = binding.headerMain.searchContainer;
+    View iconBack = binding.headerMain.iconBack;
+    TextView tvTitle = binding.headerMain.tvHeaderTitle;
+    View orderTabsAppBar = binding.orderTabsAppbar;
+
+    // ẨN/HIỆN THANH TAB Chỉ hiện khi ở màn hình OrderFragment (navigation_order)
+    if (destinationId == R.id.navigation_order) {
+      orderTabsAppBar.setVisibility(View.VISIBLE);
+      Log.d("MainActivity", "TabLayout VISIBLE");
+    } else { // Ẩn ở tất cả màn hình khác (Home, Profile, Chi tiết...)
+      orderTabsAppBar.setVisibility(View.GONE);
+      Log.d("MainActivity", "TabLayout GONE");
+    }
 
       // ẨN/HIỆN HEADER CHÍNH
       if (destinationId == R.id.navigation_home) {
@@ -149,8 +167,11 @@ public class MainActivity extends AppCompatActivity {
         tvTitle.setVisibility(View.VISIBLE);
         Log.d("MainActivity", "Header: Show Back/Title");
 
-        // Back mặc định
-        wireBackIcon(iconBack);
+      // Back mặc định
+      wireBackIcon(iconBack);
+//      iconBack.setOnClickListener(v -> {
+//        if (!navController.popBackStack()) navController.navigateUp();
+//      });
 
         // logic tiêu đề cho navigation_negotiation
         if (destinationId == R.id.navigation_order) {
@@ -223,17 +244,17 @@ public class MainActivity extends AppCompatActivity {
       });
     }
 
-    // --- Các hàm xử lý chung khi click icon ---
-    private void openCartScreen() {
-      Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
-      // TODO: mở màn hình Giỏ hàng
-    }
-    private void openChatScreen() {
-      Toast.makeText(this, "Mở Chat", Toast.LENGTH_SHORT).show();
-      // TODO: mở màn hình Chat
-    }
-    private void openNotificationScreen() {
-      Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
-      // TODO: mở màn hình Thông báo
-    }
+  // --- Các hàm xử lý chung khi click icon ---
+  private void openCartScreen() {
+    Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
+    // TODO: mở màn hình Giỏ hàng
   }
+  private void openChatScreen() {
+    Toast.makeText(this, "Mở Chat", Toast.LENGTH_SHORT).show();
+    // TODO: mở màn hình Chat
+  }
+  private void openNotificationScreen() {
+    Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
+    // TODO: mở màn hình Thông báo
+  }
+}

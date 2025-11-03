@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguyên nhân"
-                android:textColor="#222222"
+                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
@@ -109,7 +109,7 @@
                     android:id="@+id/etReason"
                     android:layout_width="match_parent"
                     android:layout_height="228dp"
-                    android:background="@drawable/edittext_border_gray"
+                    android:background="@color/grayDay"
                     android:gravity="top|start"
                     android:hint="Sản phẩm khác mô tả, hoàn toàn không giống..."
                     android:inputType="textMultiLine"
@@ -140,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:cardBackgroundColor="@color/light_blue_bg"
+                    app:cardBackgroundColor="@color/highlight4blur"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
                     <TextView
@@ -173,7 +173,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:cardBackgroundColor="@color/light_blue_bg"
+                    app:cardBackgroundColor="@color/highlight4blur"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
                     <LinearLayout
@@ -204,7 +204,7 @@
                             android:textColor="@color/orange_primary"
                             app:strokeColor="@color/orange_primary"
                             app:cornerRadius="8dp"
-                            android:backgroundTint="@android:color/transparent" />
+                            android:backgroundTint="@color/grayDay" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -229,7 +229,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:cardBackgroundColor="@color/light_blue_bg"
+                    app:cardBackgroundColor="@color/highlight4blur"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="0dp">
                     <TextView
@@ -237,8 +237,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:text="Bạn đã hoàn trả đơn hàng, số tiền đã thanh toán sẽ được hoàn lại ví"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="bold" />
+                        android:textColor="@color/darkerDay" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
