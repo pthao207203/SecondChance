@@ -271,6 +271,9 @@
         <action
             android:id="@+id/action_productList_to_productDetailDeleted"
             app:destination="@id/productDetailDeletedFragment" />
+        <action
+            android:id="@+id/action_productTab_to_editAuction"
+            app:destination="@id/editProductAuctionFragment" />
     </fragment>
 
     <!-- ============================================ -->
@@ -612,6 +615,15 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_deleted_to_edit_fixed"
+            app:destination="@id/editProductFixedFragment" />
+        <action
+            android:id="@+id/action_deleted_to_edit_negotiable"
+            app:destination="@id/editProductNegotiableFragment" />
+        <action
+            android:id="@+id/action_deleted_to_edit_auction"
+            app:destination="@id/editProductAuctionFragment" />
     </fragment>
     <fragment
         android:id="@+id/auctionSessionFragment"

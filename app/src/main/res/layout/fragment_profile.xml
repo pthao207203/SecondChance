@@ -79,11 +79,11 @@
                 android:background="?attr/selectableItemBackground">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Cài đặt"
                     android:src="@drawable/ic_setting"
-                    app:tint="@color/darkerDay"
-                    android:contentDescription="Cài đặt" />
+                    app:tint="@color/darkerDay" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -605,6 +605,20 @@
             android:textSize="@dimen/text_16"
             android:paddingVertical="4dp"
             android:text="Trở thành người bán"
+            android:textColor="@color/normalDay"
+            android:textAllCaps="false" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/bg_outline_orange"
+            android:paddingHorizontal="@dimen/space_16"
+            android:textSize="@dimen/text_16"
+            android:paddingVertical="4dp"
+            android:text="Test product list"
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
 

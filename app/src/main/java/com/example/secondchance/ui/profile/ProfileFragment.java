@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -24,6 +25,8 @@ public class ProfileFragment extends Fragment {
     private TextView tvName, tvPhone, tvAddress, tvEmail;
     private ImageView ivAvatar;
     private ProfileViewModel viewModel;
+    private AppCompatButton btnTest;
+    private AppCompatButton btnBecomeSeller;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +66,8 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
+        btnTest = view.findViewById(R.id.btn_test);
+
     }
 
     private void observeViewModel() {
@@ -108,8 +113,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
-        // Lấy NavController
-        final NavController navController = Navigation.findNavController(view);
+        btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
+
+        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
 
         View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
         view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
@@ -187,6 +193,24 @@ public class ProfileFragment extends Fragment {
         view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Trở thành người bán", Toast.LENGTH_SHORT).show()
         );
+    }
+    private void setupListeners() {
+        // Test button - Navigate to Product Tab
+        if (btnTest != null) {
+            btnTest.setOnClickListener(v -> {
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_profile_to_productTab);
+            });
+        }
+
+        // Become Seller button
+        if (btnBecomeSeller != null) {
+            btnBecomeSeller.setOnClickListener(v -> {
+                // TODO: Implement become seller logic
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_profile_to_productTab);
+            });
+        }
     }
 
     public void updateBadgeCounts(int pendingCount, int shippingCount) {
