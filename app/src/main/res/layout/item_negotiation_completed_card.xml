@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="request"
+            type="com.example.secondchance.ui.negotiation.NegotiationCompleted" />
+        <variable
+            name="hasReply"
+            type="boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/headerSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="4dp">
+
+            <!-- Avatar -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/avatar1"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedImageView_20dp"
+                android:contentDescription="User avatar" />
+
+            <!-- Thông tin người dùng -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fish can Fly"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_16" />
+
+                    <TextView
+                        android:id="@+id/product_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="18/02/2025"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/negotiation_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thương lượng lần 1"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:layout_marginBottom="12dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nhắn tin"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/communication"
+                    android:layout_marginStart="2dp"
+                    android:contentDescription="star" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ==================== CARD SẢN PHẨM (RelativeLayout) ==================== -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/headerSection"
+            app:cardCornerRadius="12dp"
+            android:layout_marginHorizontal="16dp"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="12dp"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@color/grayDay">
+
+                <!-- Ảnh sản phẩm -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgProduct"
+                    android:layout_width="62dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/giohoa1"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView_8dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="review image 1" />
+
+                <!-- Tiêu đề -->
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="500.000"
+                    android:textSize="@dimen/text_20"
+                    android:textStyle="bold"
+                    android:textColor="@color/darkerDay"
+                    android:layout_alignParentEnd="true" />
+
+                <TextView
+                    android:id="@+id/tvđ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="đ"
+                    android:textSize="@dimen/text_20"
+                    android:layout_marginEnd="5dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/normalDay"
+                    android:layout_toStartOf="@id/tvPrice" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Giỏ gỗ cắm hoa"
+                    android:textStyle="bold"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_16"
+                    android:layout_toEndOf="@id/imgProduct"
+                    android:layout_marginStart="8dp"
+                    android:layout_toStartOf="@id/tvđ"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Số lượng -->
+                <TextView
+                    android:id="@+id/tvQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvPrice"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="19dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="x1"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+
+                <!-- Giá cố định -->
+                <TextView
+                    android:id="@+id/tvSubtitleFixed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Giá cố định"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="bold"
+                    android:layout_below="@id/tvTitle"
+                    android:layout_toEndOf="@id/imgProduct"
+                    android:layout_marginStart="8dp" />
+
+                <!-- Ngày tạo -->
+                <TextView
+                    android:id="@+id/tvSubtitleDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvSubtitleFixed"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_toEndOf="@id/imgProduct"
+                    android:text="Đã tạo ngày: 17/06/2025"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13" />
+
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardReply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardProduct"
+            app:cardElevation="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="16dp"
+                android:background="@color/highlight4blur">
+
+                <!-- ==================== NỘI DUNG PHẢN HỒI ==================== -->
+                <TextView
+                    android:id="@+id/tvReply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Đơn hàng đã được người dùng thanh toán. Xem hóa đơn trong Lịch sử đơn hàng"
+                    android:textStyle="normal"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    />
+
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/highlight4blur"
+            android:layout_below="@id/cardReply"
+            android:layout_marginTop="8dp"
+            />
+
+    </RelativeLayout>
+
+
+</layout>
