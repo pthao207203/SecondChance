@@ -17,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.example.secondchance.R;
@@ -26,6 +28,7 @@ import com.google.android.material.card.MaterialCardView;
 import android.widget.TextView;
 import android.widget.EditText;
 
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 import android.os.Handler;
 import android.os.Looper;
@@ -344,10 +347,16 @@ public class DetailProductFragment extends Fragment {
         MaterialButton btnNextTime = successDialog.findViewById(R.id.btnNextTime);
         MaterialButton btnSeeNow = successDialog.findViewById(R.id.btnSeeNow);
 
-        btnNextTime.setOnClickListener(v -> successDialog.dismiss());
         btnSeeNow.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Chuyển đến Quản lý thương lượng...", Toast.LENGTH_SHORT).show();
             successDialog.dismiss();
+            NavController navController = NavHostFragment.findNavController(DetailProductFragment.this);
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setRestoreState(true)
+                    .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
+                    .build();
+
+            navController.navigate(R.id.navigation_negotiation, null, navOptions);
         });
 
         successDialog.show();

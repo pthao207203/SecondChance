@@ -37,13 +37,13 @@
         <action
         android:id="@+id/action_home_navigation_detail_product"
         app:destination="@id/navigation_detail_product" />
-
+         <action
+            android:id="@+id/action_home_to_auction"
+            app:destination="@id/navigation_auction" />
         <action
-        android:id="@+id/action_home_to_auction"
-        app:destination="@id/navigation_auction" />
+            android:id="@+id/action_homeFragment_to_negotiationFragment"
+            app:destination="@id/navigation_negotiation" />
     </fragment>
-
-
     <fragment
         android:id="@+id/navigation_detail_product"
         android:name="com.example.secondchance.ui.card.DetailProductFragment"
@@ -55,7 +55,15 @@
     <action
         android:id="@+id/action_detail_product_to_rule_auction"
         app:destination="@id/navigation_rule_auction" />
+    <action
+        android:id="@+id/action_detail_product_to_negotiation"
+        app:destination="@id/navigation_negotiation" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_negotiation"
+        android:name="com.example.secondchance.ui.negotiation.NegotiationFragment"
+        android:label="Thương lượng"
+        tools:layout="@layout/fragment_negotiation" />
 
     <fragment
         android:id="@+id/navigation_rule_auction"
