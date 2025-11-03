@@ -68,7 +68,7 @@
             android:id="@+id/icon_cart"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/vector"
+            android:src="@drawable/ic_cart"
             app:layout_constraintEnd_toStartOf="@id/icon_chat"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
