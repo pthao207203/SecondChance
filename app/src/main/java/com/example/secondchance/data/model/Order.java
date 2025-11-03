@@ -6,14 +6,12 @@ public class Order {
         CONFIRMED_FIXED,
         CONFIRMED_AUCTION
     }
-
     public enum RefundStatus {
         NOT_CONFIRMED,
         CONFIRMED,
         REJECTED,
         SUCCESSFUL
     }
-
     public enum DeliveryOverallStatus {
         PACKAGED,
         AT_POST_OFFICE,

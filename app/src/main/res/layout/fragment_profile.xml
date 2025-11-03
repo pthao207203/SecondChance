@@ -79,11 +79,11 @@
                 android:background="?attr/selectableItemBackground">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="Cài đặt"
                     android:src="@drawable/ic_setting"
-                    app:tint="@color/darkerDay"
-                    android:contentDescription="Cài đặt" />
+                    app:tint="@color/darkerDay" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -304,7 +304,7 @@
                 android:text="Xem chi tiết"
                 android:textSize="@dimen/text_13"
                 android:textColor="@color/darkerDay"
-               />
+                />
         </LinearLayout>
 
         <!-- Wallet Cards -->
@@ -400,49 +400,52 @@
             android:layout_marginTop="8dp"
             android:baselineAligned="false">
             <LinearLayout
-            android:id="@+id/btnPending"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
-            android:paddingVertical="12dp"
-            android:background="?attr/selectableItemBackground">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/btnPending"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Xác nhận"
-                    android:textSize="@dimen/text_13" android:textColor="@color/darkerDay" />
-                <TextView
-                    android:id="@+id/tvPendingCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/bg_badge_count"
-                    android:gravity="center"
-                    android:minWidth="18dp"
-                    android:minHeight="18dp"
-                    android:paddingHorizontal="5dp"
-                    android:text="0" android:textColor="@color/whiteDay"
-                    android:textSize="10sp"
-                    android:visibility="gone" tools:visibility="visible"
-                    tools:text="17"/>
-            </LinearLayout>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingVertical="12dp"
+                android:background="?attr/selectableItemBackground">
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/ic_clock2"
-                app:tint="@color/darkerDay"
-                android:contentDescription="Xác nhận" />
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xác nhận"
+                        android:textSize="@dimen/text_13"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        android:id="@+id/tvPendingCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_badge_count"
+                        android:gravity="center"
+                        android:minWidth="18dp"
+                        android:minHeight="18dp"
+                        android:paddingHorizontal="5dp"
+                        android:text="0"
+                        android:textColor="@color/whiteDay"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        tools:text="7"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_clock2"
+                    app:tint="@color/darkerDay"
+                    android:contentDescription="Xác nhận" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/btnShipping"
@@ -480,7 +483,7 @@
                         android:textSize="10sp"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        tools:text="17"/>
+                        tools:text="7"/>
                 </LinearLayout>
 
                 <ImageView
@@ -602,6 +605,35 @@
             android:textSize="@dimen/text_16"
             android:paddingVertical="4dp"
             android:text="Trở thành người bán"
+            android:textColor="@color/normalDay"
+            android:textAllCaps="false" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/bg_outline_orange"
+            android:paddingHorizontal="@dimen/space_16"
+            android:textSize="@dimen/text_16"
+            android:paddingVertical="4dp"
+            android:text="Test product list"
+            android:textColor="@color/normalDay"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/bg_outline_orange"
+            android:paddingHorizontal="@dimen/space_16"
+            android:textSize="@dimen/text_16"
+            android:paddingVertical="4dp"
+            android:text="Test product list"
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
 

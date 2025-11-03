@@ -11,7 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavDestination;
+import androidx.navigation.NavDestination;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.example.secondchance.databinding.ActivityMainBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.ui.home.HomeFragment;
@@ -23,6 +30,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 
 
+import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.R;
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
@@ -74,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
 //        navController.navigate(R.id.navigation_profile);
 //      }
 //    });
+
+    // Khởi tạo SharedViewModel
+    sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+
 
     // Khởi tạo SharedViewModel
     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
@@ -203,9 +216,9 @@ public class MainActivity extends AppCompatActivity {
         navController.navigate(R.id.navigation_dashboard, null, navOptions);
       }
     });
-    binding.myCustomMenu.navigationNotifications.setOnClickListener(v -> {
-      if (navController.getCurrentDestination().getId() != R.id.navigation_notifications) {
-        navController.navigate(R.id.navigation_notifications, null, navOptions);
+    binding.myCustomMenu.navigationNegotiation.setOnClickListener(v -> {
+      if (navController.getCurrentDestination().getId() != R.id.navigation_negotiation) {
+        navController.navigate(R.id.navigation_negotiation, null, navOptions);
       }
     });
     binding.myCustomMenu.navigationProfile.setOnClickListener(v -> {
@@ -215,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
+  // --- Các hàm xử lý chung khi click icon ---
   private void openCartScreen() {
     Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
     // TODO: mở màn hình Giỏ hàng

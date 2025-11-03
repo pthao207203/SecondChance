@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
-    android:layout_marginBottom="16dp">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    android:layout_marginBottom="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,12 +16,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="8dp">
 
             <ImageView
                 android:id="@+id/imgProduct"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="84dp"
+                android:layout_height="85dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_ring"
                 android:layout_alignParentStart="true"
@@ -31,50 +31,63 @@
                 android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="₫ 50.000"
-                android:textColor="#D26E2D"
+                android:text="500.000"
+                android:textSize="@dimen/text_20"
                 android:textStyle="bold"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@id/tvTitle"/>
+                android:textColor="@color/darkerDay"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/tvđ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="đ"
+                android:textSize="@dimen/text_20"
+                android:layout_marginEnd="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/normalDay"
+                android:layout_toStartOf="@id/tvPrice" />
 
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nhẫn kim cương hữu hạn"
-                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
+                android:textColor="@color/darkerDay"
+                android:textSize="@dimen/text_16"
                 android:layout_toEndOf="@id/imgProduct"
-                android:layout_toStartOf="@id/tvPrice"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginStart="8dp"
+                android:layout_toStartOf="@id/tvđ"
+                android:layout_marginEnd="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_below="@id/tvTitle"
-                android:layout_toEndOf="@id/imgProduct"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="-72dp"
                 android:layout_toStartOf="@id/tvPrice"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp">
+                android:layout_toEndOf="@id/imgProduct"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvQuantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Số lượng: 1"
-                    android:textSize="12sp"
-                    android:textColor="@color/darkerDay"/>
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13" />
 
                 <TextView
                     android:id="@+id/tvDescription"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Giỏ hoa loại 1 new 99%, của hàng abc thành phố Xuân Hợp he he"
-                    android:textSize="12sp"
                     android:textColor="@color/darkerDay"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="@dimen/text_13" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -82,8 +95,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="#FFF7F3">
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="12dp"
+            android:background="@color/lighterDay">
 
             <TextView
                 android:id="@+id/tvStatus"
@@ -99,8 +113,8 @@
 
             <ImageView
                 android:id="@+id/imgArrow"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:src="@drawable/ic_arrow_forward"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
