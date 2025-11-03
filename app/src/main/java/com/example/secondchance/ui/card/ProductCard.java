@@ -8,7 +8,7 @@ import java.util.Date;
  * Chứa thông tin như hình ảnh, tiêu đề, mô tả, số lượng, đánh giá, giá, loại sản phẩm, thời gian đăng,
  * và chiều cao (có thể được sử dụng để điều chỉnh giao diện).
  */
-public class ProductCard {
+public class ProductCard implements java.io.Serializable{
     private int id;
     private @DrawableRes int imageRes;
     private String title;
@@ -56,6 +56,14 @@ public class ProductCard {
         this.postTime = postTime != null ? postTime : new Date(); // Mặc định là thời gian hiện tại nếu null
         this.height = height;
     }
+    public ProductCard() {
+        // Khởi tạo các giá trị mặc định để tránh lỗi
+        this.title = "";
+        this.description = "";
+        this.price = "";
+        this.postTime = new Date();
+        this.productType = ProductType.FIXED; // Hoặc một giá trị mặc định
+    }
 
     // Getters
     public int getId() { return id; }
@@ -81,4 +89,15 @@ public class ProductCard {
     public void setPrice(String price) { this.price = price != null ? price : ""; }
     public void setPostTime(Date postTime) { this.postTime = postTime != null ? postTime : new Date(); }
     public void setHeight(int height) { this.height = height; }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
+    public void setImageRes(@DrawableRes int imageRes) {
+        this.imageRes = imageRes;
+    }
+
 }

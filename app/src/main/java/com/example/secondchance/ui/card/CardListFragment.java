@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.secondchance.R;
@@ -198,8 +200,13 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
 
     @Override
     public void onItemClick(ProductCard product) {
-        Toast.makeText(getContext(), "Clicked: " + product.getTitle(), Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("product", product); // Truyền toàn bộ object
+
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_home_navigation_detail_product, bundle);
     }
+
 
     @Override
     public void onDestroyView() {

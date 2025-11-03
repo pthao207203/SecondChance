@@ -1,20 +1,12 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteDay"
-    android:paddingHorizontal="0dp"
-    tools:context=".ui.home.HomeFragment">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    android:fillViewport="true"
+    tools:context="com.example.secondchance.ui.home.HomeFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,16 +37,27 @@
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
 
-                    <TextView
-                        style="@style/Text.SecondChance.Note13"
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.SecondChance.Card.Number"
+                        android:id="@+id/tvSeeAllAuction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="normal" />
+                        app:cardElevation="0dp"
+                        android:backgroundTint="@color/whiteDay"
+                        >
+
+                        <TextView
+                            style="@style/Text.SecondChance.Note13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xem tất cả"
+                            android:textColor="@color/darkerDay"
+                            android:textStyle="normal" />
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/auction_card_home"
                     style="@style/Widget.SecondChance.Card.AuctionCurrent"
                     android:layout_marginBottom="12dp">
 
@@ -253,35 +256,42 @@
                 android:layout_marginBottom="16dp"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+            <TextView
+                style="@style/Text.SecondChance.Body16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Chức năng"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/highlight4blur"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    app:cardBackgroundColor="@color/highlight4blur"
+                    app:cardElevation="0dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.BottomRightCorner"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/highLight5">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        app:cardCornerRadius="0dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/highLight5"
-                        app:strokeWidth="2dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="Định lượng bằng AI"
-                            android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
-                    </com.google.android.material.card.MaterialCardView>
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="Định giá bằng AI ngay"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card_negotiation"
@@ -313,51 +323,51 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/highlight3blur"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    app:cardBackgroundColor="@color/highlight3blur"
+                    app:cardElevation="0dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.TopRightCorner"
+                    app:strokeColor="@color/highLight3"
+                    app:strokeWidth="1dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        app:cardCornerRadius="0dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/highLight3"
-                        app:strokeWidth="2dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="43dp"
-                            android:gravity="center"
-                            android:text="Trở thành người bán"
-                            android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
-                    </com.google.android.material.card.MaterialCardView>
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="Trở thành người bán"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </com.google.android.material.card.MaterialCardView>
 
-                    <com.google.android.material.card.MaterialCardView
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="2dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/highlight1blur"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    app:cardBackgroundColor="@color/highlight1blur"
+                    app:cardElevation="0dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.TopLeftCorner"
+                    app:strokeColor="@color/highLight1"
+                    app:strokeWidth="1dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        app:cardCornerRadius="0dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/highLight1"
-                        app:strokeWidth="2dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="43dp"
-                            android:gravity="center"
-                            android:text="Xem đơn hàng của bạn"
-                            android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="16dp"
+                        android:text="Xem đơn hàng của bạn"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+        </LinearLayout>
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -537,13 +547,15 @@
 
 
 
-            <!-- You might like section -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="15dp"
-                android:layout_marginBottom="8dp"
-                android:text="Có thể bạn sẽ thích"
-                android:textStyle="bold" />
+        <!-- You might like section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Có thể bạn sẽ thích"
+            android:textSize="@dimen/text_20"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
 
             <!-- Nhúng CardListFragment tại đây -->
             <fragment
@@ -553,7 +565,5 @@
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_recycler_card" />
 
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>

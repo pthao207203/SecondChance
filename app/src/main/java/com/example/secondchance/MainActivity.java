@@ -1,8 +1,16 @@
 package com.example.secondchance;
 
+import androidx.navigation.NavOptions;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -12,6 +20,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.secondchance.databinding.ActivityMainBinding;
+import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.ui.home.HomeFragment;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+
+
+
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.R;
 
@@ -30,6 +48,44 @@ public class MainActivity extends AppCompatActivity {
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
+
+//     Lấy NavController từ NavHostFragment
+//    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+//            .findFragmentById(R.id.fragment_container);
+//    if (navHostFragment != null) {
+//      navController = navHostFragment.getNavController();
+//    }
+
+    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
+      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+      navController.navigate(R.id.navigation_home);
+    });
+
+
+
+    // Setup bottom navigation
+//    binding.menu.navHome.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_home);
+//      }
+//    });
+//
+//    binding.menu.navAi.setOnClickListener(v ->
+//            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navNegotiate.setOnClickListener(v ->
+//            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navMe.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_profile);
+//      }
+//    });
+
+    // Khởi tạo SharedViewModel
+    sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
 
     // Khởi tạo SharedViewModel
@@ -54,28 +110,21 @@ public class MainActivity extends AppCompatActivity {
       NavDestination currentDestination = navController.getCurrentDestination();
       if (currentDestination != null) {
         int currentDestId = currentDestination.getId();
-
-        // check navigation_negotiation
-        if (currentDestId == R.id.navigation_order ||
-                currentDestId == R.id.navigation_negotiation) {
-
+        // Chỉ cập nhật title nếu đang ở OrderFragment (navigation_order)
+        if (currentDestId == R.id.navigation_order) {
           if (newTitle != null && !newTitle.isEmpty()) {
             binding.headerMain.tvHeaderTitle.setText(newTitle);
             Log.d("MainActivity", "Header title set from ViewModel: " + newTitle);
           } else {
-            if(currentDestId == R.id.navigation_order) {
-              binding.headerMain.tvHeaderTitle.setText("Đơn hàng");
-            } else {
-              binding.headerMain.tvHeaderTitle.setText("Thương lượng");
-            }
+            binding.headerMain.tvHeaderTitle.setText("Đơn hàng"); // Fallback
+            Log.d("MainActivity", "Header title set to fallback 'Đơn hàng'");
           }
         }
       }
     });
-
   }
 
-  // GIAO DIỆN header (ẩn/hiện)
+  // cập nhật GIAO DIỆN header (ẩn/hiện)
   private void updateUiVisibility(NavDestination destination) {
     if (binding == null || destination == null) return;
 
@@ -85,9 +134,19 @@ public class MainActivity extends AppCompatActivity {
     View searchContainer = binding.headerMain.searchContainer;
     View iconBack = binding.headerMain.iconBack;
     TextView tvTitle = binding.headerMain.tvHeaderTitle;
+    View orderTabsAppBar = binding.orderTabsAppbar;
+
+    // ẨN/HIỆN THANH TAB Chỉ hiện khi ở màn hình OrderFragment (navigation_order)
+    if (destinationId == R.id.navigation_order) {
+      orderTabsAppBar.setVisibility(View.VISIBLE);
+      Log.d("MainActivity", "TabLayout VISIBLE");
+    } else { // Ẩn ở tất cả màn hình khác (Home, Profile, Chi tiết...)
+      orderTabsAppBar.setVisibility(View.GONE);
+      Log.d("MainActivity", "TabLayout GONE");
+    }
 
     // ẨN/HIỆN HEADER CHÍNH
-    if (destinationId == R.id.navigation_home) {
+    if (destinationId == R.id.navigation_home) { // Trang chủ
       searchContainer.setVisibility(View.VISIBLE);
       iconBack.setVisibility(View.GONE);
       tvTitle.setVisibility(View.GONE);
@@ -101,31 +160,28 @@ public class MainActivity extends AppCompatActivity {
 
       // Back mặc định
       wireBackIcon(iconBack);
+//      iconBack.setOnClickListener(v -> {
+//        if (!navController.popBackStack()) navController.navigateUp();
+//      });
 
-      // logic tiêu đề cho navigation_negotiation
+      // Tiêu đề
       if (destinationId == R.id.navigation_order) {
         String t = sharedViewModel.getCurrentTitle().getValue();
         tvTitle.setText(t != null ? t : "Đơn hàng");
         Log.d("MainActivity", "Header Title (Order): " + tvTitle.getText());
-
-      } else if (destinationId == R.id.navigation_negotiation) {
-        String t = sharedViewModel.getCurrentTitle().getValue();
-        tvTitle.setText(t != null ? t : "Thương lượng");
-        Log.d("MainActivity", "Header Title (Negotiation): " + tvTitle.getText());
-
-      } else { // Các màn hình khác
+      } else {
         CharSequence label = destination.getLabel();
         tvTitle.setText(label != null ? label : "");
         Log.d("MainActivity", "Header Title (Other): " + label);
       }
     }
   }
-
   private void wireBackIcon(View iconBack) {
     iconBack.setOnClickListener(v -> {
       if (backBusy) return;
       backBusy = true;
-      v.postDelayed(() -> backBusy = false, 400);
+      v.postDelayed(() -> backBusy = false, 400); // debounce 400ms
+
       try {
         if (!navController.popBackStack()) navController.navigateUp();
       } catch (Exception e) {
@@ -133,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
       }
     });
   }
-
   // sự kiện click cho 3 icon trên header
   private void setupIconClickListeners() {
     binding.headerMain.iconCart.setOnClickListener(v -> openCartScreen());

@@ -94,6 +94,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
 
     private void setupClickListener(CardViewHolder holder, ProductCard product) {
         holder.itemView.setOnClickListener(v -> {
+            Log.d("CardAdapter", "Clicked product ID: " + product.getId() + " | Title: " + product.getTitle());
             if (listener != null) listener.onItemClick(product);
         });
     }

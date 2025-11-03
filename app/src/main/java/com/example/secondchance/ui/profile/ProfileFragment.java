@@ -113,6 +113,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
+        // Lấy NavController
+        final NavController navController = Navigation.findNavController(view);
+
         btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
 
         View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
