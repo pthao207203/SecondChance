@@ -23,7 +23,6 @@
         <item name="cornerSizeBottomLeft">@dimen/card_corner_radius</item>
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
-
     <style name="CustomCheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="android:button">@drawable/selector_checkbox</item>
         <item name="buttonTint">@null</item>
@@ -123,4 +122,67 @@
         <item name="cornerSizeBottomLeft">@dimen/radius_xl</item>
         <item name="cornerSizeBottomRight">@dimen/radius_xl</item>
     </style>
+
+    <!-- Overlay áp riêng cho MaterialDatePicker -->
+    <style name="ThemeOverlay.SecondChance.DatePicker"
+        parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+
+        <!-- Dùng style tổng cho Calendar -->
+        <item name="materialCalendarStyle">@style/Widget.SecondChance.MaterialCalendar</item>
+
+        <!-- Đổi nền dialog & nền container bên trong -->
+        <item name="colorSurface">@color/whiteDay</item>
+        <item name="colorOnSurface">@color/whiteDay</item>
+        <item name="colorSurfaceVariant">@color/whiteDay</item>
+
+        <!-- Header / nút Save/Cancel -->
+        <item name="colorPrimary">@color/whiteDay</item>
+        <item name="colorOnPrimary">@color/darkerDay</item>
+        <item name="colorSecondary">@color/normalDay</item>
+    </style>
+
+    <!-- Style tổng cho Calendar -->
+    <style name="Widget.SecondChance.MaterialCalendar"
+        parent="Widget.MaterialComponents.MaterialCalendar">
+
+        <!-- Phòng khi token surface chưa áp: ép background -->
+        <item name="android:background">@color/whiteDay</item>
+
+        <!-- Ngày thường / invalid / selected / today -->
+        <item name="dayStyle">@style/Widget.SecondChance.MaterialCalendar.Day</item>
+        <item name="dayInvalidStyle">@style/Widget.SecondChance.MaterialCalendar.Day.Invalid</item>
+        <item name="daySelectedStyle">@style/Widget.SecondChance.MaterialCalendar.Day.Selected</item>
+        <item name="dayTodayStyle">@style/Widget.SecondChance.MaterialCalendar.Day.Today</item>
+
+        <!-- Dải giữa 2 đầu range (mặc định là tím) -->
+        <item name="rangeFillColor">@color/whiteDay</item>
+    </style>
+
+    <!-- Ô ngày THƯỜNG -->
+    <style name="Widget.SecondChance.MaterialCalendar.Day"
+        parent="Widget.MaterialComponents.MaterialCalendar.Day">
+        <item name="itemTextColor">@color/darkerDay</item>
+        <item name="itemFillColor">@color/whiteDay</item>
+    </style>
+
+    <!-- Ô ngày KHÔNG HỢP LỆ / ngoài range -->
+    <style name="Widget.SecondChance.MaterialCalendar.Day.Invalid"
+        parent="Widget.MaterialComponents.MaterialCalendar.Day">
+        <item name="itemTextColor">@color/darkerDay</item>
+        <item name="itemFillColor">@color/whiteDay</item>
+    </style>
+
+    <!-- Hai đầu range -->
+    <style name="Widget.SecondChance.MaterialCalendar.Day.Selected"
+        parent="Widget.MaterialComponents.MaterialCalendar.Day.Selected">
+        <item name="itemFillColor">@color/normalDay</item>
+        <item name="itemTextColor">@android:color/white</item>
+    </style>
+
+    <!-- Hôm nay -->
+    <style name="Widget.SecondChance.MaterialCalendar.Day.Today"
+        parent="Widget.MaterialComponents.MaterialCalendar.Day.Today">
+        <item name="itemStrokeColor">@color/normalDay</item>
+    </style>
+
 </resources>

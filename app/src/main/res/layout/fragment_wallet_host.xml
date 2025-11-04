@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Tabs “Nạp tiền / Lịch sử nạp / Đã mua / Đã nhận” (giả lập) -->
+        <LinearLayout
+            android:id="@+id/wallet_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:paddingStart="@dimen/space_16"
+            android:paddingEnd="@dimen/space_16">
+
+            <TextView
+                android:id="@+id/tab_nap_tien"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Nạp tiền"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:background="@drawable/tab_background_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:tag="topup"/>
+
+            <TextView
+                android:id="@+id/tab_lich_su"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Lịch sử nạp"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:background="@drawable/tab_background_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:tag="history"/>
+
+            <TextView
+                android:id="@+id/tab_da_mua"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Đã mua"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:background="@drawable/tab_background_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:tag="bought"/>
+
+            <TextView
+                android:id="@+id/tab_da_nhan"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Đã nhận"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:background="@drawable/tab_background_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:tag="received"/>
+        </LinearLayout>
+
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/wallet_child_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
