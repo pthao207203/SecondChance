@@ -1,4 +1,3 @@
-// File: app/src/main/java/com/example/secondchance/ui/seller/RuleSellerFragment.java
 package com.example.secondchance.ui.profile;
 
 import android.os.Bundle;

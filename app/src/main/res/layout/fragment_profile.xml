@@ -622,20 +622,6 @@
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="120dp"
-            android:background="@drawable/bg_outline_orange"
-            android:paddingHorizontal="@dimen/space_16"
-            android:textSize="@dimen/text_16"
-            android:paddingVertical="4dp"
-            android:text="Test product list"
-            android:textColor="@color/normalDay"
-            android:textAllCaps="false" />
 
     </LinearLayout>
 </ScrollView>

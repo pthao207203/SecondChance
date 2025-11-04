@@ -125,7 +125,7 @@ public class ProductDetailAuctionFragment extends BaseProductDetailFragment {
 
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
+                .replace(R.id.nav_host_fragment_activity_main, fragment)
                 .addToBackStack(null)
                 .commit();
     }
