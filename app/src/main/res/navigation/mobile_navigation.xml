@@ -52,6 +52,9 @@
             android:id="@+id/action_profile_to_orderFragment"
             app:destination="@id/navigation_order" />
         <action
+            android:id="@+id/action_profile_to_wallet"
+            app:destination="@id/walletHostFragment" />
+        <action
             android:id="@+id/action_profile_to_productTab"
             app:destination="@id/productTabFragment" />
         <action
@@ -244,6 +247,47 @@
             android:id="@+id/action_editProfile_to_paymentMethod"
             app:destination="@id/paymentMethodFragment" />
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/walletHostFragment"
+        android:name="com.example.secondchance.ui.profile.WalletHostFragment"
+        android:label="Ví của tôi"
+        tools:layout="@layout/fragment_wallet_host" />
+    <fragment
+        android:id="@+id/walletTopupHistoryFragment"
+        android:name="com.example.secondchance.ui.profile.WalletPurchasedHistoryFragment"
+        tools:layout="@layout/fragment_wallet_topup_content">
+        <action
+            android:id="@+id/action_walletPurchasedHistory_to_boughtOrderDetail"
+            app:destination="@id/navigation_bought_order_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/walletHistoryFragment"
+        android:name="com.example.secondchance.ui.profile.WalletPurchasedHistoryFragment"
+        tools:layout="@layout/fragment_wallet_history">
+        <action
+            android:id="@+id/action_walletPurchasedHistory_to_boughtOrderDetail"
+            app:destination="@id/navigation_bought_order_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/walletPurchasedHistoryFragment"
+        android:name="com.example.secondchance.ui.profile.WalletPurchasedHistoryFragment"
+        tools:layout="@layout/fragment_wallet_purchased_history">
+        <action
+            android:id="@+id/action_walletPurchasedHistory_to_boughtOrderDetail"
+            app:destination="@id/navigation_bought_order_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/walletReceivedHistoryFragment"
+        android:name="com.example.secondchance.ui.profile.WalletReceivedHistoryFragment"
+        tools:layout="@layout/fragment_wallet_received_history">
+        <action
+            android:id="@+id/action_walletReceivedHistory_to_boughtOrderDetail"
+            app:destination="@id/navigation_bought_order_detail" />
     </fragment>
 
     <fragment

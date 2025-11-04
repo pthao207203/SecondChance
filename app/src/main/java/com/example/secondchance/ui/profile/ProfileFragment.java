@@ -142,12 +142,11 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show();
             // TODO: Implement logout logic
         });
-
-        // Wallet Detail
-        view.findViewById(R.id.tvViewDetails).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Xem chi tiết ví", Toast.LENGTH_SHORT).show()
+        
+        view.findViewById(R.id.tvViewDetails).setOnClickListener(
+          v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_wallet)
         );
-
+        
         // Order History
         LinearLayout btnPending = view.findViewById(R.id.btnPending);
         if (btnPending != null) {

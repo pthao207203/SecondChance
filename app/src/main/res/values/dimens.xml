@@ -1,6 +1,7 @@
 <resources>
     <!-- spacing -->
     <dimen name="space_0">0dp</dimen>
+    <dimen name="space_8">8dp</dimen>
     <dimen name="space_12">12dp</dimen>
     <dimen name="space_16">16dp</dimen>
     <dimen name="space_20">20dp</dimen>
