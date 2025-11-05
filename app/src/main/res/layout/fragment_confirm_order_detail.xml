@@ -60,12 +60,18 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:text="Tiền vận chuyển"
+                        android:textStyle="bold"
                         android:textColor="@color/darkerDay" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 50.000"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50.000"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -97,12 +103,18 @@
                         android:text="Tổng cộng"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 200.000"
-                        android:textColor="@color/orange_primary"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="200.000"
+                        android:textColor="@color/darkerDay"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -202,13 +214,14 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="Phương thức thanh toán"
+                            android:textStyle="bold"
                             android:textColor="@color/darkerDay" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tiền trong ví"
-                            android:textColor="@color/orange_primary"
+                            android:textColor="@color/normalDay"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -236,18 +249,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vận chuyển nhanh"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="bold" />
+                        android:textColor="@color/darkerDay" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/padding_default"
-                android:paddingRight="@dimen/padding_default"
-                android:paddingBottom="@dimen/padding_default">
+                android:orientation="vertical">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancelOrderDetail"
@@ -257,10 +266,10 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="Hủy đơn"
-                    android:textColor="#E56D2D"
+                    android:textColor="@color/normalDay"
                     android:visibility="gone"
                     tools:visibility="visible"
-                    app:strokeColor="#E56D2D" />
+                    app:strokeColor="@color/normalDay" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvInfoConfirmedFixed"
@@ -268,7 +277,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:visibility="gone" app:cardBackgroundColor="@color/info_box_bg"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/lighterDay"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp">
                     <TextView
@@ -285,7 +295,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:visibility="gone" app:cardBackgroundColor="@color/info_box_bg"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/lighterDay"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp">
                     <TextView
@@ -295,11 +306,7 @@
                         android:text="Đơn đấu giá không thể hủy"
                         android:textColor="@color/darkerDay" />
                 </androidx.cardview.widget.CardView>
-
             </LinearLayout>
-
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

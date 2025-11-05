@@ -27,6 +27,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/grayLight"
                     android:padding="16dp">
 
                     <ImageView
@@ -42,7 +43,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mã đơn"
-                        android:textColor="#222222"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
                         android:layout_toEndOf="@id/ic_info_icon"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="12dp"/>
@@ -51,7 +53,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="XYZY1234RTY"
-                        android:textColor="#222222"
+                        android:textColor="@color/normalDay"
                         android:textStyle="bold"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
@@ -97,11 +99,18 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:text="Tiền vận chuyển"
-                        android:textColor="@color/darkerDay" />
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 50.000"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50.000"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -137,8 +146,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 200.000"
-                        android:textColor="@color/orange_primary"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="200.000"
+                        android:textColor="@color/darkerDay"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -239,13 +256,14 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="Phương thức thanh toán"
-                            android:textColor="@color/darkerDay" />
+                            android:textColor="@color/darkerDay"
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tiền trong ví"
-                            android:textColor="@color/orange_primary"
+                            android:textColor="@color/normalDay"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -273,8 +291,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vận chuyển nhanh"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="bold" />
+                        android:textColor="@color/darkerDay" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -291,8 +308,9 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:text="Hoàn trả đơn hàng"
-                    android:textColor="@color/orange_primary"
-                    app:strokeColor="@color/orange_primary"
+                    android:textColor="@color/normalDay"
+                    app:strokeColor="@color/normalDay"
+                    android:backgroundTint="@color/lighterDay"
                     app:cornerRadius="8dp"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -303,13 +321,12 @@
                     android:layout_marginStart="8dp"
                     android:text="ĐÁNH GIÁ SHOP"
                     android:textStyle="bold"
-                    app:backgroundTint="@color/orange_primary"
+                    app:backgroundTint="@color/normalDay"
+                    android:textColor="@color/whiteDay"
                     app:cornerRadius="8dp"
                     android:visibility="gone"
                     tools:visibility="visible" />
             </LinearLayout>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

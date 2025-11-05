@@ -88,7 +88,7 @@ public class CancelFragment extends Fragment {
         binding = null;
         super.onDestroyView();
     }
-    //Adapter
+
     private interface OnOrderClick {
         void openDetail(String orderId);
     }

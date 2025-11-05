@@ -27,6 +27,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/grayLight"
                     android:padding="16dp">
 
                     <ImageView
@@ -42,7 +43,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mã đơn"
-                        android:textColor="#222222"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
                         android:layout_toEndOf="@id/ic_info_icon"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="12dp"/>
@@ -51,118 +53,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="XYZY1234RTY"
-                        android:textColor="#222222"
+                        android:textColor="@color/normalDay"
                         android:textStyle="bold"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                android:id="@+id/stepper_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_active"/>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="@color/highLight5"/>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_active"/>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="@color/highLight4"/>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_inactive"/>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="2dp"
-                        android:layout_weight="1"
-                        android:background="@color/highLight4"/>
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_inactive"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Gói hàng"
-                        android:textColor="@color/highLight5"
-                        android:gravity="center"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Đã tới bưu cục"
-                        android:textColor="@color/highLight5"
-                        android:gravity="center"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Đang giao"
-                        android:textColor="@color/highLight5"
-                        android:gravity="center"
-                        android:textSize="12sp"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Giao hàng thành công"
-                        android:textColor="@color/highLight5"
-                        android:gravity="center"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvTrackingStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="8dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -203,11 +99,18 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:text="Tiền vận chuyển"
-                        android:textColor="@color/darkerDay" />
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 50.000"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50.000"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -243,8 +146,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₫ 200.000"
-                        android:textColor="@color/orange_primary"
+                        android:text="₫ "
+                        android:textColor="@color/normalDay"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="200.000"
+                        android:textColor="@color/darkerDay"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -345,13 +256,14 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="Phương thức thanh toán"
-                            android:textColor="@color/darkerDay" />
+                            android:textColor="@color/darkerDay"
+                            android:textStyle="bold"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tiền trong ví"
-                            android:textColor="@color/orange_primary"
+                            android:textColor="@color/normalDay"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -379,8 +291,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vận chuyển nhanh"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="bold" />
+                        android:textColor="@color/darkerDay" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -399,12 +310,11 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:text="Hoàn trả đơn hàng"
-                    android:textColor="@color/orange_primary"
-                    app:strokeColor="@color/orange_primary"
+                    android:backgroundTint="@color/lighterDay"
+                    android:textColor="@color/normalDay"
+                    app:strokeColor="@color/normalDay"
                     app:cornerRadius="8dp"/>
             </LinearLayout>
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

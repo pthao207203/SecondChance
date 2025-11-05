@@ -15,10 +15,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
+import com.example.secondchance.data.model.OrderProduct;
 import com.example.secondchance.databinding.FragmentRefundOrderDetailBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.ui.order.adapter.RefundOrderItemAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RefundOrderDetailFragment extends Fragment {
     private static final String TAG = "RefundDetail";
@@ -31,7 +36,6 @@ public class RefundOrderDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Nhận arguments
         if (getArguments() != null) {
             orderId = getArguments().getString("orderId");
             currentStatus = (Order.RefundStatus) getArguments().getSerializable("refundStatus");
@@ -51,7 +55,6 @@ public class RefundOrderDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         sharedViewModel.updateTitle("Chi tiết Hoàn trả");
 
-        // Kiểm tra dữ liệu
         if (currentStatus == null || orderId == null) {
             Log.e(TAG, "Lỗi: Thiếu orderId hoặc refundStatus!");
             Toast.makeText(getContext(), "Lỗi tải dữ liệu chi tiết.", Toast.LENGTH_SHORT).show();
@@ -63,9 +66,41 @@ public class RefundOrderDetailFragment extends Fragment {
 
         // TODO: Tải dữ liệu chi tiết (tên SP, ảnh, lý do...) từ API/ViewModel dùng orderId
 
-        // Quyết định layout nào sẽ được hiển thị (ẩn/hiện các nhóm layout (LinearLayout) dựa trên trạng thái)
+        List<OrderProduct> refundItems = getDummyProducts();
+
+        if (getContext() != null) {
+
+            RefundOrderItemAdapter adapter = new RefundOrderItemAdapter(getContext(), refundItems);
+
+
+            binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(getContext()));
+
+            binding.rvOrderItems.setAdapter(adapter);
+        }
+
         setupUIForStatus(currentStatus);
     }
+
+    private List<OrderProduct> getDummyProducts() {
+        List<OrderProduct> products = new ArrayList<>();
+
+        products.add(new OrderProduct(
+                "P001",
+                "Giỏ gỗ cắm hoa",
+                "Mẫu: Trắng, Số lượng: 1",
+                "500.000",
+                R.drawable.sample_flower,
+                1));
+        products.add(new OrderProduct(
+                "P002",
+                "Chậu cây mini",
+                "Phân loại: Xanh lá, Số lượng: 2",
+                "150.000",
+                R.drawable.sample_flower,
+                2));
+        return products;
+    }
+
 
     private void setupUIForStatus(Order.RefundStatus status) {
 
@@ -74,7 +109,6 @@ public class RefundOrderDetailFragment extends Fragment {
         binding.layoutStatusRejected.setVisibility(View.GONE);
         binding.layoutStatusSuccessful.setVisibility(View.GONE);
 
-        // layout tương ứng
         switch (status) {
             case NOT_CONFIRMED:
                 binding.layoutStatusNotConfirmed.setVisibility(View.VISIBLE);
@@ -114,9 +148,8 @@ public class RefundOrderDetailFragment extends Fragment {
             int navigationActionId = R.id.action_refundOrderDetail_to_createRefundFragment;
 
             Bundle args = new Bundle();
-            args.putString("orderId", orderId); // Gửi orderId
+            args.putString("orderId", orderId);
 
-            // NavController và điều hướng
             if (getView() != null) {
                 Navigation.findNavController(getView()).navigate(navigationActionId, args);
             }
@@ -132,55 +165,43 @@ public class RefundOrderDetailFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_agree_not_refund, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
         final AlertDialog agreenotrefunddialog = builder.create();
 
-        // Tìm các nút bên trong layout dialog
         MaterialButton btnKeepRequest = dialogView.findViewById(R.id.btnConfirmCancel);
         MaterialButton btnConfirmCancel = dialogView.findViewById(R.id.btnKeepOrder);
 
-        // click cho các nút trong dialog
         btnKeepRequest.setOnClickListener(v -> {
             agreenotrefunddialog.dismiss();
         });
 
-        //"Xác nhận hủy" -> logic hủy và đóng dialog
         btnConfirmCancel.setOnClickListener(v -> {
             // TODO: Thêm logic gọi ViewModel/API để hủy đơn hàng
-            // Đóng dialog xác nhận
             agreenotrefunddialog.dismiss();
-            // Gọi hàm hiển thị dialog thành công
             showAgreeNotRefundSuccessfulDialog();
         });
-        // Làm trong suốt nền của Dialog
         if (agreenotrefunddialog.getWindow() != null) {
             agreenotrefunddialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
 
-        // Hiển thị dialog
         agreenotrefunddialog.show();
     }
 
     private void showAgreeNotRefundSuccessfulDialog() {
         if (getContext() == null) return;
 
-        // Inflate layout dialog THÀNH CÔNG
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_agree_not_refund_successful, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
         final AlertDialog successDialog = builder.create();
 
-        // "X" (ImageView)
         ImageView btnClose = dialogView.findViewById(R.id.btnCloseDialog);
 
-        // sự kiện click cho nút "X"
         if (btnClose != null) {
             btnClose.setOnClickListener(v -> {
                 successDialog.dismiss();
@@ -190,7 +211,6 @@ public class RefundOrderDetailFragment extends Fragment {
                     sharedViewModel.refreshOrderLists();
                 }
 
-                // Quay lại màn hình StatusOrderFragment
                 if (getView() != null) {
                     Navigation.findNavController(getView()).popBackStack();
                 }
@@ -201,18 +221,15 @@ public class RefundOrderDetailFragment extends Fragment {
             successDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
 
-        // Hiển thị dialog
         successDialog.show();
     }
 
     private void showCancelConfirmationDialog() {
         if (getContext() == null) return;
 
-        // Inflate (biến XML thành View) layout dialog
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_cancel_refund_request, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
@@ -220,11 +237,11 @@ public class RefundOrderDetailFragment extends Fragment {
 
         MaterialButton btnKeepRequest = dialogView.findViewById(R.id.btnConfirmCancel);
         MaterialButton btnConfirmCancel = dialogView.findViewById(R.id.btnKeepOrder);
-        // "Giữ yêu cầu" -> đóng dialog
+
         btnKeepRequest.setOnClickListener(v -> {
             dialog.dismiss();
         });
-        //"Xác nhận hủy" -> thực hiện logic hủy và đóng dialog
+
         btnConfirmCancel.setOnClickListener(v -> {
             // TODO: Thêm logic gọi ViewModel/API để hủy đơn hàng
 
@@ -237,27 +254,22 @@ public class RefundOrderDetailFragment extends Fragment {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
 
-        // Hiển thị dialog
         dialog.show();
     }
 
     private void showReturnConfirmationDialog() {
         if (getContext() == null) return;
 
-        //Inflate layout dialog THÀNH CÔNG
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_confirm_return_order, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
         final AlertDialog returnDialog = builder.create();
 
-        // "X" (ImageView)
         MaterialButton btnKeepRequest = dialogView.findViewById(R.id.btnConfirmCancel);
         MaterialButton btnConfirmCancel = dialogView.findViewById(R.id.btnKeepOrder);
-
 
         btnKeepRequest.setOnClickListener(v -> {
             returnDialog.dismiss();
@@ -275,27 +287,22 @@ public class RefundOrderDetailFragment extends Fragment {
             returnDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
 
-        //Hiển thị dialog
         returnDialog.show();
     }
 
     private void showCancelSuccessfulDialog() {
         if (getContext() == null) return;
 
-        // Inflate layout dialog THÀNH CÔNG
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_cancel_refund_request_successful, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
         final AlertDialog successDialog = builder.create();
 
-        // Tìm nút "X" (ImageView)
         ImageView btnClose = dialogView.findViewById(R.id.btnCloseDialog);
 
-        // sự kiện click cho nút "X"
         if (btnClose != null) {
             btnClose.setOnClickListener(v -> {
                 successDialog.dismiss();
@@ -307,7 +314,6 @@ public class RefundOrderDetailFragment extends Fragment {
                     sharedViewModel.refreshOrderLists();
                 }
 
-                // Quay lại màn hình StatusOrderFragment
                 if (getView() != null) {
                     Navigation.findNavController(getView()).popBackStack();
                 }
@@ -327,16 +333,13 @@ public class RefundOrderDetailFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_confirm_return_order_successful, null);
 
-        // Tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setView(dialogView);
 
         final AlertDialog successDialog = builder.create();
 
-        // "X" (ImageView)
         ImageView btnClose = dialogView.findViewById(R.id.btnCloseDialog);
 
-        // sự kiện click cho nút "X"
         if (btnClose != null) {
             btnClose.setOnClickListener(v -> {
                 successDialog.dismiss();
@@ -346,7 +349,6 @@ public class RefundOrderDetailFragment extends Fragment {
                     sharedViewModel.refreshOrderLists();
                 }
 
-                // Quay lại màn hình StatusOrderFragment
                 if (getView() != null) {
                     Navigation.findNavController(getView()).popBackStack();
                 }
@@ -357,7 +359,6 @@ public class RefundOrderDetailFragment extends Fragment {
             successDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
 
-        // Hiển thị dialog
         successDialog.show();
     }
     @Override

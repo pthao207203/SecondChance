@@ -607,6 +607,7 @@
             android:text="Trở thành người bán"
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_test"
             android:layout_width="wrap_content"
@@ -621,7 +622,6 @@
             android:text="Test product list"
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
-
 
     </LinearLayout>
 </ScrollView>

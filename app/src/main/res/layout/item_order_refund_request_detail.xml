@@ -8,20 +8,17 @@
     android:layout_marginBottom="8dp"
     android:background="?attr/selectableItemBackground">
 
-    <!-- Checkbox chọn sản phẩm -->
     <CheckBox
         android:id="@+id/cbSelect"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         android:button="@drawable/checkbox_selector"
-        android:background="@null"
-        android:padding="8dp"
+        android:background="@android:color/transparent"
         android:focusable="false"
         android:focusableInTouchMode="false"/>
 
-    <!-- Ảnh sản phẩm -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivProduct"
         android:layout_width="@dimen/product_image"
@@ -32,7 +29,6 @@
         app:strokeWidth="0dp"
         android:layout_marginEnd="12dp"/>
 
-    <!-- Thông tin sản phẩm -->
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

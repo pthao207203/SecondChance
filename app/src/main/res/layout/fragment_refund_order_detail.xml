@@ -30,13 +30,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sản phẩm mua hàng"
+                    android:text="Sản phẩm muốn trả"
                     android:textColor="@color/darkerDay"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
                 <!-- RecyclerView cho danh sách sản phẩm -->
-                <androidx.recyclerview.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvOrderItems"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ảnh/ video phản ánh"
-                    android:textColor="#222222"
+                    android:textColor="@color/darkerDay"
                     android:textStyle="bold"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"/>
@@ -97,7 +97,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
-                tools:visibility="visible"> <TextView
+                tools:visibility="visible">
+
+                <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguyên nhân"
@@ -105,20 +107,24 @@
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
-                <EditText
-                    android:id="@+id/etReason"
+
+                <LinearLayout
+                    android:id="@+id/layout_common_reason2"
                     android:layout_width="match_parent"
-                    android:layout_height="228dp"
-                    android:background="@color/grayDay"
-                    android:gravity="top|start"
-                    android:hint="Sản phẩm khác mô tả, hoàn toàn không giống..."
-                    android:inputType="textMultiLine"
-                    android:padding="12dp"
-                    android:textSize="14sp" />
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvReason2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sản phẩm khác mô tả, hoàn toàn không giống..."
+                        android:textColor="@color/darkerDay"
+                        android:background="#F5F5F5"
+                        android:padding="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+                </LinearLayout>
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancelRequest"
                     android:layout_width="match_parent"
@@ -240,13 +246,6 @@
                         android:textColor="@color/darkerDay" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

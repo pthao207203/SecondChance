@@ -152,8 +152,7 @@ public class BoughtFragment extends Fragment {
         public int getItemCount() {
             return items != null ? items.size() : 0;
         }
-        
-        //  ViewHolder: Chưa đánh giá
+
         private static class NotEvaluatedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;
@@ -176,14 +175,13 @@ public class BoughtFragment extends Fragment {
                 tvTitle.setText(order.getTitle());
                 tvPrice.setText(order.getPrice());
                 tvSubtitleDate.setText(order.getDate());
-                tvStatusReview.setText(order.getStatusText()); // "Chưa đánh giá"
+                tvStatusReview.setText(order.getStatusText());
                 itemView.setOnClickListener(v -> {
                     if (listener != null) listener.onOrderClick(order.getId(), order.isEvaluated());
                 });
             }
         }
-        
-        //  ViewHolder: Đã đánh giá
+
         private static class EvaluatedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;
@@ -206,7 +204,7 @@ public class BoughtFragment extends Fragment {
                 tvTitle.setText(order.getTitle());
                 tvPrice.setText(order.getPrice());
                 tvSubtitleDate.setText(order.getDate());
-                tvStatusReview.setText(order.getStatusText()); // "Đã đánh giá"
+                tvStatusReview.setText(order.getStatusText());
                 itemView.setOnClickListener(v -> {
                     if (listener != null) listener.onOrderClick(order.getId(), order.isEvaluated());
                 });

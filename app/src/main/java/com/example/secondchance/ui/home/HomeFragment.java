@@ -1,4 +1,4 @@
-package com.example.secondchance.ui.home; // Hoặc package tương ứng của bạn
+package com.example.secondchance.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-
 import com.example.secondchance.R;
+import com.google.android.material.card.MaterialCardView;
 import com.example.secondchance.ui.card.ProductCard;
-import com.google.android.material.card.MaterialCardView; // 👈 THÊM IMPORT NÀY
 
 public class HomeFragment extends Fragment {
 
@@ -27,6 +26,21 @@ public class HomeFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+
+    MaterialCardView cardNegotiation = view.findViewById(R.id.card_negotiation);
+
+    if (cardNegotiation != null) {
+      cardNegotiation.setOnClickListener(v -> {
+        try {
+          NavController navController = Navigation.findNavController(v);
+          navController.navigate(R.id.action_homeFragment_to_negotiationFragment);
+        } catch (Exception e) {
+          Log.e("HomeFragment", "Lỗi điều hướng: ", e);
+        }
+      });
+    } else {
+      Log.w("HomeFragment", "Không tìm thấy View với ID: card_negotiation");
+    }
 
     View btnSeeAll = view.findViewById(R.id.tvSeeAllAuction);
     if (btnSeeAll != null) {
@@ -43,23 +57,16 @@ public class HomeFragment extends Fragment {
     View auctionCard = view.findViewById(R.id.auction_card_home);
     if (auctionCard != null) {
       auctionCard.setOnClickListener(v -> {
-        // 1. Tạo ProductCard bằng tay (vì nó là thẻ tĩnh)
         ProductCard product = new ProductCard();
         product.setTitle("Vòng hoa hướng dương vàng");
         product.setPrice("₫8.500.000");
         product.setQuantity(1);
-        // product.setImageRes(R.drawable.nhan1);
-        // product.setDescription("Mô tả cho vòng hoa...");
         product.setProductType(ProductCard.ProductType.AUCTION);
+        product.setTimeRemaining("02:39:12"); //
 
-        // === THÊM DÒNG NÀY VÀO ===
-        product.setTimeRemaining("02:39:12"); // <-- Gán thời gian tĩnh vào đây
-
-        // 2. Tạo Bundle
         Bundle bundle = new Bundle();
         bundle.putSerializable("product", product);
 
-        // 3. Điều hướng
         Navigation.findNavController(v).navigate(
                 R.id.action_home_navigation_detail_product,
                 bundle
@@ -67,26 +74,16 @@ public class HomeFragment extends Fragment {
       });
     }
 
-    // 1. Tìm MaterialCardView "Thương lượng" bằng ID bạn đã thêm ở Bước 3.1
-    MaterialCardView cardNegotiation = view.findViewById(R.id.card_negotiation);
-
-    // 2. Gán sự kiện click cho nó
     if (cardNegotiation != null) {
       cardNegotiation.setOnClickListener(v -> {
         try {
-          // 3. Tìm NavController từ View
           NavController navController = Navigation.findNavController(v);
-
-          // 4. Điều hướng bằng Action đã định nghĩa ở Bước 3.3
           navController.navigate(R.id.action_homeFragment_to_negotiationFragment);
-
         } catch (Exception e) {
-          // In lỗi nếu không thể điều hướng (ví dụ: action sai tên)
           Log.e("HomeFragment", "Lỗi điều hướng: ", e);
         }
       });
     } else {
-      // Cảnh báo nếu không tìm thấy ID
       Log.w("HomeFragment", "Không tìm thấy View với ID: card_negotiation");
     }
   }

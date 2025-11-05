@@ -39,8 +39,7 @@ public class DeliveringFragment extends Fragment {
         binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         
         loadDummyData();
-        
-        // Điều hướng trực tiếp bằng NavController
+
         adapter = new DeliveringAdapter(orderList, (orderId, deliveryStatus) -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
@@ -80,9 +79,7 @@ public class DeliveringFragment extends Fragment {
         
         if (adapter != null) adapter.notifyDataSetChanged();
     }
-    
-    // Adapter
-    
+
     private interface OnOrderClick {
         void openDetail(String orderId, @Nullable Order.DeliveryOverallStatus deliveryStatus);
     }

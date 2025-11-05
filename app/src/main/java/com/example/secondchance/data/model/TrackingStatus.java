@@ -11,7 +11,6 @@ public class TrackingStatus {
         this.isActive = isActive;
     }
 
-    // Getters
     public String getTimestamp() { return timestamp; }
     public String getStatusDescription() { return statusDescription; }
     public boolean isActive() { return isActive; }
