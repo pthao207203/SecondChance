@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -23,6 +24,11 @@ public class WalletPurchasedHistoryAdapter extends RecyclerView.Adapter<WalletPu
     this.data = data;
   }
   
+  public void setData(List<WalletHistoryItem> newData) {
+    data.clear();
+    data.addAll(newData);
+    notifyDataSetChanged();
+  }
   @NonNull @Override
   public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View v = LayoutInflater.from(parent.getContext())
@@ -32,7 +38,9 @@ public class WalletPurchasedHistoryAdapter extends RecyclerView.Adapter<WalletPu
   
   @Override public void onBindViewHolder(@NonNull VH h, int position) {
     WalletHistoryItem it = data.get(position);
-    h.ivThumb.setImageResource(it.thumbRes);
+    Glide.with(h.ivThumb.getContext())
+      .load(it.thumbRes)
+      .into(h.ivThumb);
     h.tvTitle.setText(it.title);
     h.tvSub.setText(it.sub);
     h.tvAmount.setText(it.price); // truyền vào chỉ số tiền "50.000"

@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <ImageView
+        android:id="@+id/auth_wave"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/frame1000002455"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <include
         android:id="@+id/header_main"
         layout="@layout/header"
@@ -41,16 +53,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-
         app:layout_constraintTop_toBottomOf="@id/order_tabs_appbar"
-        app:layout_constraintBottom_toTopOf="@+id/my_custom_menu"
-        app:navGraph="@navigation/mobile_navigation" />
+        app:layout_constraintBottom_toTopOf="@+id/my_custom_menu" />
 
     <include
         android:id="@+id/my_custom_menu"
