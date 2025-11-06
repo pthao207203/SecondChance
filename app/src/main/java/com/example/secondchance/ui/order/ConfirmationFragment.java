@@ -48,7 +48,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
         binding.rvOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         loadDummyData();
 
-        // Điều hướng trực tiếp bằng NavController
         adapter = new ConfirmationAdapter(
                 orderList,
                 (orderId, orderType) -> {
@@ -79,7 +78,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
         });
     }
 
-    // HÀM CALLBACK KHI NGƯỜI DÙNG BẤM "XÁC NHẬN HỦY" TRONG DIALOG
     @Override
     public void onCancelConfirmed(String orderId) {
         Log.d("ConfirmationFragment", "Order " + orderId + " confirmed for cancellation.");
@@ -115,7 +113,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
         super.onDestroyView();
     }
 
-    //Listener interfaces
     public interface OnItemClickListener {
         void onItemClick(String orderId, Order.OrderType orderType);
     }
@@ -123,7 +120,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
         void onCancelClick(String orderId);
     }
 
-    // Adapter
     private static class ConfirmationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private final List<Order> items;
@@ -192,7 +188,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
         @Override
         public int getItemCount() { return items != null ? items.size() : 0; }
 
-        // ViewHolder: UNCONFIRMED
         private static class UnconfirmedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct, imgDot;
             TextView tvTitle, tvPrice, tvQuantity, tvSubtitleFixed, tvSubtitleDate, tvStatus;
@@ -234,7 +229,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
             }
         }
 
-        // ViewHolder: CONFIRMED_FIXED
         private static class ConfirmedFixedViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct;
             TextView tvTitle, tvPrice, tvQuantity, tvSubtitleFixed, tvSubtitleDate, tvStatus, tvAuctionInfo;
@@ -269,7 +263,6 @@ public class ConfirmationFragment extends Fragment implements ConfirmCancelDialo
             }
         }
 
-        // ViewHolder: CONFIRMED_AUCTION
         private static class ConfirmedAuctionViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct;
             TextView tvTitle, tvPrice, tvQuantity, tvSubtitleFixed, tvSubtitleDate, tvStatus, tvAuctionInfo;

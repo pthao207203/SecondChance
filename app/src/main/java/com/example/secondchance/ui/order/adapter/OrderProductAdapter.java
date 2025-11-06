@@ -39,7 +39,6 @@ public class OrderProductAdapter extends RecyclerView.Adapter<OrderProductAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderProduct p = productList.get(position);
 
-        // Thiết lập dữ liệu
         holder.tvTitle.setText(p.getTitle());
         holder.tvDesc.setText(p.getSubtitle());
         holder.tvPrice.setText(p.getPrice());

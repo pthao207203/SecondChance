@@ -9,16 +9,16 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/order_tab_layout_local"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:background="@color/whiteDay"
-        app:tabMode="scrollable"
         app:tabBackground="@drawable/tab_background_selector"
         app:tabIndicatorHeight="0dp"
-        app:tabSelectedTextColor="@color/darkerDay"
-        app:tabTextColor="@color/darkerDay"
+        app:tabMode="scrollable"
         app:tabRippleColor="@android:color/transparent"
-        />
+        app:tabSelectedTextColor="@color/darkerDay"
+        app:tabTextColor="@color/darkerDay" />
 
     <View
         android:layout_width="match_parent"

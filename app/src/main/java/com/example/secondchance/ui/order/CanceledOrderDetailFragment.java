@@ -43,10 +43,8 @@ public class CanceledOrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Cài đặt RecyclerView cho danh sách sản phẩm
         setupProductRecyclerView();
 
-        // Tải dữ liệu chi tiết
         if (receivedOrderId != null) {
             loadCanceledOrderDetails(receivedOrderId);
         } else {
@@ -54,7 +52,6 @@ public class CanceledOrderDetailFragment extends Fragment {
             Toast.makeText(getContext(), "Lỗi tải chi tiết đơn hàng.", Toast.LENGTH_SHORT).show();
         }
 
-        // Xử lý nút "MUA LẠI"
         binding.btnBuyAgain.setOnClickListener(v -> {
             Log.d(TAG, "Buy Again clicked for order: " + receivedOrderId);
             Toast.makeText(getContext(), "Xử lý Mua lại...", Toast.LENGTH_SHORT).show();
@@ -63,7 +60,6 @@ public class CanceledOrderDetailFragment extends Fragment {
 
     }
 
-    // cài đặt RV sản phẩm
     private void setupProductRecyclerView() {
         productAdapter = new OrderItemAdapter(getContext(), productList);
         binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,7 +68,6 @@ public class CanceledOrderDetailFragment extends Fragment {
         Log.d(TAG, "Product RecyclerView setup complete.");
     }
 
-    // tải dữ liệu chi tiết
     private void loadCanceledOrderDetails(String orderId) {
         Log.d(TAG, "Placeholder: Load canceled order details for " + orderId);
         // TODO: Gọi API/Database lấy thông tin chi tiết đơn hàng ĐÃ HỦY
@@ -86,12 +81,10 @@ public class CanceledOrderDetailFragment extends Fragment {
 
     }
 
-    // load sản phẩm giả
     private void loadDummyProductData() {
         productList.clear();
         productList.add(new OrderItem(R.drawable.nhan1, "Sản phẩm đã hủy 1", "Mô tả...", "10.000"));
     }
-
 
     @Override
     public void onDestroyView() {

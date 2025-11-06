@@ -46,7 +46,6 @@ public class RefundFragment extends Fragment {
         
         loadDummyData();
 
-        // Điều hướng trực tiếp từ fragment qua NavController
         adapter = new RefundOrdersAdapter(dummyOrderList, (orderId, refundStatus) -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
@@ -74,10 +73,8 @@ public class RefundFragment extends Fragment {
 
                 Log.d("RefundFragment", "Nhận lệnh refresh, tải lại dữ liệu...");
 
-                // Gọi lại hàm tải dữ liệu c
                 loadDummyData();
 
-                // Đánh dấu là đã xử lý xong
                 sharedViewModel.clearRefreshRequest();
             }
         });
@@ -107,10 +104,7 @@ public class RefundFragment extends Fragment {
         binding = null;
         super.onDestroyView();
     }
-    
-    // Adapter
-    
-    //Callback click item
+
     private interface OnOrderClickListener {
         void onClick(String orderId, @Nullable Order.RefundStatus refundStatus);
     }

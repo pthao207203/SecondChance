@@ -15,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
 import android.widget.LinearLayout;
-
-
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 
@@ -118,10 +116,9 @@ public class ProfileFragment extends Fragment {
         // Lấy NavController
         final NavController navController = Navigation.findNavController(view);
 
-        //btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
+        btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
 
         View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
-
         view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
         view.findViewById(R.id.tvName).setOnClickListener(editProfileClickListener);
 
@@ -142,11 +139,11 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show();
             // TODO: Implement logout logic
         });
-        
+
         view.findViewById(R.id.tvViewDetails).setOnClickListener(
           v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_wallet)
         );
-        
+
         // Order History
         LinearLayout btnPending = view.findViewById(R.id.btnPending);
         if (btnPending != null) {

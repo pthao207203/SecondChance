@@ -17,23 +17,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/whiteDay"
                 android:orientation="vertical"
-                android:background="#F5F5F5"
                 android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sản phẩm mua hàng"
+                    android:layout_marginBottom="8dp"
+                    android:text="Sản phẩm muốn trả"
                     android:textColor="@color/darkerDay"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"/>
+                    android:textStyle="bold" />
 
                 <!-- RecyclerView cho danh sách sản phẩm -->
                 <androidx.recyclerview.widget.RecyclerView
@@ -42,13 +41,21 @@
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/whiteDay"
+                android:padding="16dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ảnh/ video phản ánh"
-                    android:textColor="#222222"
+                    android:textColor="@color/darkerDay"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"/>
 
                 <LinearLayout
@@ -63,69 +70,45 @@
                         android:scaleType="centerCrop"
                         android:layout_marginEnd="8dp"/>
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_common_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nguyên nhân"
-                        android:textColor="@color/darkerDay"
-                        android:textStyle="bold"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"/>
-                    <TextView
-                        android:id="@+id/tvReason"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sản phẩm khác mô tả, hoàn toàn không giống..."
-                        android:textColor="@color/darkerDay"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"/>
-                </LinearLayout>
-
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/layout_status_not_confirmed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
                 android:orientation="vertical"
                 android:visibility="gone"
-                tools:visibility="visible"> <TextView
+                tools:visibility="visible">
+
+                <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguyên nhân"
-                android:textColor="#222222"
+                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
+
                 <EditText
                     android:id="@+id/etReason"
                     android:layout_width="match_parent"
-                    android:layout_height="228dp"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/edittext_border_gray"
                     android:gravity="top|start"
                     android:hint="Sản phẩm khác mô tả, hoàn toàn không giống..."
                     android:inputType="textMultiLine"
                     android:padding="12dp"
                     android:textSize="14sp" />
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancelRequest"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="16dp"
                     android:text="Hủy yêu cầu"
-                    app:backgroundTint="#E56D2D"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/normalDay"
+                    android:textColor="@color/whiteDay"
                     app:cornerRadius="8dp" />
             </LinearLayout>
 
@@ -241,13 +224,6 @@
                         android:textStyle="bold" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

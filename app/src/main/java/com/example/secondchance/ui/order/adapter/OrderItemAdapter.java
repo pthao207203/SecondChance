@@ -38,7 +38,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
         return itemList == null ? 0 : itemList.size();
     }
 
-    // Lớp ViewHolder
     class OrderItemViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView ivProduct;
         TextView tvTitle, tvDesc, tvPrice;
@@ -51,7 +50,6 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
             tvPrice = itemView.findViewById(R.id.tvPrice);
         }
 
-        // gán dữ liệu
         void bind(OrderItem item) {
             tvTitle.setText(item.getTitle());
             tvDesc.setText(item.getDescription());

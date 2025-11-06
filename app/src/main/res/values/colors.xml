@@ -34,6 +34,7 @@
 
     <color name="whiteNight">#1C1B1F</color>
     <color name="grayNight">#441A02</color>
+    <color name="grayLight">#EFF1F5</color>
     <color name="blackNight">#FFFFFF</color>
     <color name="lighterNight">#6D2902</color>
     <color name="lightNight">#913703</color>

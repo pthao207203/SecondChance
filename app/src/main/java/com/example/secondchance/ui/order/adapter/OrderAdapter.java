@@ -11,28 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondchance.data.model.Order;
 import com.example.secondchance.R;
-
 import java.util.List;
-
 public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private Context context;
     private List<Order> orderList;
     private OnItemClickListener itemClickListener;
     private OnCancelClickListener cancelClickListener;
-
     private static final int VIEW_TYPE_UNCONFIRMED = 1;
     private static final int VIEW_TYPE_CONFIRMED_FIXED = 2;
     private static final int VIEW_TYPE_CONFIRMED_AUCTION = 3;
-
-
     public interface OnItemClickListener {
         void onItemClick(String orderId);
     }
     public interface OnCancelClickListener {
         void onCancelClick(String orderId);
     }
-
     public OrderAdapter(Context context, List<Order> orderList, OnItemClickListener itemClickListener, OnCancelClickListener cancelClickListener) {
         this.context = context;
         this.orderList = orderList;

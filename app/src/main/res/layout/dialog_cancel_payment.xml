@@ -41,8 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Xác nhận hủy"
-                android:textColor="#F25C05"
-                app:backgroundTint="#E0DCDC"
+                android:textColor="@color/darkerDay"
+                app:backgroundTint="@color/grayDay"
                 app:strokeWidth="0dp"
                 app:cornerRadius="@dimen/radius_m" />
 
@@ -54,9 +54,9 @@
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/text_16"
                 android:text="hoàn tác"
-                android:textColor="#F25C05"
+                android:textColor="@color/normalDay"
                 android:textStyle="bold"
-                app:strokeColor="#F25C05"
+                app:strokeColor="@color/normalDay"
                 app:cornerRadius="@dimen/radius_m" />
         </LinearLayout>
     </LinearLayout>
