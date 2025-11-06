@@ -3,6 +3,7 @@ package com.example.secondchance.ui.card;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 import com.example.secondchance.databinding.FragmentDetailProductBinding;
 import com.google.android.material.button.MaterialButton;
@@ -364,31 +366,33 @@ public class DetailProductFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void showProduct(ProductCard product) {
-        binding.shopAvatar.setImageResource(product.getImageRes());
+        // 🔁 Load ảnh: ưu tiên URL, fallback về imageRes/placeholder
+        if (!TextUtils.isEmpty(product.getImageUrl())) {
+            Glide.with(binding.shopAvatar)
+              .load(product.getImageUrl())
+              .into(binding.shopAvatar);
+        }
+        
         binding.textViewTitle.setText(product.getTitle());
         binding.priceValue.setText(product.getPrice());
         binding.priceCurrency.setText("đ");
         binding.productQuantity.setText("Số lượng: " + product.getQuantity());
         binding.productDescription.setText(product.getDescription());
-
+        
         int bgColor = product.getProductType() == ProductCard.ProductType.NEGOTIATION
-                ? R.color.highlight3blur : R.color.grayDay;
+          ? R.color.highlight3blur : R.color.grayDay;
         binding.cardNegotiation.setCardBackgroundColor(requireContext().getColor(bgColor));
-
+        
         if (product.getProductType() == ProductCard.ProductType.AUCTION) {
             binding.textBuyNow.setText("ĐẤU GIÁ");
             binding.cardBuyNow.setCardBackgroundColor(requireContext().getColor(R.color.normalDay));
-        } else {
-            binding.textBuyNow.setText("MUA NGAY");
-            binding.cardBuyNow.setCardBackgroundColor(requireContext().getColor(R.color.normalDay));
-        }
-
-        if (product.getProductType() == ProductCard.ProductType.AUCTION) {
             binding.iconcart.setImageResource(R.drawable.timer);
             binding.textAddToCart.setText(product.getTimeRemaining());
             binding.textAddToCart.setGravity(Gravity.CENTER);
             binding.cardAddToCart.setCardBackgroundColor(requireContext().getColor(R.color.highlight4blur));
         } else {
+            binding.textBuyNow.setText("MUA NGAY");
+            binding.cardBuyNow.setCardBackgroundColor(requireContext().getColor(R.color.normalDay));
             binding.iconcart.setImageResource(R.drawable.shopping_cart_02);
             binding.textAddToCart.setText("Thêm vào giỏ hàng");
             binding.textAddToCart.setGravity(Gravity.CENTER);

@@ -3,7 +3,10 @@ agp = "8.13.0"
 appcompat = "1.7.1"
 cardviewV7 = "28.0.0"
 circleimageview = "3.1.0"
+communityMaterialTypeface = "7.0.96.0-kotlin"
+communityMaterialTypefaceVersion = "7.0.96.1-kotlin"
 compiler = "5.0.5"
+compilerVersion = "4.16.0"
 constraintlayout = "2.2.1"
 converterGson = "2.11.0"
 databindingRuntime = "8.13.0"
@@ -11,7 +14,10 @@ espressoCore = "3.7.0"
 firebaseAuth = "24.0.1"
 firebaseBom = "34.4.0"
 flexbox = "3.0.0"
-glide = "5.0.5"
+googleMaterialTypeface = "4.0.0.2-kotlin"
+googleMaterialTypefaceVersion = "4.0.0.3-kotlin"
+iconicsCore = "5.4.0"
+iconicsViews = "5.4.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 lifecycleLivedataKtx = "2.9.3"
@@ -21,12 +27,16 @@ material = "1.13.0"
 navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
 retrofit = "2.11.0"
+weatherIconsTypeface = "2.0.10.8-kotlin"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 cardview-v7 = { group = "com.android.support", name = "cardview-v7", version.ref = "cardviewV7" }
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
+community-material-typeface = { module = "com.mikepenz:community-material-typeface", version.ref = "communityMaterialTypeface" }
+community-material-typeface-v70961kotlin = { module = "com.mikepenz:community-material-typeface", version.ref = "communityMaterialTypefaceVersion" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
+compiler-v4160 = { module = "com.github.bumptech.glide:compiler", version.ref = "compilerVersion" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
@@ -37,6 +47,10 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "compiler" }
+google-material-typeface = { module = "com.mikepenz:google-material-typeface", version.ref = "googleMaterialTypeface" }
+google-material-typeface-v4003kotlin = { module = "com.mikepenz:google-material-typeface", version.ref = "googleMaterialTypefaceVersion" }
+iconics-core = { module = "com.mikepenz:iconics-core", version.ref = "iconicsCore" }
+iconics-views = { module = "com.mikepenz:iconics-views", version.ref = "iconicsViews" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
@@ -45,6 +59,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+weather-icons-typeface = { module = "com.mikepenz:weather-icons-typeface", version.ref = "weatherIconsTypeface" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

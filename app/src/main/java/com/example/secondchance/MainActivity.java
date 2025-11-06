@@ -1,8 +1,18 @@
 package com.example.secondchance;
 
+import androidx.navigation.NavOptions;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -11,7 +21,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.ActivityMainBinding;
+import com.example.secondchance.viewmodel.SharedViewModel;
+import com.example.secondchance.ui.home.HomeFragment;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+
+
+
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.R;
 
@@ -21,15 +43,62 @@ public class MainActivity extends AppCompatActivity {
   private SharedViewModel sharedViewModel;
   private boolean backBusy = false;
 
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
       Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e);
     });
     super.onCreate(savedInstanceState);
+
+    AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.forLanguageTags("vi")
+    );
+
+    RetrofitProvider.init(this);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
+
+
+//     Lấy NavController từ NavHostFragment
+//    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+//            .findFragmentById(R.id.fragment_container);
+//    if (navHostFragment != null) {
+//      navController = navHostFragment.getNavController();
+//    }
+
+    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
+      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+      navController.navigate(R.id.navigation_home);
+    });
+
+
+
+    // Setup bottom navigation
+//    binding.menu.navHome.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_home);
+//      }
+//    });
+//
+//    binding.menu.navAi.setOnClickListener(v ->
+//            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navNegotiate.setOnClickListener(v ->
+//            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()
+//    );
+//
+//    binding.menu.navMe.setOnClickListener(v -> {
+//      if (navController != null) {
+//        navController.navigate(R.id.navigation_profile);
+//      }
+//    });
+
+
+
+
 
     // Khởi tạo SharedViewModel
     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
@@ -84,6 +153,16 @@ public class MainActivity extends AppCompatActivity {
     View searchContainer = binding.headerMain.searchContainer;
     View iconBack = binding.headerMain.iconBack;
     TextView tvTitle = binding.headerMain.tvHeaderTitle;
+    View orderTabsAppBar = binding.orderTabsAppbar;
+
+    // ẨN/HIỆN THANH TAB Chỉ hiện khi ở màn hình OrderFragment (navigation_order)
+    if (destinationId == R.id.navigation_order) {
+      orderTabsAppBar.setVisibility(View.VISIBLE);
+      Log.d("MainActivity", "TabLayout VISIBLE");
+    } else { // Ẩn ở tất cả màn hình khác (Home, Profile, Chi tiết...)
+      orderTabsAppBar.setVisibility(View.GONE);
+      Log.d("MainActivity", "TabLayout GONE");
+    }
 
     // ẨN/HIỆN HEADER CHÍNH
     if (destinationId == R.id.navigation_home) {
@@ -100,6 +179,9 @@ public class MainActivity extends AppCompatActivity {
 
       // Back mặc định
       wireBackIcon(iconBack);
+//      iconBack.setOnClickListener(v -> {
+//        if (!navController.popBackStack()) navController.navigateUp();
+//      });
 
       // logic tiêu đề cho navigation_negotiation
       if (destinationId == R.id.navigation_order) {
@@ -172,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
     });
   }
 
+  // --- Các hàm xử lý chung khi click icon ---
   private void openCartScreen() {
     Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
     // TODO: mở màn hình Giỏ hàng
