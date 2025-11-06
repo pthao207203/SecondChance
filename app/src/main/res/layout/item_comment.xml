@@ -49,6 +49,7 @@
 
                     <!-- Avatar -->
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageViewAvatar"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/avatar1"
@@ -160,15 +161,17 @@
                             android:gravity="left">
 
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/imageReview1"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
-                                android:src="@drawable/giohoa1"
-                                android:scaleType="centerCrop"
-                                app:shapeAppearanceOverlay="@style/RoundedImageView_8dp"
                                 android:layout_marginEnd="5dp"
-                                android:contentDescription="review image 1" />
+                                android:contentDescription="review image 1"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/giohoa1"
+                                app:shapeAppearanceOverlay="@style/RoundedImageView_8dp" />
 
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/imageReview2"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
                                 android:src="@drawable/giohoa2"
@@ -178,6 +181,7 @@
                                 android:contentDescription="review image 2" />
 
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/imageReview3"
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
                                 android:src="@drawable/giohoa3"

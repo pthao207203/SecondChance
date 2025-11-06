@@ -2,13 +2,14 @@
 package com.example.secondchance.ui.comment;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.bumptech.glide.Glide;
+import com.example.secondchance.R;
 import com.example.secondchance.databinding.ItemCommentBinding;
 
 public class CommentAdapter extends ListAdapter<Comment, CommentAdapter.ViewHolder> {
@@ -40,7 +41,35 @@ public class CommentAdapter extends ListAdapter<Comment, CommentAdapter.ViewHold
 
         void bind(Comment comment) {
             binding.setComment(comment);
-            binding.setHasReply(comment.hasReply());
+            binding.setHasReply(false);
+
+            // Load avatar
+            Glide.with(itemView.getContext())
+                    .load(comment.getAvatarUrl())
+                    .placeholder(R.drawable.avatar1)
+                    .circleCrop()
+                    .into(binding.imageViewAvatar);
+
+            // Load 3 ảnh media
+            var media = comment.getMedia();
+            var images = new android.widget.ImageView[]{
+                    binding.imageReview1,
+                    binding.imageReview2,
+                    binding.imageReview3
+            };
+
+            for (int i = 0; i < images.length; i++) {
+                if (i < media.size() && media.get(i) != null) {
+                    images[i].setVisibility(View.VISIBLE);
+                    Glide.with(itemView.getContext())
+                            .load(media.get(i))
+                            .placeholder(R.drawable.giohoa1)
+                            .into(images[i]);
+                } else {
+                    images[i].setVisibility(View.GONE);
+                }
+            }
+
             binding.executePendingBindings();
         }
     }
@@ -48,14 +77,12 @@ public class CommentAdapter extends ListAdapter<Comment, CommentAdapter.ViewHold
     static class DiffCallback extends DiffUtil.ItemCallback<Comment> {
         @Override
         public boolean areItemsTheSame(@NonNull Comment oldItem, @NonNull Comment newItem) {
-            return oldItem == newItem;
+            return oldItem.getId().equals(newItem.getId());
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Comment oldItem, @NonNull Comment newItem) {
-            return oldItem.hasReply() == newItem.hasReply() &&
-                    oldItem.getName().equals(newItem.getName()) &&
-                    oldItem.getContent().equals(newItem.getContent());
+            return oldItem.getContent().equals(newItem.getContent());
         }
     }
 }

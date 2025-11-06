@@ -91,7 +91,6 @@ public class CreateOrderReturnRequestFragment extends Fragment
         Log.d(TAG, selectedCount + " item(s) selected. Button enabled: " + (selectedCount > 0));
     }
 
-    // Tải dữ liệu mẫu
     private void loadDummyProductData() {
         productList.clear();
 

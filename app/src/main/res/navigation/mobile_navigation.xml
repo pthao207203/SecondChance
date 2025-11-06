@@ -3,16 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/navigation_home">
+    app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
-    <action
-        android:id="@+id/action_homeFragment_to_negotiationFragment"
-        app:destination="@id/navigation_negotiation" />
+        <action
+            android:id="@+id/action_homeFragment_to_negotiationFragment"
+            app:destination="@id/navigation_negotiation" />
+        <action
+            android:id="@+id/action_home_navigation_detail_product"
+            app:destination="@id/navigation_detail_product" />
     </fragment>
 
     <fragment
@@ -26,7 +29,6 @@
         android:name="com.example.secondchance.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
-
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.secondchance.ui.profile.ProfileFragment"
@@ -34,8 +36,8 @@
         tools:layout="@layout/fragment_profile">
 
         <action
-        android:id="@+id/action_home_navigation_detail_product"
-        app:destination="@id/navigation_detail_product" />
+            android:id="@+id/action_home_navigation_detail_product"
+            app:destination="@id/navigation_detail_product" />
          <action
             android:id="@+id/action_home_to_auction"
             app:destination="@id/navigation_auction" />
@@ -70,20 +72,32 @@
             android:id="@+id/action_rule_seller_to_fill_info_seller"
             app:destination="@id/fragment_fill_info_seller" />
     </fragment>
+    <!-- FillInfoSellerFragment – GIỮ NGUYÊN -->
+    <fragment
+        android:id="@+id/fragment_fill_info_seller"
+        android:name="com.example.secondchance.ui.profile.FillInfoSellerFragment"
+        android:label="Thông tin người bán"
+        tools:layout="@layout/fragment_fill_info_seller" >
+
+        <action
+            android:id="@+id/action_fill_info_seller_to_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_detail_product"
         android:name="com.example.secondchance.ui.card.DetailProductFragment"
         android:label="Chi tiết"
         tools:layout="@layout/fragment_detail_product" >
-    <action
-        android:id="@+id/action_detail_product_to_shop_home"
-        app:destination="@id/navigation_shop_home" />
-    <action
-        android:id="@+id/action_detail_product_to_rule_auction"
-        app:destination="@id/navigation_rule_auction" />
-    <action
-        android:id="@+id/action_detail_product_to_negotiation"
-        app:destination="@id/navigation_negotiation" />
+        <action
+            android:id="@+id/action_detail_product_to_shop_home"
+            app:destination="@id/navigation_shop_home" />
+        <action
+            android:id="@+id/action_detail_product_to_rule_auction"
+            app:destination="@id/navigation_rule_auction" />
+        <action
+            android:id="@+id/action_detail_product_to_negotiation"
+            app:destination="@id/navigation_negotiation" />
     </fragment>
 
     <fragment
@@ -101,7 +115,6 @@
         android:name="com.example.secondchance.ui.auction.AuctionDetailFragment"
         android:label="Chi tiết đấu giá"
         tools:layout="@layout/fragment_auction_detail" />
-
 
     <fragment
         android:id="@+id/navigation_notifications"
@@ -219,6 +232,7 @@
             app:destination="@id/navigation_create_order_return_request" />
     </fragment>
 
+
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.secondchance.ui.profile.SettingFragment"
@@ -246,7 +260,6 @@
         <action
             android:id="@+id/action_editProfile_to_paymentMethod"
             app:destination="@id/paymentMethodFragment" />
-
     </fragment>
 
     <fragment
@@ -768,24 +781,6 @@
         android:name="com.example.secondchance.ui.comment.CommentFragment"
         android:label="Đánh giá" />
 
-        <!-- FillInfoSellerFragment – GIỮ NGUYÊN -->
-    <fragment
-    android:id="@+id/fragment_fill_info_seller"
-    android:name="com.example.secondchance.ui.profile.FillInfoSellerFragment"
-    android:label="Thông tin người bán"
-    tools:layout="@layout/fragment_fill_info_seller" >
-
-        <action
-            android:id="@+id/action_fill_info_seller_to_my_shop_home"
-            app:destination="@id/fragment_my_shop_home" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/fragment_my_shop_home"
-        android:name="com.example.secondchance.ui.shop.MyShopHomeFragment"
-        android:label="Cửa hàng của tôi"
-        tools:layout="@layout/fragment_my_shop_home" />
-
     <fragment
         android:id="@+id/navigation_auction"
         android:name="com.example.secondchance.ui.auction.AuctionFragment"
@@ -797,7 +792,5 @@
             app:destination="@id/navigation_detail_product" />
 
     </fragment>
-
-
 
 </navigation>

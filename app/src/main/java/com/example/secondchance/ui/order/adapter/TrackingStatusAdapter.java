@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.TrackingStatus;
-
 import java.util.List;
 
 public class TrackingStatusAdapter extends RecyclerView.Adapter<TrackingStatusAdapter.TrackingViewHolder> {

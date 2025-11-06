@@ -40,7 +40,7 @@ public class ConfirmOrderDetailFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentConfirmOrderDetailBinding.inflate(inflater, container, false);
-        // Lấy arguments
+
         if (getArguments() != null) {
             receivedOrderId = getArguments().getString("orderId");
             try {
@@ -60,7 +60,6 @@ public class ConfirmOrderDetailFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo SharedViewModel
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         if (receivedOrderId != null) {
@@ -74,7 +73,6 @@ public class ConfirmOrderDetailFragment extends Fragment
         updateBottomSection();
     }
 
-    // tải dữ liệu chi tiết
     private void loadOrderDetails(String orderId) {
         Log.d(TAG, "Loading dummy product list for order " + orderId);
         productList.clear();
@@ -95,7 +93,6 @@ public class ConfirmOrderDetailFragment extends Fragment
         Log.d(TAG, "RecyclerView setup complete with OrderItemAdapter.");
     }
 
-    // xử lý ẩn/hiện cuối trang
     private void updateBottomSection() {
         binding.btnCancelOrderDetail.setVisibility(View.GONE);
         binding.cvInfoConfirmedFixed.setVisibility(View.GONE);
@@ -124,30 +121,25 @@ public class ConfirmOrderDetailFragment extends Fragment
         }
     }
 
-    // HÀM CALLBACK KHI BẤM "XÁC NHẬN HỦY"
     @Override
     public void onCancelConfirmed(String orderId) {
         Log.d(TAG, "Đã xác nhận hủy đơn: " + orderId);
         // TODO: Gọi ViewModel để thực hiện API hủy đơn
-        // viewModel.cancelOrderOnServer(orderId);
-        // Sau khi gọi API, hiển thị dialog THÀNH CÔNG
         showSuccessDialog();
     }
 
-    // HÀM HIỂN THỊ DIALOG THÀNH CÔNG
     private void showSuccessDialog() {
         CancelSuccessDialog successDialog = new CancelSuccessDialog(this);
         successDialog.show(getParentFragmentManager(), CancelSuccessDialog.TAG);
     }
 
-    // HÀM CALLBACK KHI DIALOG "THÀNH CÔNG" BỊ ĐÓNG
     @Override
     public void onSuccessfulDismiss() {
         Log.d(TAG, "Đã đóng dialog thành công. Quay lại và chuyển tab.");
         sharedViewModel.refreshOrderLists();
         sharedViewModel.requestTabChange(3);
         NavController navController = Navigation.findNavController(requireView());
-        navController.popBackStack(); // Thoát khỏi màn hình Chi tiết
+        navController.popBackStack();
     }
     @Override
     public void onDestroyView() {

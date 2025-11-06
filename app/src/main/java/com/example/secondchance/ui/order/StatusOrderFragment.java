@@ -49,35 +49,28 @@ public class StatusOrderFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG_ACTIVITY, "onViewCreated - start");
 
-        // 1. Setup ViewPager Adapter (Giữ nguyên)
         ConfirmViewPagerAdapter viewPagerAdapter = new ConfirmViewPagerAdapter(this);
         binding.viewPager.setAdapter(viewPagerAdapter);
 
-        // 2. [XÓA BỎ] Không cần gửi ViewPager lên Activity nữa
-        // sharedViewModel.setViewPager(binding.viewPager); // 👈 XÓA DÒNG NÀY
 
-        // 3. [THAY THẾ] Kết nối TabLayout và ViewPager (làm tại đây)
-        TabLayout localTabLayout = binding.orderTabLayoutLocal; // Lấy TabLayout từ layout mới
+        TabLayout localTabLayout = binding.orderTabLayoutLocal;
         String[] titles = sharedViewModel.getTabTitles();
 
         new TabLayoutMediator(localTabLayout, binding.viewPager,
                 (tab, position) -> tab.setText(titles[position])
         ).attach();
 
-        // 4. Set tab/title ban đầu (Giữ nguyên)
         updateInitialTitle(initialSelectedTab);
         binding.viewPager.setCurrentItem(initialSelectedTab, false);
 
-        // 5. Lắng nghe các lệnh từ SharedViewModel (Giữ nguyên)
         observeViewModel();
 
-        // 6. [THÊM] Cập nhật tiêu đề khi bấm tab (logic này chuyển từ MainActivity về)
         localTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 String newTitle = "Đơn hàng " + titles[position];
-                sharedViewModel.updateTitle(newTitle); // Vẫn cập nhật title chung
+                sharedViewModel.updateTitle(newTitle);
             }
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
@@ -88,20 +81,18 @@ public class StatusOrderFragment extends Fragment {
 
     private void observeViewModel() {
 
-        // Lắng nghe yêu cầu CHUYỂN TAB (từ flow Hủy đơn)
         sharedViewModel.getRequestedTab().observe(getViewLifecycleOwner(), tabIndex -> {
             if (tabIndex != null) {
                 Log.d(TAG_ACTIVITY, "ViewModel requested tab change to: " + tabIndex);
                 binding.viewPager.setCurrentItem(tabIndex, false);
-                sharedViewModel.clearTabRequest(); // Reset lại yêu cầu
+                sharedViewModel.clearTabRequest();
             }
         });
 
     }
 
-    // Hàm cập nhật tiêu đề ban đầu
     private void updateInitialTitle(int position) {
-        String[] tabTitles = sharedViewModel.getTabTitles(); // Lấy từ VM
+        String[] tabTitles = sharedViewModel.getTabTitles();
         if (position >= 0 && position < tabTitles.length) {
             String initialTitle = "Đơn hàng " + tabTitles[position];
             sharedViewModel.updateTitle(initialTitle);
@@ -118,9 +109,6 @@ public class StatusOrderFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString("orderId", orderId);
 
-        // LOGIC GỬI ARGS CHO TỪNG LOẠI DETAIL
-
-        // CONFIRM
         if (actionId == R.id.action_orderFragment_to_confirmOrderDetailFragment) {
             if (detailType != null && detailType instanceof Order.OrderType) {
                 args.putSerializable("orderType", detailType);
@@ -131,7 +119,6 @@ public class StatusOrderFragment extends Fragment {
             }
         }
 
-        // DELIVERING
         if (actionId == R.id.action_orderFragment_to_deliveringOrderDetailFragment) {
             if (detailType != null && detailType instanceof Order.DeliveryOverallStatus) {
                 args.putSerializable("deliveryStatus", detailType);
@@ -140,7 +127,6 @@ public class StatusOrderFragment extends Fragment {
             }
         }
 
-        // BOUGHT
         if (actionId == R.id.action_orderFragment_to_boughtOrderDetailFragment) {
             if (detailType != null && detailType instanceof Boolean) {
                 args.putBoolean("isEvaluated", (Boolean) detailType);
@@ -151,13 +137,10 @@ public class StatusOrderFragment extends Fragment {
             }
         }
 
-        // CANCELED
         if (actionId == R.id.action_orderFragment_to_canceledOrderDetailFragment) {
-            // Chỉ cần orderId
             Log.d(TAG_ACTIVITY, "-> Navigating to CanceledDetail");
         }
 
-        // REFUND
         if (actionId == R.id.action_orderFragment_to_refundOrderDetailFragment) {
             if (detailType != null && detailType instanceof Order.RefundStatus) {
                 args.putSerializable("refundStatus", detailType);
@@ -168,7 +151,6 @@ public class StatusOrderFragment extends Fragment {
             }
         }
 
-        // Thực hiện navigate
         try {
             String actionName = getResources().getResourceName(actionId);
             Log.d(TAG_ACTIVITY, "Navigating with action: " + actionName);
@@ -179,7 +161,6 @@ public class StatusOrderFragment extends Fragment {
         }
     }
 
-    // Adapter
     private class ConfirmViewPagerAdapter extends FragmentStateAdapter {
         public ConfirmViewPagerAdapter(@NonNull Fragment fragment) {
             super(fragment);
@@ -188,7 +169,6 @@ public class StatusOrderFragment extends Fragment {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            // Xóa logic lưu vào mảng
             switch (position) {
                 case 0: return new ConfirmationFragment();
                 case 1: return new DeliveringFragment();

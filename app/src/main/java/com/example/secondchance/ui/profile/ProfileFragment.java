@@ -5,35 +5,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
-import android.widget.LinearLayout;
-
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView tvPendingCount;
-    private TextView tvShippingCount;
+    private TextView tvPendingCount, tvShippingCount;
     private TextView tvName, tvPhone, tvAddress, tvEmail;
     private ImageView ivAvatar;
     private ProfileViewModel viewModel;
-    private AppCompatButton btnTest;
+    private SellerViewModel sellerViewModel;
+
+    // Seller layouts
+    private LinearLayout layoutChatReview;
+    private LinearLayout layoutShopStatistics;
+    private LinearLayout layoutProductsOrders;
+    private LinearLayout layoutNegotiationsDashboards;
+    private LinearLayout layoutNameShop;
+    private TextView tvNoProduct;
     private AppCompatButton btnBecomeSeller;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+        sellerViewModel = new ViewModelProvider(requireActivity()).get(SellerViewModel.class);
     }
 
     @Nullable
@@ -47,17 +56,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo views
         initViews(view);
-
-        // Setup badge counts
-        setupBadgeCounts();
-
-        // Setup click listeners
+        setupBadgeCounts(); // Gọi để hiển thị badge
         setupClickListeners(view);
-
-        // Observe LiveData from ViewModel
         observeViewModel();
+        observeSellerStatus(); // Quan trọng: ẩn/hiện phần shop
     }
 
     private void initViews(View view) {
@@ -68,8 +71,29 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
-        btnTest = view.findViewById(R.id.btn_test);
+
+        tvNoProduct = view.findViewById(R.id.tvNoProduct);
         btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
+
+        layoutChatReview = view.findViewById(R.id.Chat_Review);
+        layoutShopStatistics = view.findViewById(R.id.ShopStatistics);
+        layoutProductsOrders = view.findViewById(R.id.Products_Orders);
+        layoutNegotiationsDashboards = view.findViewById(R.id.Negoitations_Dashboards);
+        layoutNameShop = view.findViewById(R.id.NameShop);
+    }
+
+    private void observeSellerStatus() {
+        sellerViewModel.getIsSeller().observe(getViewLifecycleOwner(), isSeller -> {
+            boolean isSellerMode = isSeller != null && isSeller;
+
+            layoutChatReview.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutShopStatistics.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutProductsOrders.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutNegotiationsDashboards.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutNameShop.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            tvNoProduct.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
+            btnBecomeSeller.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
+        });
     }
 
     private void observeViewModel() {
@@ -85,155 +109,73 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addressList -> {
             AddressItem defaultAddress = viewModel.getDefaultAddress();
-            if (defaultAddress != null) {
-                tvAddress.setText(defaultAddress.getAddress());
-            } else {
-                tvAddress.setText("Chưa có địa chỉ mặc định");
-            }
+            tvAddress.setText(defaultAddress != null ? defaultAddress.getAddress() : "Chưa có địa chỉ mặc định");
         });
     }
 
-
     private void setupBadgeCounts() {
-        // TODO: Lấy dữ liệu thực từ API hoặc database
         int pendingCount = 0;
         int shippingCount = 17;
 
-        if (pendingCount > 0) {
-            tvPendingCount.setText(String.valueOf(pendingCount));
-            tvPendingCount.setVisibility(View.VISIBLE);
-        } else {
-            tvPendingCount.setVisibility(View.GONE);
-        }
+        tvPendingCount.setText(String.valueOf(pendingCount));
+        tvPendingCount.setVisibility(pendingCount > 0 ? View.VISIBLE : View.GONE);
 
-        if (shippingCount > 0) {
-            tvShippingCount.setText(String.valueOf(shippingCount));
-            tvShippingCount.setVisibility(View.VISIBLE);
-        } else {
-            tvShippingCount.setVisibility(View.GONE);
-        }
+        tvShippingCount.setText(String.valueOf(shippingCount));
+        tvShippingCount.setVisibility(shippingCount > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void setupClickListeners(View view) {
-        // Lấy NavController
-        final NavController navController = Navigation.findNavController(view);
+        NavController navController = Navigation.findNavController(view);
 
-        //btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
-
-        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
-
-        view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
-        view.findViewById(R.id.tvName).setOnClickListener(editProfileClickListener);
+        // Avatar + Name → Edit Profile
+        View.OnClickListener editProfile = v -> navController.navigate(R.id.action_profile_to_editProfile);
+        ivAvatar.setOnClickListener(editProfile);
+        tvName.setOnClickListener(editProfile);
 
         // Top Tabs
-        view.findViewById(R.id.tabAccountInfo).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Điều khoản", Toast.LENGTH_SHORT).show()
-        );
+        view.findViewById(R.id.tabAccountInfo).setOnClickListener(v -> Toast.makeText(requireContext(), "Điều khoản", Toast.LENGTH_SHORT).show());
+        view.findViewById(R.id.tabSupport).setOnClickListener(v -> Toast.makeText(requireContext(), "Hỗ trợ", Toast.LENGTH_SHORT).show());
+        view.findViewById(R.id.tabSettings).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_settings));
+        view.findViewById(R.id.tabLogout).setOnClickListener(v -> Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show());
 
-        view.findViewById(R.id.tabSupport).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Hỗ trợ", Toast.LENGTH_SHORT).show()
-        );
+        // Wallet
+        view.findViewById(R.id.tvViewDetails).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_wallet));
 
-        view.findViewById(R.id.tabSettings).setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_profile_to_settings);
-        });
-
-        view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show();
-            // TODO: Implement logout logic
-        });
-        
-        view.findViewById(R.id.tvViewDetails).setOnClickListener(
-          v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_wallet)
-        );
-        
-        // Order History
-        LinearLayout btnPending = view.findViewById(R.id.btnPending);
-        if (btnPending != null) {
-            btnPending.setOnClickListener(v -> {
-                Bundle args = new Bundle();
-                args.putInt("selectedTab", 0);
-                navController.navigate(R.id.action_profile_to_orderFragment, args);
-            });
+        // Order History Tabs
+        int[] tabs = {0, 1, 2, 3, 4};
+        int[] ids = {R.id.btnPending, R.id.btnShipping, R.id.btnPurchased, R.id.btnCancelled, R.id.btnRefund};
+        for (int i = 0; i < ids.length; i++) {
+            View btn = view.findViewById(ids[i]);
+            if (btn != null) {
+                int tab = tabs[i];
+                btn.setOnClickListener(v -> {
+                    Bundle args = new Bundle();
+                    args.putInt("selectedTab", tab);
+                    navController.navigate(R.id.action_profile_to_orderFragment, args);
+                });
+            }
         }
 
-        LinearLayout btnShipping = view.findViewById(R.id.btnShipping);
-        if (btnShipping != null) {
-            btnShipping.setOnClickListener(v -> {
-                Bundle args = new Bundle();
-                args.putInt("selectedTab", 1);
-                navController.navigate(R.id.action_profile_to_orderFragment, args);
-            });
-        }
+        // Become Seller Button
+        btnBecomeSeller.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_rule_seller));
 
-        LinearLayout btnPurchased = view.findViewById(R.id.btnPurchased);
-        if (btnPurchased != null) {
-            btnPurchased.setOnClickListener(v -> {
-                Bundle args = new Bundle();
-                args.putInt("selectedTab", 2);
-                navController.navigate(R.id.action_profile_to_orderFragment, args);
-            });
-        }
-        LinearLayout btnCancelled = view.findViewById(R.id.btnCancelled);
-        if (btnCancelled != null) {
-            btnCancelled.setOnClickListener(v -> {
-                Bundle args = new Bundle();
-                args.putInt("selectedTab", 3);
-                navController.navigate(R.id.action_profile_to_orderFragment, args);
-            });
-        }
-
-        LinearLayout btnRefund = view.findViewById(R.id.btnRefund);
-        if (btnRefund != null) {
-            btnRefund.setOnClickListener(v -> {
-                Bundle args = new Bundle();
-                args.putInt("selectedTab", 4);
-                navController.navigate(R.id.action_profile_to_orderFragment, args);
-            });
-        }
-
-        // Become Seller
-       // btnBecomeSeller.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_rule_seller));
-        view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v -> {
-            navController.navigate(R.id.action_profile_to_rule_seller);
-        });
-    }
-    private void setupListeners() {
-        // Test button - Navigate to Product Tab
+        // Test button (nếu có)
+        View btnTest = view.findViewById(R.id.btn_test);
         if (btnTest != null) {
-            btnTest.setOnClickListener(v -> {
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_profile_to_productTab);
-            });
-        }
-
-        // Become Seller button
-        if (btnBecomeSeller != null) {
-            btnBecomeSeller.setOnClickListener(v -> {
-                // TODO: Implement become seller logic
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_profile_to_rule_seller);
-            });
+            btnTest.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_productTab));
         }
     }
 
+    // Hàm public để update badge từ bên ngoài (nếu cần)
     public void updateBadgeCounts(int pendingCount, int shippingCount) {
         if (tvPendingCount != null) {
-            if (pendingCount > 0) {
-                tvPendingCount.setText(String.valueOf(pendingCount));
-                tvPendingCount.setVisibility(View.VISIBLE);
-            } else {
-                tvPendingCount.setVisibility(View.GONE);
-            }
+            tvPendingCount.setText(String.valueOf(pendingCount));
+            tvPendingCount.setVisibility(pendingCount > 0 ? View.VISIBLE : View.GONE);
         }
-
         if (tvShippingCount != null) {
-            if (shippingCount > 0) {
-                tvShippingCount.setText(String.valueOf(shippingCount));
-                tvShippingCount.setVisibility(View.VISIBLE);
-            } else {
-                tvShippingCount.setVisibility(View.GONE);
-            }
+            tvShippingCount.setText(String.valueOf(shippingCount));
+            tvShippingCount.setVisibility(shippingCount > 0 ? View.VISIBLE : View.GONE);
         }
     }
 }
+

@@ -61,13 +61,10 @@ public class DeliveringOrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // RecyclerView cho trạng thái vận chuyển
         setupTrackingRecyclerView();
 
-        // RecyclerView cho danh sách sản phẩm
         setupProductRecyclerView();
 
-        // Tải dữ liệu chi tiết
         if (receivedOrderId != null) {
             loadDeliveringOrderDetails(receivedOrderId);
         } else {
@@ -75,11 +72,8 @@ public class DeliveringOrderDetailFragment extends Fragment {
             Toast.makeText(getContext(), "Lỗi tải chi tiết đơn hàng.", Toast.LENGTH_SHORT).show();
         }
 
-        // Xử lý nút "ĐÃ NHẬN HÀNG"
         binding.btnReceiveOrder.setOnClickListener(v -> showConfirmReceiptDialog());
     }
-
-     //Hiển thị dialog xác nhận "ĐÃ NHẬN HÀNG"
 
     private void showConfirmReceiptDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_confirm_receipt, null);
@@ -96,10 +90,8 @@ public class DeliveringOrderDetailFragment extends Fragment {
 
         btnConfirm.setOnClickListener(v -> {
             dialog.dismiss();
-            // Hiển thị dialog cảm ơn sau khi xác nhận
             showAfterConfirmDialog();
 
-            // Cập nhật trạng thái đơn hàng UI
             updateStepper(Order.DeliveryOverallStatus.DELIVERED);
             binding.btnReceiveOrder.setVisibility(View.GONE);
 
@@ -113,9 +105,6 @@ public class DeliveringOrderDetailFragment extends Fragment {
         }
     }
 
-
-     //Hiển thị dialog cảm ơn sau khi xác nhận đã nhận hàng
-     //Khi bấm "Để sau" -> sẽ chuyển sang tab "Đã mua" (index = 2)
     private void showAfterConfirmDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_after_confirm_receipt, null);
 
@@ -127,11 +116,9 @@ public class DeliveringOrderDetailFragment extends Fragment {
         Button btnLater = dialogView.findViewById(R.id.btnConfirmCancel);
         Button btnReview = dialogView.findViewById(R.id.btnKeepOrder);
 
-        // Nút "Để sau" -> quay về danh sách đơn và chuyển tab "Đã mua"
         btnLater.setOnClickListener(v -> {
             dialog.dismiss();
 
-            // Gửi yêu cầu chuyển tab tới SharedViewModel
             SharedViewModel vm = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
             int targetTabIndex = 2; //
 
@@ -141,7 +128,6 @@ public class DeliveringOrderDetailFragment extends Fragment {
                 Log.w(TAG, "Failed to request tab change via SharedViewModel: " + e.getMessage());
             }
 
-            // Quay về fragment chứa ViewPager (StatusOrderFragment)
             try {
                 NavHostFragment.findNavController(this).popBackStack();
             } catch (Exception e) {
@@ -149,7 +135,6 @@ public class DeliveringOrderDetailFragment extends Fragment {
             }
         });
 
-        // "Đánh giá" -> hiện Toast và (tuỳ bạn) điều hướng tới màn hình đánh giá
         btnReview.setOnClickListener(v -> {
             dialog.dismiss();
             Toast.makeText(requireContext(), "Chuyển đến màn hình đánh giá...", Toast.LENGTH_SHORT).show();
@@ -163,7 +148,6 @@ public class DeliveringOrderDetailFragment extends Fragment {
         }
     }
 
-    // RecyclerView SẢN PHẨM
     private void setupProductRecyclerView() {
         productAdapter = new OrderItemAdapter(getContext(), productList);
         binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -173,33 +157,26 @@ public class DeliveringOrderDetailFragment extends Fragment {
         Log.d(TAG, "Product RecyclerView setup complete.");
     }
 
-    // tải dữ liệu chi tiết
     private void loadDeliveringOrderDetails(String orderId) {
         Log.d(TAG, "Placeholder: Load delivering order details for " + orderId);
 
-        // Cập nhật Stepper theo trạng thái nhận được
         if (receivedDeliveryStatus != null) {
             updateStepper(receivedDeliveryStatus);
         } else {
             updateStepper(Order.DeliveryOverallStatus.PACKAGED);
         }
-
         if (receivedDeliveryStatus == Order.DeliveryOverallStatus.DELIVERING) {
-            // CHỈ HIỆN NÚT KHI "ĐANG GIAO"
             binding.btnReceiveOrder.setVisibility(View.VISIBLE);
         } else {
-            // ẨN NÚT VỚI MỌI TRẠNG THÁI KHÁC
             binding.btnReceiveOrder.setVisibility(View.GONE);
         }
 
-        // CẬP NHẬT DANH SÁCH SẢN PHẨM
         loadDummyProductData();
         if (productAdapter != null) {
             productAdapter.notifyDataSetChanged();
             Log.d(TAG, "Product list updated for RecyclerView");
         }
 
-        // Cập nhật danh sách tracking
         loadTrackingDataBasedOnStatus(receivedDeliveryStatus);
         if (trackingAdapter != null) {
             trackingAdapter.notifyDataSetChanged();
@@ -289,7 +266,6 @@ public class DeliveringOrderDetailFragment extends Fragment {
         step3Label.setTextColor(inactiveTextColor);
         step4Label.setTextColor(inactiveTextColor);
 
-        // Kích hoạt theo trạng thái
         switch (status) {
             case DELIVERED:
                 step4Icon.setBackgroundResource(activeIcon);

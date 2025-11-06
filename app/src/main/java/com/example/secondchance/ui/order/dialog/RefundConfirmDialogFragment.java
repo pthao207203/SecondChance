@@ -43,7 +43,6 @@ public class RefundConfirmDialogFragment extends DialogFragment {
             dismiss();
         });
 
-        // Nút XÁC NHẬN
         btnKeepOrder.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onRefundConfirmed();

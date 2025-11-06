@@ -40,18 +40,16 @@
                 android:layout_height="64dp"
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_tick"
-                app:tint="#E56D2D" />
+                app:tint="@color/normalDay" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Cảm ơn bạn đã hợp tác.  Hi vọng lần tới vẫn đồng hành cùng bạn."
-                android:textColor="#333333"
+                android:textColor="@color/darkerDay"
                 android:textSize="16sp" />
 
         </LinearLayout>
-
     </RelativeLayout>
-
 </androidx.cardview.widget.CardView>

@@ -45,8 +45,7 @@
                 android:layout_marginTop="@dimen/text_16"
                 android:text="Cập nhật thành công"
                 android:textColor="@color/darkerDay"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="18sp" />
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

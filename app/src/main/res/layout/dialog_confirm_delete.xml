@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Bạn muốn xóa món hàng này trong giỏ hàng?"
-            android:textColor="#1C1B1F"
+            android:textColor="@color/darkerDay"
             android:textSize="18sp"
             android:gravity="center" />
 
@@ -41,8 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Xác nhận xóa"
-                android:textColor="#F25C05"
-                app:backgroundTint="#E0DCDC"
+                android:textColor="@color/darkerDay"
+                app:backgroundTint="@color/grayDay"
                 app:strokeWidth="0dp"
                 app:cornerRadius="10dp" />
 
@@ -54,9 +54,9 @@
                 android:layout_weight="1"
                 android:layout_marginStart="16dp"
                 android:text="Hủy"
-                android:textColor="#F25C05"
+                android:textColor="@color/normalDay"
                 android:textStyle="bold"
-                app:strokeColor="#F25C05"
+                app:strokeColor="@color/normalDay"
                 app:cornerRadius="10dp" />
         </LinearLayout>
     </LinearLayout>
