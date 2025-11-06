@@ -17,6 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.secondchance.R;
+import com.example.secondchance.data.remote.HomeApi;
+import com.example.secondchance.data.repo.HomeRepository;
 import com.example.secondchance.databinding.FragmentRecyclerCardBinding;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Calendar;
 
@@ -55,7 +58,7 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
         setupRecyclerView();
 
         // Load sample data
-        loadSampleData();
+        loadFromApi();
 
         // Observe data
         observeData();
@@ -69,82 +72,75 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
         adapter = new CardListAdapter(requireContext(), new ArrayList<>(), this);
         binding.recyclerView.setAdapter(adapter);
     }
-    private void loadSampleData() {
-        List<ProductCard> products = new ArrayList<>();
-
-        Log.d("CardFragment", "=== LOADING SAMPLE DATA ===");
-
-        // Hiện tại (10:40 PM +07, 22/10/2025)
-        Calendar cal = Calendar.getInstance();
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40); // 22/10/2025 22:40
-        Date now = cal.getTime();
-
-        // Product 1: AUCTION - 1 giờ trước (tên dài 2-3 dòng)
-        cal.add(Calendar.HOUR_OF_DAY, -1);
-        Date postTime1 = cal.getTime();
-        ProductCard auctionProduct = new ProductCard(
-                1, R.drawable.binhhoa, "Bình hoa sứ trắng cao cấp với hoa văn dát vàng tinh xảo",
-                "Hoa văn dát vàng handmade", 1, 4.2f, "1.200.000", ProductCard.ProductType.AUCTION, postTime1, 100);
-        auctionProduct.setTimeRemaining("01:00:00");
-        products.add(auctionProduct);
-        Log.d("CardFragment", "✅ ADDED AUCTION: " + auctionProduct.getTitle() + " | ImageRes: " + auctionProduct.getImageRes() + " | PostTime: " + postTime1);
-
-        // Product 2: NEGOTIATION - 2 ngày trước (tên ngắn 1 dòng)
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40);
-        cal.add(Calendar.DAY_OF_MONTH, -2);
-        Date postTime2 = cal.getTime();
-        ProductCard negotiationProduct = new ProductCard(
-                2, R.drawable.nhan1, "Nhẫn bạc 925",
-                "Giỏ gỗ New 99,9%", 2, 4.0f, "300.000", ProductCard.ProductType.NEGOTIATION, postTime2, 150);
-        products.add(negotiationProduct);
-        Log.d("CardFragment", "✅ ADDED NEGOTIATION: " + negotiationProduct.getTitle() + " | ImageRes: " + negotiationProduct.getImageRes() + " | PostTime: " + postTime2);
-
-        // Product 3: FIXED - 5 ngày trước (tên dài 2-3 dòng)
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40);
-        cal.add(Calendar.DAY_OF_MONTH, -5);
-        Date postTime3 = cal.getTime();
-        ProductCard fixedProduct = new ProductCard(
-                3, R.drawable.nhan1, "Nhẫn kim cương cao cấp với thiết kế độc quyền",
-                "Giỏ gỗ New 99,9%", 1, 4.5f, "500.000", ProductCard.ProductType.FIXED, postTime3, 120);
-        products.add(fixedProduct);
-        Log.d("CardFragment", "✅ ADDED FIXED: " + fixedProduct.getTitle() + " | ImageRes: " + fixedProduct.getImageRes() + " | PostTime: " + postTime3);
-
-        // Product 4: NEGOTIATION - 1 ngày trước (tên dài 2-3 dòng)
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40);
-        cal.add(Calendar.DAY_OF_MONTH, -7);
-        Date postTime4 = cal.getTime();
-        ProductCard negotiationProduct2 = new ProductCard(
-                4, R.drawable.nhan1, "Vòng cổ vàng 18K đính đá quý cao cấp",
-                "Thiết kế sang trọng và bền đẹp", 2, 4.3f, "2.000.000", ProductCard.ProductType.NEGOTIATION, postTime4, 150);
-        products.add(negotiationProduct2);
-        Log.d("CardFragment", "✅ ADDED NEGOTIATION: " + negotiationProduct2.getTitle() + " | ImageRes: " + negotiationProduct2.getImageRes() + " | PostTime: " + postTime4);
-
-        // Product 5: AUCTION - 3 giờ trước (tên ngắn 1 dòng)
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40);
-        cal.add(Calendar.DAY_OF_MONTH, -10);
-        Date postTime5 = cal.getTime();
-        ProductCard auctionProduct2 = new ProductCard(
-                5, R.drawable.binhhoa, "Bình hoa nhỏ",
-                "Thiết kế đơn giản", 1, 4.0f, "800.000", ProductCard.ProductType.AUCTION, postTime5, 100);
-        auctionProduct2.setTimeRemaining("02:30:00");
-        products.add(auctionProduct2);
-        Log.d("CardFragment", "✅ ADDED AUCTION: " + auctionProduct2.getTitle() + " | ImageRes: " + auctionProduct2.getImageRes() + " | PostTime: " + postTime5);
-
-        // Product 6: FIXED - 7 ngày trước (tên ngắn 1 dòng)
-        cal.set(2025, Calendar.OCTOBER, 22, 22, 40);
-        cal.add(Calendar.DAY_OF_MONTH, -22);
-        Date postTime6 = cal.getTime();
-        ProductCard fixedProduct2 = new ProductCard(
-                6, R.drawable.nhan1, "Bút bi cao cấp",
-                "Chất liệu thép không gỉ", 1, 4.1f, "150.000", ProductCard.ProductType.FIXED, postTime6, 120);
-        products.add(fixedProduct2);
-        Log.d("CardFragment", "✅ ADDED FIXED: " + fixedProduct2.getTitle() + " | ImageRes: " + fixedProduct2.getImageRes() + " | PostTime: " + postTime6);
-
-        // Sắp xếp và cập nhật ViewModel
-        products = sortAndDistributeByColumnHeight(products);
-        viewModel.setProducts(products);
-        Log.d("CardFragment", "📊 TOTAL PRODUCTS: " + products.size());
-        Log.d("CardFragment", "=== SAMPLE DATA LOADED ===");
+    private void loadFromApi() {
+        HomeRepository repo = new HomeRepository();
+        repo.fetchHome(new HomeRepository.HomeCallback() {
+            @Override public void onSuccess(HomeApi.HomeEnvelope.Data data) {
+                if (!isAdded()) return;
+                List<HomeApi.SuggestionItem> src = (data!=null && data.suggestions!=null) ? data.suggestions.items : null;
+                List<ProductCard> mapped = mapSuggestionsToCards(src);
+                // Nếu bạn vẫn muốn chia cột như cũ, có thể giữ sortAndDistributeByColumnHeight(mapped)
+                viewModel.setProducts(mapped);
+            }
+            @Override public void onError(String message) {
+                if (isAdded())
+                    Toast.makeText(requireContext(), "Tải danh sách thất bại: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private List<ProductCard> mapSuggestionsToCards(List<HomeApi.SuggestionItem> items) {
+        List<ProductCard> out = new ArrayList<>();
+        if (items == null) return out;
+        
+        for (HomeApi.SuggestionItem it : items) {
+            ProductCard.ProductType type = decideType(it);
+            
+            ProductCard pc = new ProductCard();
+            pc.setTitle(it.title);
+            pc.setDescription(it.conditionLabel != null ? it.conditionLabel : "");
+            pc.setQuantity(it.quantity);
+            pc.setProductType(type);
+            pc.setImageUrl(it.imageUrl);
+            
+            // price
+            String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "—";
+            pc.setPrice(priceText);
+            
+            // only for auction
+            if (type == ProductCard.ProductType.AUCTION) {
+                pc.setTimeRemaining(formatEndsIn(Math.max(0, it.endsInSec)));
+            }
+            
+            out.add(pc);
+        }
+        return out;
+    }
+    
+    private ProductCard.ProductType decideType(HomeApi.SuggestionItem it) {
+        // 1) Đấu giá nếu còn đếm ngược
+        if (it.endsInSec > 0) return ProductCard.ProductType.AUCTION;
+        
+        // 2) Thương lượng nếu label gợi ý
+        String label = it.conditionLabel != null ? it.conditionLabel.toLowerCase(Locale.ROOT) : "";
+        if (label.contains("negotiation") || label.contains("offer") || label.contains("deal") || label.contains("bargain") || label.contains("thương lượng")) {
+            return ProductCard.ProductType.NEGOTIATION;
+        }
+        
+        // 3) Mặc định: giá cố định
+        return ProductCard.ProductType.FIXED;
+    }
+    
+    private String formatEndsIn(long sec) {
+        sec = Math.max(0, sec);
+        long h = sec / 3600;
+        long m = (sec % 3600) / 60;
+        long s = sec % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d:%02d", h, m, s);
+    }
+    
+    private String formatVnd(long v) {
+        return String.format("%,d", v).replace(',', '.');
     }
 
     private List<ProductCard> sortAndDistributeByColumnHeight(List<ProductCard> products) {

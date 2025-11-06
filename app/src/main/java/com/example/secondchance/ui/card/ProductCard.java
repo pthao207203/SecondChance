@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class ProductCard implements java.io.Serializable{
     private int id;
-    private @DrawableRes int imageRes;
+    private String imageUrl;
     private String title;
     private String description;
     private int quantity;
@@ -32,7 +32,7 @@ public class ProductCard implements java.io.Serializable{
      * Constructor khởi tạo ProductCard với các tham số cần thiết.
      *
      * @param id ID duy nhất của sản phẩm
-     * @param imageRes Tài nguyên hình ảnh của sản phẩm
+     * @param imageUrl Tài nguyên hình ảnh của sản phẩm
      * @param title Tiêu đề sản phẩm
      * @param description Mô tả sản phẩm
      * @param quantity Số lượng sản phẩm
@@ -42,10 +42,10 @@ public class ProductCard implements java.io.Serializable{
      * @param postTime Thời gian đăng bài
      * @param height Chiều cao của card (dp)
      */
-    public ProductCard(int id, @DrawableRes int imageRes, String title, String description,
+    public ProductCard(int id, String imageUrl, String title, String description,
                        int quantity, float starRating, String price, ProductType productType, Date postTime, int height) {
         this.id = id;
-        this.imageRes = imageRes;
+        this.imageUrl = imageUrl;
         this.title = title != null ? title : "";
         this.description = description != null ? description : "";
         this.quantity = quantity;
@@ -67,7 +67,7 @@ public class ProductCard implements java.io.Serializable{
 
     // Getters
     public int getId() { return id; }
-    public @DrawableRes int getImageRes() { return imageRes; }
+    public String getImageUrl() { return imageUrl; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public int getQuantity() { return quantity; }
@@ -96,8 +96,6 @@ public class ProductCard implements java.io.Serializable{
     public void setProductType(ProductType productType) {
         this.productType = productType;
     }
-    public void setImageRes(@DrawableRes int imageRes) {
-        this.imageRes = imageRes;
-    }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
 }

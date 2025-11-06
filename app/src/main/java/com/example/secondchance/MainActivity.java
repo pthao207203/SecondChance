@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.ActivityMainBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.ui.home.HomeFragment;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
       LocaleListCompat.forLanguageTags("vi")
     );
     
+    RetrofitProvider.init(this);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
