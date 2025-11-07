@@ -1,5 +1,6 @@
 package com.example.secondchance.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,21 +9,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
-
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
+import com.example.secondchance.ui.auth.AuthActivity;
+import com.example.secondchance.ui.auth.AuthManager;
+import com.example.secondchance.ui.auth.LoginFragment;
+import com.example.secondchance.util.Prefs;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView tvPendingCount, tvShippingCount;
+    private TextView tvPendingCount;
+    private TextView tvShippingCount;
     private TextView tvName, tvPhone, tvAddress, tvEmail;
     private ImageView ivAvatar;
     private ProfileViewModel viewModel;
@@ -57,10 +64,37 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-        setupBadgeCounts(); // Gọi để hiển thị badge
+        setupBadgeCounts();
         setupClickListeners(view);
         observeViewModel();
-        observeSellerStatus(); // Quan trọng: ẩn/hiện phần shop
+        observeSellerStatus();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ensureLoggedInOrRedirect();
+    }
+
+    private void ensureLoggedInOrRedirect() {
+        String token = Prefs.getToken(requireContext());
+        if (token == null || token.trim().isEmpty()) {
+            NavController nav = NavHostFragment.findNavController(this);
+
+            // Pop về gốc graph để không back về Profile
+            NavOptions opts = new NavOptions.Builder()
+              .setPopUpTo(nav.getGraph().getStartDestinationId(), true)
+              .setLaunchSingleTop(true)
+              .build();
+
+            // ⚠️ Điều hướng thẳng tới đích (không cần action)
+            goToAuthAndFinish();
+        }
+    }
+    private void goToAuthAndFinish() {
+        if (!isAdded()) return;
+        NavController nav = NavHostFragment.findNavController(this);
+        nav.setGraph(R.navigation.mobile_navigation, null);
     }
 
     private void initViews(View view) {
@@ -71,7 +105,6 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
-
         tvNoProduct = view.findViewById(R.id.tvNoProduct);
         btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
 
@@ -109,51 +142,116 @@ public class ProfileFragment extends Fragment {
 
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addressList -> {
             AddressItem defaultAddress = viewModel.getDefaultAddress();
-            tvAddress.setText(defaultAddress != null ? defaultAddress.getAddress() : "Chưa có địa chỉ mặc định");
+            if (defaultAddress != null) {
+                tvAddress.setText(defaultAddress.getAddress());
+            } else {
+                tvAddress.setText("Chưa có địa chỉ mặc định");
+            }
         });
     }
+
 
     private void setupBadgeCounts() {
         int pendingCount = 0;
         int shippingCount = 17;
 
-        tvPendingCount.setText(String.valueOf(pendingCount));
-        tvPendingCount.setVisibility(pendingCount > 0 ? View.VISIBLE : View.GONE);
+        if (pendingCount > 0) {
+            tvPendingCount.setText(String.valueOf(pendingCount));
+            tvPendingCount.setVisibility(View.VISIBLE);
+        } else {
+            tvPendingCount.setVisibility(View.GONE);
+        }
 
-        tvShippingCount.setText(String.valueOf(shippingCount));
-        tvShippingCount.setVisibility(shippingCount > 0 ? View.VISIBLE : View.GONE);
+        if (shippingCount > 0) {
+            tvShippingCount.setText(String.valueOf(shippingCount));
+            tvShippingCount.setVisibility(View.VISIBLE);
+        } else {
+            tvShippingCount.setVisibility(View.GONE);
+        }
     }
 
     private void setupClickListeners(View view) {
         NavController navController = Navigation.findNavController(view);
 
-        // Avatar + Name → Edit Profile
-        View.OnClickListener editProfile = v -> navController.navigate(R.id.action_profile_to_editProfile);
-        ivAvatar.setOnClickListener(editProfile);
-        tvName.setOnClickListener(editProfile);
+
+        View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
+        view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
+        view.findViewById(R.id.tvName).setOnClickListener(editProfileClickListener);
 
         // Top Tabs
-        view.findViewById(R.id.tabAccountInfo).setOnClickListener(v -> Toast.makeText(requireContext(), "Điều khoản", Toast.LENGTH_SHORT).show());
-        view.findViewById(R.id.tabSupport).setOnClickListener(v -> Toast.makeText(requireContext(), "Hỗ trợ", Toast.LENGTH_SHORT).show());
-        view.findViewById(R.id.tabSettings).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_settings));
-        view.findViewById(R.id.tabLogout).setOnClickListener(v -> Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show());
+        view.findViewById(R.id.tabAccountInfo).setOnClickListener(v ->
+                Toast.makeText(requireContext(), "Điều khoản", Toast.LENGTH_SHORT).show()
+        );
+
+        view.findViewById(R.id.tabSupport).setOnClickListener(v ->
+                Toast.makeText(requireContext(), "Hỗ trợ", Toast.LENGTH_SHORT).show()
+        );
+
+        view.findViewById(R.id.tabSettings).setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_profile_to_settings);
+        });
 
         // Wallet
         view.findViewById(R.id.tvViewDetails).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_wallet));
 
-        // Order History Tabs
-        int[] tabs = {0, 1, 2, 3, 4};
-        int[] ids = {R.id.btnPending, R.id.btnShipping, R.id.btnPurchased, R.id.btnCancelled, R.id.btnRefund};
-        for (int i = 0; i < ids.length; i++) {
-            View btn = view.findViewById(ids[i]);
-            if (btn != null) {
-                int tab = tabs[i];
-                btn.setOnClickListener(v -> {
-                    Bundle args = new Bundle();
-                    args.putInt("selectedTab", tab);
-                    navController.navigate(R.id.action_profile_to_orderFragment, args);
-                });
-            }
+
+        view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
+            AuthManager.getInstance(requireContext()).clear();
+            Prefs.saveToken(requireContext(), ""); // nếu bạn dùng Prefs riêng cho token
+
+            NavController nav = NavHostFragment.findNavController(ProfileFragment.this);
+            nav.setGraph(R.navigation.nav_auth, null);
+
+            nav.navigate(R.id.loginFragment);
+        });
+
+        view.findViewById(R.id.tvViewDetails).setOnClickListener(
+          v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_wallet)
+        );
+
+        // Order History
+        LinearLayout btnPending = view.findViewById(R.id.btnPending);
+        if (btnPending != null) {
+            btnPending.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 0);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
+
+        LinearLayout btnShipping = view.findViewById(R.id.btnShipping);
+        if (btnShipping != null) {
+            btnShipping.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 1);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
+
+        LinearLayout btnPurchased = view.findViewById(R.id.btnPurchased);
+        if (btnPurchased != null) {
+            btnPurchased.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 2);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
+        LinearLayout btnCancelled = view.findViewById(R.id.btnCancelled);
+        if (btnCancelled != null) {
+            btnCancelled.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 3);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
+        }
+
+        LinearLayout btnRefund = view.findViewById(R.id.btnRefund);
+        if (btnRefund != null) {
+            btnRefund.setOnClickListener(v -> {
+                Bundle args = new Bundle();
+                args.putInt("selectedTab", 4);
+                navController.navigate(R.id.action_profile_to_orderFragment, args);
+            });
         }
 
         // Become Seller Button
@@ -169,12 +267,21 @@ public class ProfileFragment extends Fragment {
     // Hàm public để update badge từ bên ngoài (nếu cần)
     public void updateBadgeCounts(int pendingCount, int shippingCount) {
         if (tvPendingCount != null) {
-            tvPendingCount.setText(String.valueOf(pendingCount));
-            tvPendingCount.setVisibility(pendingCount > 0 ? View.VISIBLE : View.GONE);
+            if (pendingCount > 0) {
+                tvPendingCount.setText(String.valueOf(pendingCount));
+                tvPendingCount.setVisibility(View.VISIBLE);
+            } else {
+                tvPendingCount.setVisibility(View.GONE);
+            }
         }
+
         if (tvShippingCount != null) {
-            tvShippingCount.setText(String.valueOf(shippingCount));
-            tvShippingCount.setVisibility(shippingCount > 0 ? View.VISIBLE : View.GONE);
+            if (shippingCount > 0) {
+                tvShippingCount.setText(String.valueOf(shippingCount));
+                tvShippingCount.setVisibility(View.VISIBLE);
+            } else {
+                tvShippingCount.setVisibility(View.GONE);
+            }
         }
     }
 }

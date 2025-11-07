@@ -20,6 +20,12 @@ public class WalletHistoryAdapter extends RecyclerView.Adapter<WalletHistoryAdap
     this.data = data;
   }
   
+  public void setData(List<WalletTopupHistory> newData) {
+    this.data.clear();
+    if (newData != null) this.data.addAll(newData);
+    notifyDataSetChanged();
+  }
+  
   @NonNull @Override
   public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View v = LayoutInflater.from(parent.getContext())
