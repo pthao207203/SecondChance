@@ -9,7 +9,7 @@ import java.util.Date;
  * và chiều cao (có thể được sử dụng để điều chỉnh giao diện).
  */
 public class ProductCard implements java.io.Serializable{
-    private int id;
+    private String id;
     private String imageUrl;
     private String title;
     private String description;
@@ -42,7 +42,7 @@ public class ProductCard implements java.io.Serializable{
      * @param postTime Thời gian đăng bài
      * @param height Chiều cao của card (dp)
      */
-    public ProductCard(int id, String imageUrl, String title, String description,
+    public ProductCard(String id, String imageUrl, String title, String description,
                        int quantity, float starRating, String price, ProductType productType, Date postTime, int height) {
         this.id = id;
         this.imageUrl = imageUrl;
@@ -66,7 +66,7 @@ public class ProductCard implements java.io.Serializable{
     }
 
     // Getters
-    public int getId() { return id; }
+    public String getId() { return id; }
     public String getImageUrl() { return imageUrl; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
@@ -77,7 +77,11 @@ public class ProductCard implements java.io.Serializable{
     public String getTimeRemaining() { return timeRemaining != null ? timeRemaining : ""; }
     public Date getPostTime() { return postTime; }
     public int getHeight() { return height; }
-
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     // Setters
     public void setTimeRemaining(String timeRemaining) {
         if (productType == ProductType.AUCTION && timeRemaining != null) {

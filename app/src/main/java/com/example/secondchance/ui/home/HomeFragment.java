@@ -183,6 +183,7 @@ public class HomeFragment extends Fragment {
       }
       
       ProductCard pc = new ProductCard();
+      pc.setId(it.id);
       pc.setTitle(it.title);
       pc.setDescription(it.conditionLabel != null ? it.conditionLabel : "");
       pc.setQuantity(it.quantity);

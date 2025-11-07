@@ -215,4 +215,5 @@ public class MainActivity extends AppCompatActivity {
   private void openNotificationScreen() {
     Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
   }
+  
 }

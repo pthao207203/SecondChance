@@ -1,11 +1,13 @@
 package com.example.secondchance.data.remote;
 
+import com.example.secondchance.dto.response.ProductDetailResponse;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface HomeApi {
@@ -13,6 +15,10 @@ public interface HomeApi {
   // GET /api/products/home
   @GET("products/home")
   Call<HomeEnvelope> getHome();
+  
+  // GET /api/products/{id}
+  @GET("products/{id}")
+  Call<ProductDetailResponse> getProductDetail(@Path("id") String productId);
   
   class HomeEnvelope {
     @SerializedName("success") public boolean success;

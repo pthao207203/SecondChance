@@ -40,47 +40,16 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <LinearLayout
-                    android:id="@+id/dots_indicator_container"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/dot_1"
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginHorizontal="2dp"
-                        app:cardCornerRadius="99dp"
-                        app:cardBackgroundColor="@color/darkerDay" />
-
-                        <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/dot_2"
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginHorizontal="2dp"
-                        app:cardCornerRadius="99dp"
-                        app:cardBackgroundColor="@color/lighterDay" />
-
-                        <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/dot_3"
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_marginHorizontal="2dp"
-                        app:cardCornerRadius="99dp"
-                        app:cardBackgroundColor="@color/lighterDay" />
-
-                </LinearLayout>
-
-
+            <LinearLayout
+                android:id="@+id/dots_indicator_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <LinearLayout
                 android:id="@+id/product_info"
@@ -134,21 +103,21 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/star_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginEnd="4dp"
-                        android:src="@drawable/star"
-                        android:contentDescription="star" />
+<!--                    <ImageView-->
+<!--                        android:id="@+id/star_icon"-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_marginEnd="4dp"-->
+<!--                        android:src="@drawable/star"-->
+<!--                        android:contentDescription="star" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4.9"
-                        android:textColor="#000"
-                        android:textSize="14sp"
-                        android:layout_gravity="center" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="4.9"-->
+<!--                        android:textColor="#000"-->
+<!--                        android:textSize="14sp"-->
+<!--                        android:layout_gravity="center" />-->
                 </LinearLayout>
 
                 <TextView
@@ -270,7 +239,6 @@
                     android:textColor="@color/darkerDay"
                     android:textStyle="bold" />
 
-                <!-- Row 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -279,6 +247,7 @@
                     android:layout_marginBottom="4dp">
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvConditionNote"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -289,18 +258,19 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvConditionNote"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Chưa sử dụng"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvNewPercent"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -311,18 +281,19 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvNewPercent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Mới 99%"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvReturn"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -333,15 +304,15 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvReturn"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Mới 99%"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
@@ -354,6 +325,7 @@
                     android:layout_marginBottom="4dp">
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvSource"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -364,18 +336,19 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvSource"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Chưa sử dụng"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvWarranty"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -386,18 +359,19 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvWarranty"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Mới 99%"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/mcvDamagePercent"
                         style="@style/Widget.SecondChance.Card.Number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -408,15 +382,15 @@
                         app:cardElevation="0dp">
 
                         <TextView
+                            android:id="@+id/tvDamagePercent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="8dp"
                             android:gravity="center"
-                            android:text="Mới 99%"
+                            android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
-                            android:textStyle="normal" />
+                            android:textSize="13sp"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </LinearLayout>
@@ -515,6 +489,7 @@
 
 
                             <LinearLayout
+                                android:id="@+id/sellerInfoContainer"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -522,13 +497,14 @@
                                 android:orientation="vertical">
 
                                 <LinearLayout
+                                    android:id="@+id/sellerHeaderRow"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal">
 
                                     <TextView
+                                        android:id="@+id/tvSellerName"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
@@ -538,6 +514,7 @@
                                         android:textStyle="bold" />
 
                                     <TextView
+                                        android:id="@+id/tvSellerDistance"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Cách bạn 3km"
@@ -546,8 +523,8 @@
                                         android:textStyle="normal" />
                                 </LinearLayout>
 
-
                                 <TextView
+                                    android:id="@+id/tvSellerAddress"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
@@ -870,14 +847,15 @@
 
                 <!-- Card đánh giá -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/customerReviewCard"
                     style="@style/Widget.SecondChance.Card.Number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/whiteDay"
-                    >
+                    app:cardBackgroundColor="@color/whiteDay">
 
                     <LinearLayout
+                        android:id="@+id/customerReviewRoot"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -886,6 +864,7 @@
 
                         <!-- Dòng 1: Avatar + Tên + Ngày + Rating -->
                         <LinearLayout
+                            android:id="@+id/commentHeaderRow"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -895,6 +874,7 @@
 
                             <!-- Avatar -->
                             <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/ivCustomerAvatar"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:src="@drawable/avatar1"
@@ -904,6 +884,7 @@
 
                             <!-- Thông tin người dùng -->
                             <LinearLayout
+                                android:id="@+id/customerInfoCol"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -912,6 +893,7 @@
 
                                 <!-- Hàng 1: Tên + Ngày -->
                                 <LinearLayout
+                                    android:id="@+id/customerNameDateRow"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
@@ -919,7 +901,7 @@
                                     android:layout_marginBottom="4dp">
 
                                     <TextView
-                                        android:id="@+id/product_name"
+                                        android:id="@+id/tvCustomerName"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Fish can Fly"
@@ -927,35 +909,36 @@
                                         android:textStyle="bold"
                                         android:textSize="@dimen/text_16" />
 
-                                    <TextView
-                                        android:id="@+id/product_date"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="18/02/2025"
-                                        android:textColor="@color/darkerDay"
-                                        android:textSize="@dimen/text_13" />
                                 </LinearLayout>
-
-                                <!-- Hàng 2: Mô tả -->
                                 <TextView
-                                    android:id="@+id/product_description"
-                                    android:layout_width="match_parent"
+                                    android:id="@+id/tvCommentDate"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Bé cá 7 màu, bằng kính, loại dày, số lượng 1."
+                                    android:text="18/02/2025"
                                     android:textColor="@color/darkerDay"
                                     android:textSize="@dimen/text_13"
-                                    android:layout_marginBottom="12dp" />
+                                    android:layout_marginBottom="12dp"/>
+                                <!-- Hàng 2: Mô tả ngắn (tuỳ chọn) -->
+<!--                                <TextView-->
+<!--                                    android:id="@+id/tvCustomerSubtitle"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="Bé cá 7 màu, bằng kính, loại dày, số lượng 1."-->
+<!--                                    android:textColor="@color/darkerDay"-->
+<!--                                    android:textSize="@dimen/text_13"-->
+<!--                                    android:layout_marginBottom="12dp" />-->
                             </LinearLayout>
-
 
                             <!-- Đánh giá sao -->
                             <LinearLayout
+                                android:id="@+id/customerRatingRow"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical">
 
                                 <TextView
+                                    android:id="@+id/tvCustomerRating"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="4.9"
@@ -964,6 +947,7 @@
                                     android:textStyle="bold" />
 
                                 <ImageView
+                                    android:id="@+id/ivCustomerRatingStar"
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
                                     android:src="@drawable/star"
@@ -972,17 +956,18 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- Sản phẩm đã mua -->
+                        <!-- Ô nội dung đánh giá -->
                         <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/reviewBodyCard"
                             style="@style/Widget.SecondChance.Card.Number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:cardBackgroundColor="@color/grayDay"
                             app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.TopLeftNotCorner"
-                            app:cardElevation="0dp"
-                            >
+                            app:cardElevation="0dp">
 
                             <LinearLayout
+                                android:id="@+id/reviewBodyRoot"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
@@ -991,46 +976,21 @@
 
                                 <!-- Nội dung đánh giá -->
                                 <TextView
+                                    android:id="@+id/tvReviewText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Shop tư vấn nhiệt tình, đóng gói cẩn thận, lúc về đến nhà check đúng sự thật. Cảm ơn shop, ship nhanh tại mình đang cần gấp hệ hệ"
+                                    android:text="Shop tư vấn nhiệt tình, đóng gói cẩn thận…"
                                     android:textColor="@color/darkerDay"
                                     android:textSize="@dimen/text_16"
                                     android:layout_marginBottom="8dp" />
 
-                                <!-- 3 ảnh nhỏ -->
+                                <!-- Thumbnails (container động) -->
                                 <LinearLayout
+                                    android:id="@+id/llReviewThumbs"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal"
-                                    android:gravity="left">
-
-                                    <com.google.android.material.imageview.ShapeableImageView
-                                        android:layout_width="60dp"
-                                        android:layout_height="60dp"
-                                        android:src="@drawable/giohoa1"
-                                        android:scaleType="centerCrop"
-                                        app:shapeAppearanceOverlay="@style/RoundedImageView_8dp"
-                                        android:layout_marginEnd="5dp"
-                                        android:contentDescription="review image 1" />
-
-                                    <com.google.android.material.imageview.ShapeableImageView
-                                        android:layout_width="60dp"
-                                        android:layout_height="60dp"
-                                        android:src="@drawable/giohoa2"
-                                        android:scaleType="centerCrop"
-                                        app:shapeAppearanceOverlay="@style/RoundedImageView_8dp"
-                                        android:layout_marginEnd="5dp"
-                                        android:contentDescription="review image 2" />
-
-                                    <com.google.android.material.imageview.ShapeableImageView
-                                        android:layout_width="60dp"
-                                        android:layout_height="60dp"
-                                        android:src="@drawable/giohoa3"
-                                        android:scaleType="centerCrop"
-                                        app:shapeAppearanceOverlay="@style/RoundedImageView_8dp"
-                                        android:contentDescription="review image 3" />
-                                </LinearLayout>
+                                    android:gravity="start" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
@@ -1046,12 +1006,11 @@
                 android:textSize="@dimen/text_20"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold" />
-            <fragment
-                android:id="@+id/cardListFragment"
-                android:name="com.example.secondchance.ui.card.CardListFragment"
+            <FrameLayout
+                android:id="@+id/recoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:layout="@layout/fragment_recycler_card" />
+                tools:ignore="MissingConstraints"/>
 
         </LinearLayout>
 
