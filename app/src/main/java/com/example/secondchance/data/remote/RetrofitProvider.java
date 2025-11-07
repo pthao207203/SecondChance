@@ -28,11 +28,11 @@ public class RetrofitProvider {
   private static volatile Retrofit retrofit;
   private static volatile AuthApi authApi;
   private static volatile HomeApi homeApi;
-  private static volatile MeApi  meApi; //
-  private static volatile OrderApi  orderApi; //
-  private static Context appCtx; // Application context
+  private static volatile MeApi  meApi;
+  private static volatile OrderApi  orderApi;
+  private static Context appCtx;
   private static final AtomicBoolean logoutInProgress = new AtomicBoolean(false);
-  
+
   public static void init(Context applicationContext) {
     appCtx = applicationContext.getApplicationContext();
   }
@@ -41,12 +41,16 @@ public class RetrofitProvider {
     if (retrofit != null) return retrofit;
     
     // 1) Gắn Authorization (trừ endpoint /api/auth)
+
+    HttpLoggingInterceptor log = new HttpLoggingInterceptor();
+    log.setLevel(HttpLoggingInterceptor.Level.BODY);
+
     Interceptor authHeader = chain -> {
       Request orig = chain.request();
       HttpUrl url = orig.url();
       boolean isAuthEndpoint =
-        url.encodedPath().startsWith("/api/auth/") || url.encodedPath().equals("/api/auth");
-      
+              url.encodedPath().startsWith("/api/auth/") || url.encodedPath().equals("/api/auth");
+
       Request.Builder b = orig.newBuilder();
       if (!isAuthEndpoint && orig.header("Authorization") == null && appCtx != null) {
         String token = Prefs.getToken(appCtx); // đã dạng "Bearer xxxxx"
@@ -56,14 +60,14 @@ public class RetrofitProvider {
       }
       return chain.proceed(b.build());
     };
-    
+
     // 2) Nếu bị 401 → clear token (để UI tự redirect ở chỗ khác)
     Interceptor authFailure = chain -> {
       okhttp3.Response res = chain.proceed(chain.request());
       if (res.code() == 401 && appCtx != null) {
         // Clear token
         Prefs.saveToken(appCtx, "");
-        
+
         // Tránh mở nhiều activity nếu nhiều call cùng 401
         if (logoutInProgress.compareAndSet(false, true)) {
           // Chuyển về AuthActivity trên UI thread
@@ -81,11 +85,8 @@ public class RetrofitProvider {
       }
       return res;
     };
-    
-    // 3) Log request/response (đặt sau cùng để log thấy header đã chèn)
-    HttpLoggingInterceptor log = new HttpLoggingInterceptor();
-    log.setLevel(HttpLoggingInterceptor.Level.BODY);
-    
+
+
     OkHttpClient ok = new OkHttpClient.Builder()
       .addInterceptor(authHeader)
       .addInterceptor(authFailure)
@@ -101,7 +102,7 @@ public class RetrofitProvider {
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
-    
+
     return retrofit;
   }
   
@@ -114,14 +115,36 @@ public class RetrofitProvider {
     if (homeApi == null) homeApi = ensureRetrofit().create(HomeApi.class);
     return homeApi;
   }
-  
+
   public static MeApi me() {
     if (meApi == null) meApi = ensureRetrofit().create(MeApi.class);
     return meApi;
   }
-  
+
   public static OrderApi order() {
     if (orderApi == null) orderApi = ensureRetrofit().create(OrderApi.class);
     return orderApi;
+  }
+
+  public static Retrofit getRetrofit() {
+    if (retrofit == null) {
+      createRetrofit();
+    }
+    return retrofit;
+  }
+
+  private static void createRetrofit() {
+    HttpLoggingInterceptor log = new HttpLoggingInterceptor();
+    log.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+    OkHttpClient ok = new OkHttpClient.Builder()
+            .addInterceptor(log)
+            .build();
+
+    retrofit = new Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:3000/api/")
+            .client(ok)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
   }
 }

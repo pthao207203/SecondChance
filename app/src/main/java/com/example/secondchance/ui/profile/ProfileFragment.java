@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,7 +18,6 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
 import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
@@ -33,13 +33,23 @@ public class ProfileFragment extends Fragment {
     private TextView tvName, tvPhone, tvAddress, tvEmail;
     private ImageView ivAvatar;
     private ProfileViewModel viewModel;
-    private AppCompatButton btnTest;
+    private SellerViewModel sellerViewModel;
+
+    // Seller layouts
+    private LinearLayout layoutChatReview;
+    private LinearLayout layoutShopStatistics;
+    private LinearLayout layoutProductsOrders;
+    private LinearLayout layoutNegotiationsDashboards;
+    private LinearLayout layoutNameShop;
+    private TextView tvNoProduct;
     private AppCompatButton btnBecomeSeller;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+        sellerViewModel = new ViewModelProvider(requireActivity()).get(SellerViewModel.class);
     }
 
     @Nullable
@@ -53,36 +63,30 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo views
         initViews(view);
-
-        // Setup badge counts
         setupBadgeCounts();
-
-        // Setup click listeners
         setupClickListeners(view);
-
-        // Observe LiveData from ViewModel
         observeViewModel();
+        observeSellerStatus();
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
         ensureLoggedInOrRedirect();
     }
-    
+
     private void ensureLoggedInOrRedirect() {
         String token = Prefs.getToken(requireContext());
         if (token == null || token.trim().isEmpty()) {
             NavController nav = NavHostFragment.findNavController(this);
-            
+
             // Pop về gốc graph để không back về Profile
             NavOptions opts = new NavOptions.Builder()
               .setPopUpTo(nav.getGraph().getStartDestinationId(), true)
               .setLaunchSingleTop(true)
               .build();
-            
+
             // ⚠️ Điều hướng thẳng tới đích (không cần action)
             goToAuthAndFinish();
         }
@@ -101,8 +105,28 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
-        btnTest = view.findViewById(R.id.btn_test);
+        tvNoProduct = view.findViewById(R.id.tvNoProduct);
         btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
+
+        layoutChatReview = view.findViewById(R.id.Chat_Review);
+        layoutShopStatistics = view.findViewById(R.id.ShopStatistics);
+        layoutProductsOrders = view.findViewById(R.id.Products_Orders);
+        layoutNegotiationsDashboards = view.findViewById(R.id.Negoitations_Dashboards);
+        layoutNameShop = view.findViewById(R.id.NameShop);
+    }
+
+    private void observeSellerStatus() {
+        sellerViewModel.getIsSeller().observe(getViewLifecycleOwner(), isSeller -> {
+            boolean isSellerMode = isSeller != null && isSeller;
+
+            layoutChatReview.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutShopStatistics.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutProductsOrders.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutNegotiationsDashboards.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            layoutNameShop.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+            tvNoProduct.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
+            btnBecomeSeller.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
+        });
     }
 
     private void observeViewModel() {
@@ -128,7 +152,6 @@ public class ProfileFragment extends Fragment {
 
 
     private void setupBadgeCounts() {
-        // TODO: Lấy dữ liệu thực từ API hoặc database
         int pendingCount = 0;
         int shippingCount = 17;
 
@@ -148,10 +171,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupClickListeners(View view) {
-        // Lấy NavController
-        final NavController navController = Navigation.findNavController(view);
+        NavController navController = Navigation.findNavController(view);
 
-        btnTest.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_productTab));
 
         View.OnClickListener editProfileClickListener = v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_editProfile);
         view.findViewById(R.id.ivAvatar).setOnClickListener(editProfileClickListener);
@@ -170,13 +191,17 @@ public class ProfileFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_profile_to_settings);
         });
 
+        // Wallet
+        view.findViewById(R.id.tvViewDetails).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_wallet));
+
+
         view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
             AuthManager.getInstance(requireContext()).clear();
             Prefs.saveToken(requireContext(), ""); // nếu bạn dùng Prefs riêng cho token
-            
+
             NavController nav = NavHostFragment.findNavController(ProfileFragment.this);
             nav.setGraph(R.navigation.nav_auth, null);
-            
+
             nav.navigate(R.id.loginFragment);
         });
 
@@ -229,31 +254,17 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        // Become Seller
-       // btnBecomeSeller.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_rule_seller));
-        view.findViewById(R.id.btnBecomeSeller).setOnClickListener(v -> {
-            navController.navigate(R.id.action_profile_to_rule_seller);
-        });
-    }
-    private void setupListeners() {
-        // Test button - Navigate to Product Tab
+        // Become Seller Button
+        btnBecomeSeller.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_rule_seller));
+
+        // Test button (nếu có)
+        View btnTest = view.findViewById(R.id.btn_test);
         if (btnTest != null) {
-            btnTest.setOnClickListener(v -> {
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_profile_to_productTab);
-            });
-        }
-
-        // Become Seller button
-        if (btnBecomeSeller != null) {
-            btnBecomeSeller.setOnClickListener(v -> {
-                // TODO: Implement become seller logic
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_profile_to_rule_seller);
-            });
+            btnTest.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_productTab));
         }
     }
 
+    // Hàm public để update badge từ bên ngoài (nếu cần)
     public void updateBadgeCounts(int pendingCount, int shippingCount) {
         if (tvPendingCount != null) {
             if (pendingCount > 0) {
@@ -274,3 +285,4 @@ public class ProfileFragment extends Fragment {
         }
     }
 }
+

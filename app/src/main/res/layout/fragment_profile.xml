@@ -144,7 +144,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center"
                         android:layout_marginEnd="12dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
@@ -197,6 +197,30 @@
                                 android:text="Cá biết bay"
                                 android:textSize="@dimen/text_16"
                                 android:textColor="@color/darkerDay" />
+                        </LinearLayout>
+
+<!--                        ShopName -->
+                        <LinearLayout
+                            android:id="@+id/NameShop"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:src="@drawable/building_01"
+                                app:tint="@color/darkerDay" />
+                            <TextView
+                                android:id="@+id/tvShop"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Shop Cá bán đồ 2 hand"
+                                android:textColor="@color/darkerDay"
+                                android:textSize="@dimen/text_16" />
                         </LinearLayout>
 
                         <!-- Phone -->
@@ -277,6 +301,182 @@
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>
+        <LinearLayout
+            android:id="@+id/Chat_Review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/lighterDay"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/normalDay">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Nhắn với khách"
+                    android:textColor="@color/normalDay"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnViewReview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                app:cardBackgroundColor="@color/normalDay"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/normalDay">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Xem đánh giá"
+                    android:textColor="@color/lighterDay"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ShopStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/grayDay"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:visibility="gone">
+
+            <!-- 1. Tỉ lệ phản hồi -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/chat"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỉ lệ phản hồi"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100%"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- 2. Đánh giá -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/star_border_purple500"
+
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đánh giá"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.9"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- 3. Tỉ lệ thương lượng -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/arrow_reload_02"
+                    app:tint="@color/darkerDay" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỉ lệ thương lượng"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="99%"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- 4. Sản phẩm -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/checkbox_fill"
+
+                    android:gravity="center"
+                    app:tint="@color/darkerDay" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sản phẩm"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Wallet Section Header -->
         <LinearLayout
@@ -386,7 +586,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lịch sử đặt hàng"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold"
             android:textColor="@color/darkerDay"
             android:layout_marginStart="@dimen/space_16"
@@ -401,7 +601,7 @@
             android:baselineAligned="false">
             <LinearLayout
                 android:id="@+id/btnPending"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -418,11 +618,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Xác nhận"
-                        android:textSize="@dimen/text_13"
-                        android:textColor="@color/darkerDay" />
+                        android:textSize="@dimen/text_13" android:textColor="@color/darkerDay" />
                     <TextView
                         android:id="@+id/tvPendingCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/bg_badge_count"
@@ -430,12 +629,10 @@
                         android:minWidth="18dp"
                         android:minHeight="18dp"
                         android:paddingHorizontal="5dp"
-                        android:text="0"
-                        android:textColor="@color/whiteDay"
+                        android:text="0" android:textColor="@color/whiteDay"
                         android:textSize="10sp"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        tools:text="7"/>
+                        android:visibility="gone" tools:visibility="visible"
+                        tools:text="17"/>
                 </LinearLayout>
 
                 <ImageView
@@ -449,7 +646,7 @@
 
             <LinearLayout
                 android:id="@+id/btnShipping"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -483,7 +680,7 @@
                         android:textSize="10sp"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        tools:text="7"/>
+                        tools:text="17"/>
                 </LinearLayout>
 
                 <ImageView
@@ -497,7 +694,7 @@
 
             <LinearLayout
                 android:id="@+id/btnPurchased"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -521,7 +718,7 @@
 
             <LinearLayout
                 android:id="@+id/btnCancelled"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -545,7 +742,7 @@
 
             <LinearLayout
                 android:id="@+id/btnRefund"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -574,13 +771,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sản phẩm của bạn"
-            android:textSize="@dimen/text_16"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/darkerDay"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginStart="@dimen/space_16"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
         <TextView
+            android:id="@+id/tvNoProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -592,6 +791,157 @@
             android:text="Bạn chưa có sản phẩm nào. Hãy đăng ký trở thành người bán ngay!"
             android:textColor="@color/blackDay"
             android:textSize="@dimen/text_13" />
+        <LinearLayout
+            android:id="@+id/Products_Orders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:paddingHorizontal="16dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_test"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardBackgroundColor="@color/highlight4blur"
+                app:cardElevation="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.BottomRightCorner"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highLight5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Các sản phẩm"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Bao gồm sản phẩm cố định, thương lượng, đấu giá và đã xóa của bạn"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:cardBackgroundColor="@color/highlight7blur"
+                app:cardElevation="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.BottomLeftCorner"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highLight8">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Các đơn hàng"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Bao gồm đơn hàng xác nhận, đang giao, đã giao, đã hủy, đã hoàn"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Negoitations_Dashboards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardBackgroundColor="@color/highlight3blur"
+                app:cardElevation="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.TopRightCorner"
+                app:strokeColor="@color/highLight3"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Yêu cầu thương lượng"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Sản phẩm được yêu cầu thương lượng"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:cardBackgroundColor="@color/highlight1blur"
+                app:cardElevation="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.TopLeftCorner"
+                app:strokeColor="@color/highLight1"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Thống kê của shop"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Thống kê hàng tháng về sản phẩm, khách hàng,... của cửa hàng bạn"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnBecomeSeller"
@@ -605,21 +955,6 @@
             android:textSize="@dimen/text_16"
             android:paddingVertical="4dp"
             android:text="Trở thành người bán"
-            android:textColor="@color/normalDay"
-            android:textAllCaps="false" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="120dp"
-            android:background="@drawable/bg_outline_orange"
-            android:paddingHorizontal="@dimen/space_16"
-            android:textSize="@dimen/text_16"
-            android:paddingVertical="4dp"
-            android:text="Test product list"
             android:textColor="@color/normalDay"
             android:textAllCaps="false" />
 

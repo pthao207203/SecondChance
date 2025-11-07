@@ -5,26 +5,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.example.secondchance.databinding.FragmentCommentBinding;
-
+import com.example.secondchance.data.repo.CommentRepository;
+import com.example.secondchance.databinding.FragmentRecyclerCommentBinding;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommentFragment extends Fragment {
 
-    private FragmentCommentBinding binding;
+    private FragmentRecyclerCommentBinding binding;
     private CommentAdapter adapter;
+    private CommentRepository repository;
+    private String sellerId = "68f72a0b51284f307a9cbad9"; // Thay bằng ID thật hoặc truyền từ ngoài vào
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCommentBinding.inflate(inflater, container, false);
+        binding = FragmentRecyclerCommentBinding.inflate(inflater, container, false);
+
+        // Lấy sellerId từ arguments (nếu có)
+        if (getArguments() != null) {
+            sellerId = getArguments().getString("sellerId", sellerId);
+        }
         return binding.getRoot();
     }
 
@@ -32,7 +38,8 @@ public class CommentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
-        loadSampleData();
+        repository = new CommentRepository();
+        loadComments();
     }
 
     private void setupRecyclerView() {
@@ -42,27 +49,26 @@ public class CommentFragment extends Fragment {
         binding.recyclerViewComments.setHasFixedSize(true);
     }
 
-    private void loadSampleData() {
-        List<Comment> comments = new ArrayList<>();
-        comments.add(new Comment(
-                "Fish can Fly",
-                "18/02/2025",
-                "Bé cá 7 màu, bằng kính, loại dày, số lượng 1.",
-                "Shop tư vấn nhiệt tình, đóng gói cẩn thận, lúc về đến nhà check đúng sự thật. Cảm ơn shop, ship nhanh tại mình đang cần gấp hệ hệ",
-                "4.9",
-                "Shop xin lỗi vì những sự cố như thế này, mong bạn có thể ib lại để shop hỗ trợ tư vấn ạ"
-        ));
+    private void loadComments() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.textEmpty.setVisibility(View.GONE);
 
-        comments.add(new Comment(
-                "Người dùng 2",
-                "17/02/2025",
-                "Sản phẩm A",
-                "Hàng đẹp, giao nhanh, sẽ ủng hộ tiếp!",
-                "5.0",
-                null
-        ));
+        // ĐÃ SỬA LỖI Ở ĐÂY: xóa từ "save" thừa
+        MutableLiveData<List<Comment>> liveData = new MutableLiveData<>();
 
-        adapter.submitList(comments);
+        repository.getSellerComments(sellerId, liveData);
+
+        liveData.observe(getViewLifecycleOwner(), comments -> {
+            binding.progressBar.setVisibility(View.GONE);
+
+            if (comments != null && !comments.isEmpty()) {
+                adapter.submitList(new ArrayList<>(comments));
+                binding.textEmpty.setVisibility(View.GONE);
+            } else {
+                adapter.submitList(new ArrayList<>());
+                binding.textEmpty.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

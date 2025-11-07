@@ -1,4 +1,4 @@
-// File: app/src/main/java/com/example/secondchance/ui/profile/FillInfoSellerFragment.java
+// File: FillInfoSellerFragment.java
 package com.example.secondchance.ui.profile;
 
 import android.app.Dialog;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -23,6 +24,14 @@ import com.google.android.material.button.MaterialButton;
 public class FillInfoSellerFragment extends Fragment {
 
     private boolean isChecked = false;
+    private SellerViewModel sellerViewModel; // Thêm ViewModel
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Khởi tạo ViewModel ngay từ đầu
+        sellerViewModel = new ViewModelProvider(requireActivity()).get(SellerViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -54,7 +63,6 @@ public class FillInfoSellerFragment extends Fragment {
                 return;
             }
 
-            // Kiểm tra form
             String name = ((EditText) view.findViewById(R.id.etName)).getText().toString().trim();
             String cccd = ((EditText) view.findViewById(R.id.etCCCD)).getText().toString().trim();
             String shopName = ((EditText) view.findViewById(R.id.etShopName)).getText().toString().trim();
@@ -74,23 +82,23 @@ public class FillInfoSellerFragment extends Fragment {
         Dialog dialog = new Dialog(requireContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_wait_accept);
-        dialog.setCancelable(false); // Không cho tắt bằng back
+        dialog.setCancelable(false);
 
-        // Nút đóng → Chuyển đến My Shop Home
         ImageView btnClose = dialog.findViewById(R.id.btnCloseDialog);
         btnClose.setOnClickListener(v -> {
             dialog.dismiss();
 
-            // Chuyển đến MyShopHomeFragment + XÓA back stack cũ (tùy chọn)
-            NavHostFragment.findNavController(this)
-                    .navigate(
-                            R.id.action_fill_info_seller_to_my_shop_home,
-                            null,
-                            new NavOptions.Builder()
-                                    .setPopUpTo(R.id.navigation_profile, false) // Xóa đến Profile
-                                    .setPopUpTo(R.id.fragment_fill_info_seller, true) // Xóa chính nó
-                                    .build()
-                    );
+            // ĐÁNH DẤU ĐÃ LÀ NGƯỜI BÁN THÀNH CÔNG
+            sellerViewModel.setSeller(true);
+
+            // Quay về Profile và làm sạch back stack
+            NavHostFragment.findNavController(this).navigate(
+                    R.id.action_fill_info_seller_to_profile,
+                    null,
+                    new NavOptions.Builder()
+                            .setPopUpTo(R.id.navigation_profile, true) // Xóa toàn bộ stack đến Profile
+                            .build()
+            );
         });
 
         dialog.show();
