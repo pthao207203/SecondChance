@@ -1,5 +1,6 @@
 package com.example.secondchance.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
+import com.example.secondchance.ui.auth.AuthActivity;
+import com.example.secondchance.ui.auth.AuthManager;
+import com.example.secondchance.ui.auth.LoginFragment;
+import com.example.secondchance.util.Prefs;
 
 public class ProfileFragment extends Fragment {
 
@@ -56,6 +64,33 @@ public class ProfileFragment extends Fragment {
 
         // Observe LiveData from ViewModel
         observeViewModel();
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        ensureLoggedInOrRedirect();
+    }
+    
+    private void ensureLoggedInOrRedirect() {
+        String token = Prefs.getToken(requireContext());
+        if (token == null || token.trim().isEmpty()) {
+            NavController nav = NavHostFragment.findNavController(this);
+            
+            // Pop về gốc graph để không back về Profile
+            NavOptions opts = new NavOptions.Builder()
+              .setPopUpTo(nav.getGraph().getStartDestinationId(), true)
+              .setLaunchSingleTop(true)
+              .build();
+            
+            // ⚠️ Điều hướng thẳng tới đích (không cần action)
+            goToAuthAndFinish();
+        }
+    }
+    private void goToAuthAndFinish() {
+        if (!isAdded()) return;
+        NavController nav = NavHostFragment.findNavController(this);
+        nav.setGraph(R.navigation.mobile_navigation, null);
     }
 
     private void initViews(View view) {
@@ -136,8 +171,13 @@ public class ProfileFragment extends Fragment {
         });
 
         view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Đăng xuất", Toast.LENGTH_SHORT).show();
-            // TODO: Implement logout logic
+            AuthManager.getInstance(requireContext()).clear();
+            Prefs.saveToken(requireContext(), ""); // nếu bạn dùng Prefs riêng cho token
+            
+            NavController nav = NavHostFragment.findNavController(ProfileFragment.this);
+            nav.setGraph(R.navigation.nav_auth, null);
+            
+            nav.navigate(R.id.loginFragment);
         });
 
         view.findViewById(R.id.tvViewDetails).setOnClickListener(

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.secondchance.MainActivity;
@@ -97,7 +98,7 @@ public class LoginFragment extends Fragment {
         @Override
         public void onResponse(Call<AuthApi.LoginEnvelope> call,
                                Response<AuthApi.LoginEnvelope> res) {
-          if (!isAdded()) return; // Fragment đã detach
+          if (!isAdded()) return;
           setLoading(false);
           
           if (res.isSuccessful()
@@ -107,17 +108,14 @@ public class LoginFragment extends Fragment {
             && res.body().data.token != null) {
             
             AuthApi.Token tk = res.body().data.token;
-            String bearer = (tk.tokenType != null ? tk.tokenType : "Bearer")
-              + " " + tk.accessToken;
+            String bearer = (tk.tokenType != null ? tk.tokenType : "Bearer") + " " + tk.accessToken;
+            Prefs.saveToken(requireContext(), bearer);
             
-            Prefs.saveToken(requireContext(), bearer); // "Bearer xxxxx"
+            Toast.makeText(requireContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             
-            Toast.makeText(requireContext(),
-              "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             goToMainAndFinish();
           } else {
-            Toast.makeText(requireContext(),
-              "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
           }
         }
         
@@ -125,8 +123,7 @@ public class LoginFragment extends Fragment {
         public void onFailure(Call<AuthApi.LoginEnvelope> call, Throwable t) {
           if (!isAdded()) return;
           setLoading(false);
-          Toast.makeText(requireContext(),
-            "Không kết nối được máy chủ", Toast.LENGTH_SHORT).show();
+          Toast.makeText(requireContext(), "Không kết nối được máy chủ", Toast.LENGTH_SHORT).show();
         }
       });
   }
@@ -148,10 +145,9 @@ public class LoginFragment extends Fragment {
   }
   
   private void goToMainAndFinish() {
-    Intent i = new Intent(requireContext(), MainActivity.class);
-    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(i);
-    requireActivity().finish();
+    if (!isAdded()) return;
+    NavController nav = NavHostFragment.findNavController(LoginFragment.this);
+    nav.setGraph(R.navigation.mobile_navigation, null);
   }
   
   @Override

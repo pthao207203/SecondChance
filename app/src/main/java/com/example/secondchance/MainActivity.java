@@ -1,207 +1,152 @@
 package com.example.secondchance;
 
-import androidx.navigation.NavOptions;
+import static com.example.secondchance.util.Prefs.getToken;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.NavDestination;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.secondchance.R;
 import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.ActivityMainBinding;
+import com.example.secondchance.ui.auth.AuthManager;
 import com.example.secondchance.viewmodel.SharedViewModel;
-import com.example.secondchance.ui.home.HomeFragment;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-
-
-
-import com.example.secondchance.viewmodel.SharedViewModel;
-import com.example.secondchance.R;
 
 public class MainActivity extends AppCompatActivity {
   private ActivityMainBinding binding;
   private NavController navController;
   private SharedViewModel sharedViewModel;
   private boolean backBusy = false;
-
-
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-      Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e);
-    });
-    super.onCreate(savedInstanceState);
-
-    AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags("vi")
+    Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+      Log.e("FATAL", "Uncaught crash on thread " + t.getName(), e)
     );
-
+    super.onCreate(savedInstanceState);
+    
+    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags("vi"));
     RetrofitProvider.init(this);
+    
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
-
-
-//     Lấy NavController từ NavHostFragment
-//    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-//            .findFragmentById(R.id.fragment_container);
-//    if (navHostFragment != null) {
-//      navController = navHostFragment.getNavController();
-//    }
-
-    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
-      NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-      navController.navigate(R.id.navigation_home);
-    });
-
-
-
-    // Setup bottom navigation
-//    binding.menu.navHome.setOnClickListener(v -> {
-//      if (navController != null) {
-//        navController.navigate(R.id.navigation_home);
-//      }
-//    });
-//
-//    binding.menu.navAi.setOnClickListener(v ->
-//            Toast.makeText(this, "AI định giá", Toast.LENGTH_SHORT).show()
-//    );
-//
-//    binding.menu.navNegotiate.setOnClickListener(v ->
-//            Toast.makeText(this, "Thương lượng", Toast.LENGTH_SHORT).show()
-//    );
-//
-//    binding.menu.navMe.setOnClickListener(v -> {
-//      if (navController != null) {
-//        navController.navigate(R.id.navigation_profile);
-//      }
-//    });
-
-
-
-
-
-    // Khởi tạo SharedViewModel
-    sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-
-    NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
-            .findFragmentById(R.id.nav_host_fragment_activity_main);
+    
+    // NavHost + NavController
+    NavHostFragment navHostFragment =
+      (NavHostFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.nav_host_fragment_activity_main);
     navController = navHostFragment.getNavController();
-
+    
+    // 3.1 Chọn graph ban đầu theo trạng thái đăng nhập (giữ y như bạn muốn)
+    boolean isLoggedIn = AuthManager.getInstance(this).isLoggedIn();
+    if (isLoggedIn) {
+      navController.setGraph(R.navigation.mobile_navigation);      // 🔧 CHANGED (switch graph)
+    } else {
+      navController.setGraph(R.navigation.nav_auth);               // 🔧 CHANGED (switch graph)
+    }
+    
+    // Gắn click sample của bạn (Home icon ở custom menu)
+    binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
+      NavController c = navController;
+      c.navigate(R.id.navigation_home);
+    });
+    
+    // ViewModel
+    sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+    sharedViewModel.getCurrentTitle().observe(this, this::applySharedTitleIfNeeded);
+    
     setupIconClickListeners();
     setupBottomMenuClickListeners();
-
-    // Lắng nghe sự kiện chuyển Fragment để ĐỔI GIAO DIỆN Header
-    navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-      Log.d("MainActivity", "Destination changed to: " + destination.getLabel() + " (ID: " + destination.getId() + ")");
+    
+    // Lắng nghe chuyển đích để cập nhật UI khung
+    navController.addOnDestinationChangedListener((controller, destination, args) -> {
+      Log.d("MainActivity", "Destination changed: " + destination.getId() + " label=" + destination.getLabel());
       updateUiVisibility(destination);
     });
-
-    // Lắng nghe ViewModel để CẬP NHẬT TIÊU ĐỀ
-    sharedViewModel.getCurrentTitle().observe(this, newTitle -> {
-      Log.d("MainActivity", "ViewModel title updated: " + newTitle);
-      NavDestination currentDestination = navController.getCurrentDestination();
-      if (currentDestination != null) {
-        int currentDestId = currentDestination.getId();
-
-        // check navigation_negotiation
-        if (currentDestId == R.id.navigation_order ||
-                currentDestId == R.id.navigation_negotiation) {
-
-          if (newTitle != null && !newTitle.isEmpty()) {
-            binding.headerMain.tvHeaderTitle.setText(newTitle);
-            Log.d("MainActivity", "Header title set from ViewModel: " + newTitle);
-          } else {
-            if(currentDestId == R.id.navigation_order) {
-              binding.headerMain.tvHeaderTitle.setText("Đơn hàng");
-            } else {
-              binding.headerMain.tvHeaderTitle.setText("Thương lượng");
-            }
-          }
-        }
-      }
-    });
-
+    
+    // Cập nhật UI ngay lần đầu sau khi setGraph
+    NavDestination cur = navController.getCurrentDestination();
+    if (cur != null) updateUiVisibility(cur);                     // 🔧 CHANGED
   }
-
+  
+  private void applySharedTitleIfNeeded(String newTitle) {
+    NavDestination cur = navController.getCurrentDestination();
+    if (cur == null) return;
+    int id = cur.getId();
+    if (id == R.id.navigation_order || id == R.id.navigation_negotiation) {
+      if (newTitle != null && !newTitle.isEmpty()) {
+        binding.headerMain.tvHeaderTitle.setText(newTitle);
+      } else {
+        binding.headerMain.tvHeaderTitle.setText(
+          id == R.id.navigation_order ? "Đơn hàng" : "Thương lượng"
+        );
+      }
+    }
+  }
+  
   // GIAO DIỆN header (ẩn/hiện)
   private void updateUiVisibility(NavDestination destination) {
     if (binding == null || destination == null) return;
-
+    
     int destinationId = destination.getId();
-    Log.d("MainActivity", "Updating UI visibility for ID: " + destinationId);
-
+    Log.d("MainActivity", "Updating UI for dest ID: " + destinationId);
+    
+    View header = binding.headerMain.getRoot();
+    View bottom = binding.myCustomMenu.getRoot();
+    View tabsAppBar = binding.orderTabsAppbar;
     View searchContainer = binding.headerMain.searchContainer;
     View iconBack = binding.headerMain.iconBack;
     TextView tvTitle = binding.headerMain.tvHeaderTitle;
-    View orderTabsAppBar = binding.orderTabsAppbar;
-
-    // ẨN/HIỆN THANH TAB Chỉ hiện khi ở màn hình OrderFragment (navigation_order)
-    if (destinationId == R.id.navigation_order) {
-      orderTabsAppBar.setVisibility(View.VISIBLE);
-      Log.d("MainActivity", "TabLayout VISIBLE");
-    } else { // Ẩn ở tất cả màn hình khác (Home, Profile, Chi tiết...)
-      orderTabsAppBar.setVisibility(View.GONE);
-      Log.d("MainActivity", "TabLayout GONE");
-    }
-
-    // ẨN/HIỆN HEADER CHÍNH
-    if (destinationId == R.id.navigation_home) {
-      searchContainer.setVisibility(View.VISIBLE);
-      iconBack.setVisibility(View.GONE);
-      tvTitle.setVisibility(View.GONE);
-      Log.d("MainActivity", "Header: Show Search");
-
-    } else { // Tất cả các màn hình khác (Profile, Order, Detail, AI, ...)
-      searchContainer.setVisibility(View.GONE);
-      iconBack.setVisibility(View.VISIBLE);
-      tvTitle.setVisibility(View.VISIBLE);
-      Log.d("MainActivity", "Header: Show Back/Title");
-
-      // Back mặc định
+    
+    // 🔧 CHANGED: xác định đang ở graph nào bằng ID của graph hiện tại
+    View authWave = binding.authWave;
+    
+    boolean inAuth = false;
+    try {
+      navController.getGraph();
+      inAuth = navController.getGraph().getId() == R.id.nav_auth;
+    } catch (Exception ignore) {}
+    
+    // Ẩn/hiện UI khung chính
+    header.setVisibility(inAuth ? View.GONE : View.VISIBLE);
+    bottom.setVisibility(inAuth ? View.GONE : View.VISIBLE);
+    authWave.setVisibility(inAuth ? View.VISIBLE : View.GONE);
+    
+    // Tab chỉ hiện khi ở Order (và đang ở main)
+    boolean inOrder = destinationId == R.id.navigation_order;
+    tabsAppBar.setVisibility(inOrder && !inAuth ? View.VISIBLE : View.GONE);
+    
+    if (!inAuth) {
+      // Header: Home thì show thanh search, còn lại back + title
+      boolean isHome = destinationId == R.id.navigation_home;
+      searchContainer.setVisibility(isHome ? View.VISIBLE : View.GONE);
+      iconBack.setVisibility(isHome ? View.GONE : View.VISIBLE);
+      tvTitle.setVisibility(isHome ? View.GONE : View.VISIBLE);
+      
       wireBackIcon(iconBack);
-//      iconBack.setOnClickListener(v -> {
-//        if (!navController.popBackStack()) navController.navigateUp();
-//      });
-
-      // logic tiêu đề cho navigation_negotiation
-      if (destinationId == R.id.navigation_order) {
+      
+      if (!isHome && !inOrder && destination.getLabel() != null) {
+        tvTitle.setText(destination.getLabel());
+      } else if (inOrder) {
         String t = sharedViewModel.getCurrentTitle().getValue();
         tvTitle.setText(t != null ? t : "Đơn hàng");
-        Log.d("MainActivity", "Header Title (Order): " + tvTitle.getText());
-
-      } else if (destinationId == R.id.navigation_negotiation) {
-        String t = sharedViewModel.getCurrentTitle().getValue();
-        tvTitle.setText(t != null ? t : "Thương lượng");
-        Log.d("MainActivity", "Header Title (Negotiation): " + tvTitle.getText());
-
-      } else { // Các màn hình khác
-        CharSequence label = destination.getLabel();
-        tvTitle.setText(label != null ? label : "");
-        Log.d("MainActivity", "Header Title (Other): " + label);
       }
     }
   }
-
+  
   private void wireBackIcon(View iconBack) {
     iconBack.setOnClickListener(v -> {
       if (backBusy) return;
@@ -214,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
       }
     });
   }
-
+  
   // sự kiện click cho 3 icon trên header
   private void setupIconClickListeners() {
     binding.headerMain.iconCart.setOnClickListener(v -> openCartScreen());
@@ -222,49 +167,52 @@ public class MainActivity extends AppCompatActivity {
     binding.headerMain.iconNotify.setOnClickListener(v -> openNotificationScreen());
     binding.headerMain.iconSearch.setOnClickListener(v -> Toast.makeText(this, "Tìm kiếm...", Toast.LENGTH_SHORT).show());
   }
-
+  
   // sự kiện click cho menu dưới
   private void setupBottomMenuClickListeners() {
     NavOptions navOptions = new NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setRestoreState(true)
-            .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
-            .build();
-
+      .setLaunchSingleTop(true)
+      .setRestoreState(true)
+      .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
+      .build();
+    
     binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
-      if (navController.getCurrentDestination().getId() != R.id.navigation_home) {
+      if (navController.getCurrentDestination() != null
+        && navController.getCurrentDestination().getId() != R.id.navigation_home) {
         navController.navigate(R.id.navigation_home, null, navOptions);
       }
     });
-
+    
     binding.myCustomMenu.navigationDashboard.setOnClickListener(v -> {
-      if (navController.getCurrentDestination().getId() != R.id.navigation_dashboard) {
+      if (navController.getCurrentDestination() != null
+        && navController.getCurrentDestination().getId() != R.id.navigation_dashboard) {
         navController.navigate(R.id.navigation_dashboard, null, navOptions);
       }
     });
+    
     binding.myCustomMenu.navigationNegotiation.setOnClickListener(v -> {
-      if (navController.getCurrentDestination().getId() != R.id.navigation_negotiation) {
+      if (navController.getCurrentDestination() != null
+        && navController.getCurrentDestination().getId() != R.id.navigation_negotiation) {
         navController.navigate(R.id.navigation_negotiation, null, navOptions);
       }
     });
+    
     binding.myCustomMenu.navigationProfile.setOnClickListener(v -> {
-      if (navController.getCurrentDestination().getId() != R.id.navigation_profile) {
+      if (navController.getCurrentDestination() != null
+        && navController.getCurrentDestination().getId() != R.id.navigation_profile) {
         navController.navigate(R.id.navigation_profile, null, navOptions);
       }
     });
   }
-
+  
   // --- Các hàm xử lý chung khi click icon ---
   private void openCartScreen() {
     Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
-    // TODO: mở màn hình Giỏ hàng
   }
   private void openChatScreen() {
     Toast.makeText(this, "Mở Chat", Toast.LENGTH_SHORT).show();
-    // TODO: mở màn hình Chat
   }
   private void openNotificationScreen() {
     Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
-    // TODO: mở màn hình Thông báo
   }
 }
