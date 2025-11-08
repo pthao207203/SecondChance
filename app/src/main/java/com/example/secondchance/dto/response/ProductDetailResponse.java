@@ -19,7 +19,8 @@ public class ProductDetailResponse {
     
     // Giá: dùng long để đủ dải VND
     @SerializedName("price")         public long price;
-    
+    public int priceType;
+    public String auctionEndsAt;
     @SerializedName("currency")      public String currency;
     @SerializedName("quantity")      public int quantity;
     
@@ -66,6 +67,8 @@ public class ProductDetailResponse {
     @SerializedName("userAvatar")
     public String userAvatar;
     public String shopName;
+    public double userRate;
+    public String shopAddress;
     public FirstComment firstComment;
   }
   public static class FirstComment {
