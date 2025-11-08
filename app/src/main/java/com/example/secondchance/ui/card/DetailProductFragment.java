@@ -1,7 +1,9 @@
 package com.example.secondchance.ui.card;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -34,6 +36,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,6 +64,7 @@ public class DetailProductFragment extends Fragment {
     
     // API
     private HomeApi homeApi;
+    private CountDownTimer auctionTimer;
     
     // PageChangeCallback để unregister khi destroy
     private final ViewPager2.OnPageChangeCallback pageCallback = new ViewPager2.OnPageChangeCallback() {
@@ -87,6 +92,14 @@ public class DetailProductFragment extends Fragment {
     
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Nút hành động cơ bản
+        binding.textBuyNow.setText("MUA NGAY");
+        binding.cardBuyNow.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.normalDay));
+        binding.iconcart.setImageResource(R.drawable.shopping_cart_02);
+        binding.textAddToCart.setText("Thêm vào giỏ hàng");
+        binding.cardAddToCart.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight4blur));
+        binding.cardNegotiation.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grayDay));
         
         // Màu dot
         colorActive   = ContextCompat.getColor(requireContext(), R.color.darkerDay);
@@ -206,6 +219,7 @@ public class DetailProductFragment extends Fragment {
     
     @Override public void onDestroyView() {
         super.onDestroyView();
+        stopAuctionCountdown();
         if (viewPagerImages != null) viewPagerImages.unregisterOnPageChangeCallback(pageCallback);
         if (sliderHandler != null && sliderRunnable != null) {
             sliderHandler.removeCallbacks(sliderRunnable);
@@ -225,6 +239,9 @@ public class DetailProductFragment extends Fragment {
                     Toast.makeText(requireContext(), "Không tải được sản phẩm", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                Gson gson = new Gson();
+                String json = gson.toJson(res.body().data);
+                Log.d("DetailProductFragment", "onResponse: " + json);
                 bindUi(res.body().data);
             }
             
@@ -235,7 +252,7 @@ public class DetailProductFragment extends Fragment {
         });
     }
     
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     private void bindUi(ProductDetailResponse.Data p) {
         if (!isAdded() || binding == null) return;
         
@@ -244,7 +261,40 @@ public class DetailProductFragment extends Fragment {
         binding.productQuantity.setText("Số lượng: " + p.quantity);
         binding.priceCurrency.setText(p.currency != null && p.currency.equalsIgnoreCase("VND") ? "đ" : safe(p.currency));
         binding.priceValue.setText(formatVnd(p.price));
-        
+        binding.ratingValue.setText(String.valueOf(p.seller.userRate));
+        switch (p.priceType) {
+            case 1:
+                // 1 = Giá cố định
+                // Giữ nguyên như mặc định
+//                Log.d("DetailProductFragment", "bindUi: Giá cố định");
+                break;
+            
+            case 2:
+                // 2 = Thương lượng nổi bật: “khung vàng chữ đen”
+                //   - Chip thương lượng: viền vàng, nền trắng, chữ đen
+                binding.cardNegotiation.setCardBackgroundColor(
+                  ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.highlight3blur))
+                );
+                // Text bên trong chip thương lượng:
+                binding.tvNegotiation.setTextColor(
+                  ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.darkerDay))
+                );
+//                Log.d("DetailProductFragment", "bindUi: Thương lượng nổi bật");
+                break;
+            
+            case 3:
+                // 3 = Đấu giá
+                //   - Chip thương lượng: giữ như hiện tại (mặc định ở trên)
+                //   - Nút “MUA NGAY” thành “ĐẤU GIÁ”
+                startAuctionCountdown(p.auctionEndsAt);
+                binding.textBuyNow.setText("ĐẤU GIÁ");
+//                Log.d("DetailProductFragment", "bindUi: Đấu giá");
+                break;
+            
+            default:
+                // Không xác định -> giữ mặc định
+                break;
+        }
         
         binding.contentDescription.removeAllViews();
         binding.contentSource.removeAllViews();
@@ -357,14 +407,75 @@ public class DetailProductFragment extends Fragment {
         buildDots(media.size());
         updateDots(0); // an toàn vì đã build dots
         viewPagerImages.setCurrentItem(0, false);
+    }
+    private void startAuctionCountdown(String auctionEndsAtIso) {
+        long target = parseIso8601ToMillis(auctionEndsAtIso);
+        Log.d("DetailProductFragment", "startAuctionCountdown: " + auctionEndsAtIso);
+        if (target <= 0) {
+            binding.textAddToCart.setText("—");
+            return;
+        }
+        long remaining = target - System.currentTimeMillis();
+        if (remaining <= 0) {
+            binding.textAddToCart.setText("Đã kết thúc");
+            return;
+        }
         
-        // Nút hành động cơ bản
-        binding.textBuyNow.setText("MUA NGAY");
-        binding.cardBuyNow.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.normalDay));
-        binding.iconcart.setImageResource(R.drawable.shopping_cart_02);
-        binding.textAddToCart.setText("Thêm vào giỏ hàng");
-        binding.cardAddToCart.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight4blur));
-        binding.cardNegotiation.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grayDay));
+        stopAuctionCountdown();
+        auctionTimer = new CountDownTimer(remaining, 1000) {
+            @Override
+            public void onTick(long ms) {
+                binding.iconcart.setVisibility(View.GONE);
+                binding.textAddToCart.setVisibility(View.GONE);
+                binding.countdownTimer.setVisibility(View.VISIBLE);
+                setHMS(binding.hoursText, binding.minutesText, binding.secondsText, ms);
+            }
+            
+            @Override
+            public void onFinish() {
+                // Hết giờ -> quay về text thường
+                binding.countdownTimer.setVisibility(View.GONE);
+                binding.textAddToCart.setVisibility(View.VISIBLE);
+                binding.textAddToCart.setText("Đã kết thúc");
+            }
+        }.start();
+    }
+    
+    private void stopAuctionCountdown() {
+        if (auctionTimer != null) {
+            auctionTimer.cancel();
+            auctionTimer = null;
+        }
+    }
+    public static long parseIso8601ToMillis(String iso8601) {
+        if (iso8601 == null) return -1L;
+        try {
+            java.text.SimpleDateFormat sdf =
+              new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", java.util.Locale.US);
+            sdf.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            return sdf.parse(iso8601).getTime();
+        } catch (Exception e1) {
+            try {
+                java.text.SimpleDateFormat sdf2 =
+                  new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", java.util.Locale.US);
+                sdf2.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+                return sdf2.parse(iso8601).getTime();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+                return -1L;
+            }
+        }
+    }
+    
+    /** Cập nhật 3 ô H-M-S; totalHours có thể > 24 (gộp cả ngày cho gọn) */
+    public static void setHMS(android.widget.TextView h, android.widget.TextView m, android.widget.TextView s, long remainingMs) {
+        long totalSeconds = Math.max(0, remainingMs / 1000);
+        long hours = totalSeconds / 3600;           // gộp cả ngày vào giờ
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        h.setText(String.format(java.util.Locale.getDefault(), "%02d", hours));
+        m.setText(String.format(java.util.Locale.getDefault(), "%02d", minutes));
+        s.setText(String.format(java.util.Locale.getDefault(), "%02d", seconds));
     }
     private int dp(int value) {
         float d = getResources().getDisplayMetrics().density;

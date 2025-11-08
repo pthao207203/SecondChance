@@ -103,21 +103,22 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-<!--                    <ImageView-->
-<!--                        android:id="@+id/star_icon"-->
-<!--                        android:layout_width="15dp"-->
-<!--                        android:layout_height="15dp"-->
-<!--                        android:layout_marginEnd="4dp"-->
-<!--                        android:src="@drawable/star"-->
-<!--                        android:contentDescription="star" />-->
+                    <ImageView
+                        android:id="@+id/star_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/star"
+                        android:contentDescription="star" />
 
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="4.9"-->
-<!--                        android:textColor="#000"-->
-<!--                        android:textSize="14sp"-->
-<!--                        android:layout_gravity="center" />-->
+                    <TextView
+                        android:id="@+id/rating_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.9"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_gravity="center" />
                 </LinearLayout>
 
                 <TextView
@@ -152,27 +153,143 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:layout_marginHorizontal="8dp"
-                        >
-                    <ImageView
-                        android:id="@+id/iconcart"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="4dp"
-                        android:src="@drawable/shopping_cart_02"
                         android:layout_gravity="center_vertical"
-                        android:contentDescription="star" />
+                        android:gravity="center"
+                        android:layout_marginHorizontal="8dp">
+                        <ImageView
+                            android:id="@+id/iconcart"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="4dp"
+                            android:src="@drawable/shopping_cart_02"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center"
+                            android:contentDescription="star" />
 
-                    <TextView
-                        android:id="@+id/textAddToCart"
+                        <TextView
+                            android:id="@+id/textAddToCart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:text="Thêm vào giỏ hàng"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="@dimen/text_16"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/countdown_timer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:text="Thêm vào giỏ hàng"
-                        android:textColor="@color/darkerDay"
-                        android:textSize="@dimen/text_16"
-                        android:textStyle="normal" />
+                        android:orientation="horizontal"
+                        android:baselineAligned="false"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="Còn lại"
+                            android:textStyle="bold"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            style="@style/Widget.SecondChance.Card.Number"
+                            android:id="@+id/hours_card"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/normalDay"
+                            android:gravity="center"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp">
+                            <TextView
+                                android:id="@+id/hours_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="4dp"
+                                android:text="02"
+                                android:textColor="@color/whiteDay"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/hours_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="h"
+                            android:textStyle="bold"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            style="@style/Widget.SecondChance.Card.Number"
+                            android:id="@+id/minutes_card"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/normalDay"
+                            android:gravity="center"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp">
+                            <TextView
+                                android:id="@+id/minutes_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="4dp"
+                                android:text="39"
+                                android:textColor="@color/whiteDay"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/minutes_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="m"
+                            android:textStyle="bold"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            style="@style/Widget.SecondChance.Card.Number"
+                            android:id="@+id/seconds_card"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/normalDay"
+                            android:gravity="center"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp">
+                            <TextView
+                                android:id="@+id/seconds_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="4dp"
+                                android:text="12"
+                                android:textColor="@color/whiteDay"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/seconds_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="s"
+                            android:textStyle="bold"
+                            android:textColor="@color/darkerDay"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -187,7 +304,7 @@
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.RightCorner">
 
                     <TextView
-                        android:id="@+id/textBuyNow"
+                        android:id="@+id/text_buy_now"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingTop="8dp"
@@ -202,13 +319,14 @@
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.SecondChance.Card.Number"
-                android:id="@+id/cardNegotiation"
+                android:id="@+id/card_negotiation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 app:cardCornerRadius="16dp">
 
                 <TextView
+                    android:id="@+id/tvNegotiation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="16dp"
