@@ -29,6 +29,7 @@ navigationUi = "2.6.0"
 preference = "1.2.1"
 retrofit = "2.11.0"
 weatherIconsTypeface = "2.0.10.8-kotlin"
+playServicesAnalyticsImpl = "18.2.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -62,6 +63,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 weather-icons-typeface = { module = "com.mikepenz:weather-icons-typeface", version.ref = "weatherIconsTypeface" }
+play-services-analytics-impl = { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

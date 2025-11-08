@@ -1,412 +1,530 @@
 package com.example.secondchance.ui.card;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
+import com.example.secondchance.data.remote.HomeApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.FragmentDetailProductBinding;
-import com.google.android.material.button.MaterialButton;
+import com.example.secondchance.dto.response.ProductDetailResponse;
 import com.google.android.material.card.MaterialCardView;
-import android.widget.TextView;
-import android.widget.EditText;
+import com.google.gson.Gson;
 
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.viewpager2.widget.ViewPager2;
-import android.os.Handler;
-import android.os.Looper;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class DetailProductFragment extends Fragment {
-
+    
     private FragmentDetailProductBinding binding;
-
-    // === BIẾN TAB + NỘI DUNG ===
-    private MaterialCardView tabDescription, tabSource, tabEvidence, tabOther;
-    private LinearLayout contentDescription, contentSource, contentEvidence, contentOther;
-
-    // === BIẾN MÀU ===
-    private static final int COLOR_SELECTED = R.color.highlight4blur; // Xanh
-    private static final int COLOR_UNSELECTED = R.color.whiteDay;     // Xám
-    // === BIẾN MÀU THANH NGANG ===
-    private static final int INDICATOR_SELECTED = R.color.highLight5;   // Xanh đậm
-    private static final int INDICATOR_UNSELECTED = R.color.whiteDay; // Trắng
-    // === BIẾN MỚI: THANH CHỈ THỊ ===
-    private View indicatorDescription, indicatorSource, indicatorEvidence, indicatorOther;
-
+    
+    // Slider
     private ViewPager2 viewPagerImages;
-    private ImageSliderAdapter sliderAdapter;
-    private List<Integer> imageList;
-    private MaterialCardView dot1, dot2, dot3;
-    private MaterialCardView[] dots; // Mảng để quản lý các nút
-
-    // Biến cho auto-scroll
-    private Handler sliderHandler;
-    private Runnable sliderRunnable;
-    private static final long SLIDE_DELAY_MS = 2000; // 2 giây
-
-    // Màu sắc (Lấy từ code cũ của bạn, bạn có thể cần điều chỉnh)
+    private ImageUrlSliderAdapter urlAdapter;
+    
+    // Dots động
+    private LinearLayout dotsContainer;
+    private final List<MaterialCardView> dots = new ArrayList<>();
     private int colorActive;
     private int colorInactive;
-    private static final long CLICK_DELAY_MS = 5000;
-
+    
+    // Auto scroll
+    private Handler sliderHandler;
+    private Runnable sliderRunnable;
+    private static final long SLIDE_DELAY_MS = 2500;
+    
+    // API
+    private HomeApi homeApi;
+    
+    // PageChangeCallback để unregister khi destroy
+    private final ViewPager2.OnPageChangeCallback pageCallback = new ViewPager2.OnPageChangeCallback() {
+        @Override public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            int count = (urlAdapter != null) ? urlAdapter.getItemCount() : 0;
+            if (count > 0) updateDots(position % count);
+            
+            // reset auto-scroll
+            if (sliderHandler != null && sliderRunnable != null) {
+                sliderHandler.removeCallbacks(sliderRunnable);
+                sliderHandler.postDelayed(sliderRunnable, SLIDE_DELAY_MS);
+            }
+        }
+    };
+    
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentDetailProductBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Khởi tạo màu
-        colorActive = getResources().getColor(R.color.darkerDay); // Màu sáng
-        colorInactive = getResources().getColor(R.color.lighterDay); // Màu mờ (hoặc R.color.normalDay)
-
-        // === KHỞI TẠO SLIDER ===
-        // 1. Ánh xạ View (đã đúng)
-        viewPagerImages = view.findViewById(R.id.viewPagerImages);
-        dot1 = view.findViewById(R.id.dot_1);
-        dot2 = view.findViewById(R.id.dot_2);
-        dot3 = view.findViewById(R.id.dot_3);
-        dots = new MaterialCardView[]{dot1, dot2, dot3};
-
-        // 2. Chuẩn bị danh sách ảnh (đã đúng)
-        imageList = new ArrayList<>();
-        imageList.add(R.drawable.giohoa1);
-        imageList.add(R.drawable.giohoa2);
-        imageList.add(R.drawable.giohoa3);
-
-        // 3. Set Adapter (đã đúng)
-        sliderAdapter = new ImageSliderAdapter(imageList);
-        viewPagerImages.setAdapter(sliderAdapter);
-
-        // Đặt vị trí bắt đầu ở giữa để cuộn 2 chiều (đã đúng)
-        // Cập nhật dots cho vị trí ban đầu
-        viewPagerImages.setCurrentItem(Integer.MAX_VALUE / 2, false);
-        updateDots(viewPagerImages.getCurrentItem() % imageList.size()); // <--- Gọi lần đầu tiên để update trạng thái dots
-
-        // === BỔ SUNG: THÊM ONCLICK LISTENER CHO CÁC DOTS ===
-        for (int i = 0; i < dots.length; i++) {
-            final int dotIndex = i; // Cần final cho lambda
-            dots[i].setOnClickListener(v -> {
-                // Dừng auto-scroll ngay lập tức
-                sliderHandler.removeCallbacks(sliderRunnable);
-
-                // Chuyển ViewPager đến ảnh tương ứng
-                int currentItem = viewPagerImages.getCurrentItem();
-                int currentActualPosition = currentItem % imageList.size();
-                int targetItem = currentItem + (dotIndex - currentActualPosition); // Tính vị trí mới dựa trên vị trí hiện tại
-                viewPagerImages.setCurrentItem(targetItem, true); // Cuộn mượt mà
-
-                // Sau 5 giây (CLICK_DELAY_MS) thì tiếp tục auto-scroll
-                sliderHandler.postDelayed(sliderRunnable, CLICK_DELAY_MS);
-            });
-        }
-
-        // 4. Lắng nghe sự kiện chuyển trang để cập nhật nút tròn (Đã đúng)
-        viewPagerImages.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                int actualPosition = position % imageList.size();
-                updateDots(actualPosition);
-
-                // Khi người dùng tự lướt, reset timer auto-scroll
-                // Nếu đang trong chu kỳ click (chờ 5s), không reset
-                if (sliderHandler != null) {
-                    sliderHandler.removeCallbacks(sliderRunnable);
-                    sliderHandler.postDelayed(sliderRunnable, SLIDE_DELAY_MS);
-                }
-            }
-        });
-
-        // 5. Cài đặt auto-scroll (đã đúng)
+        
+        // Màu dot
+        colorActive   = ContextCompat.getColor(requireContext(), R.color.darkerDay);
+        colorInactive = ContextCompat.getColor(requireContext(), R.color.lighterDay);
+        
+        // Ánh xạ qua binding (TRÁNH findViewById null)
+        viewPagerImages = binding.viewPagerImages;
+        dotsContainer   = binding.dotsIndicatorContainer;
+        
+        // Adapter cho slider
+        urlAdapter = new ImageUrlSliderAdapter();
+        viewPagerImages.setAdapter(urlAdapter);
+        viewPagerImages.unregisterOnPageChangeCallback(pageCallback);
+        viewPagerImages.registerOnPageChangeCallback(pageCallback);
+        
+        // Auto slider
         setupAutoSlider();
-
-
-        // === NHẬN PRODUCT ===
-        ProductCard product = (ProductCard) getArguments().getSerializable("product");
-        if (product == null) {
-            Log.e("DetailFragment", "Product is NULL!");
+        
+        // API
+        homeApi = RetrofitProvider.home();
+        String productIdArg = getArguments() != null ? getArguments().getString("productId") : null;
+        if (productIdArg == null || productIdArg.isEmpty()) {
             Toast.makeText(requireContext(), "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(view).popBackStack();
             return;
         }
-        showProduct(product);
-
-        // === AVATAR SHOP ===
+        fetchAndShowProduct(productIdArg);
+        
+        // Avatar seller (giữ ví dụ đơn giản)
         binding.shopAvatar.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("shopName", "Cá Biết Bay");
-            bundle.putString("shopPhone", "0333 333 333");
-            bundle.putString("shopAddress", "Thôn Cá, xã Biết, quận Bay, thành phố Fish Fly");
-            bundle.putString("shopEmail", "Cabietbay@gmail.com");
-            bundle.putInt("shopAvatar", R.drawable.avatar1);
-            Navigation.findNavController(v).navigate(R.id.action_detail_product_to_shop_home, bundle);
-
-
+            Bundle b = new Bundle();
+            b.putString("shopName", "Cá Biết Bay");
+            Navigation.findNavController(v).navigate(R.id.action_detail_product_to_shop_home, b);
         });
+        
+        // 1) Lấy view
+        MaterialCardView tabDesc = binding.tabDescription;
+        MaterialCardView tabSource = binding.tabSource;
+        MaterialCardView tabEvidence = binding.tabEvidence;
+        MaterialCardView tabOther = binding.tabOther;
+        
+        LinearLayout contentDesc = binding.contentDescription;
+        LinearLayout contentSource = binding.contentSource;
+        LinearLayout contentEvidence = binding.contentEvidence;
+        LinearLayout contentOther = binding.contentOther;
+        
+        View indDesc = binding.indicatorDescription;
+        View indSource = binding.indicatorSource;
+        View indEvidence = binding.indicatorEvidence;
+        View indOther = binding.indicatorOther;
 
-        // === NÚT MUA / ĐẤU GIÁ ===
-        binding.cardBuyNow.setOnClickListener(v -> {
-            if (product.getProductType() == ProductCard.ProductType.AUCTION) {
-                Navigation.findNavController(v).navigate(R.id.navigation_rule_auction);
-            } else {
-                Toast.makeText(requireContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
-            }
-        });
+// 2) Gom theo mảng cho tiện set
+        MaterialCardView[] tabs = new MaterialCardView[] { tabDesc, tabSource, tabEvidence, tabOther };
+        LinearLayout[] contents = new LinearLayout[] { contentDesc, contentSource, contentEvidence, contentOther };
+        View[] indicators = new View[] { indDesc, indSource, indEvidence, indOther };
 
-        // === NÚT THƯƠNG LƯỢNG ===
-        binding.cardNegotiation.setOnClickListener(v -> {
-            if (product.getProductType() == ProductCard.ProductType.NEGOTIATION) {
-                showNegotiationDialog(product);
-            }
-        });
+// 3) Hàm áp style chọn/không chọn
+        final int colorSelected = requireContext().getColor(R.color.highlight4blur);
+        final int colorUnselected = requireContext().getColor(R.color.whiteDay);
+        final int indicatorSelected = requireContext().getColor(R.color.highLight5);
+        final int indicatorUnselected = requireContext().getColor(R.color.whiteDay);
+        
+        Runnable selectDefault = () -> selectTab(0, tabs, contents, indicators,
+          colorSelected, colorUnselected, indicatorSelected, indicatorUnselected);
 
-        // === TAB + NỘI DUNG ===
-        tabDescription = view.findViewById(R.id.tabDescription);
-        tabSource = view.findViewById(R.id.tabSource);
-        tabEvidence = view.findViewById(R.id.tabEvidence);
-        tabOther = view.findViewById(R.id.tabOther);
+// 4) Click listeners
+        tabDesc.setOnClickListener(v -> selectTab(0, tabs, contents, indicators, colorSelected, colorUnselected, indicatorSelected, indicatorUnselected));
+        tabSource.setOnClickListener(v -> selectTab(1, tabs, contents, indicators, colorSelected, colorUnselected, indicatorSelected, indicatorUnselected));
+        tabEvidence.setOnClickListener(v -> selectTab(2, tabs, contents, indicators, colorSelected, colorUnselected, indicatorSelected, indicatorUnselected));
+        tabOther.setOnClickListener(v -> selectTab(3, tabs, contents, indicators, colorSelected, colorUnselected, indicatorSelected, indicatorUnselected));
 
-        contentDescription = view.findViewById(R.id.contentDescription);
-        contentSource = view.findViewById(R.id.contentSource);
-        contentEvidence = view.findViewById(R.id.contentEvidence);
-        contentOther = view.findViewById(R.id.contentOther);
-
-        // === THANH CHỈ THỊ ===
-        indicatorDescription = view.findViewById(R.id.indicatorDescription);
-        indicatorSource = view.findViewById(R.id.indicatorSource);
-        indicatorEvidence = view.findViewById(R.id.indicatorEvidence);
-        indicatorOther = view.findViewById(R.id.indicatorOther);
-
-        // === MẶC ĐỊNH: MÔ TẢ ===
-        selectTab(tabDescription, contentDescription, indicatorDescription);
-
-        // === CLICK LISTENER (CHỈ GỌI 1 LẦN) ===
-        tabDescription.setOnClickListener(v -> selectTab(tabDescription, contentDescription, indicatorDescription));
-        tabSource.setOnClickListener(v -> selectTab(tabSource, contentSource, indicatorSource));
-        tabEvidence.setOnClickListener(v -> selectTab(tabEvidence, contentEvidence, indicatorEvidence));
-        tabOther.setOnClickListener(v -> selectTab(tabOther, contentOther, indicatorOther));
+// 5) Chọn mặc định: Mô tả
+        selectDefault.run();
     }
-    private void updateDots(int currentPosition) {
-        for (int i = 0; i < dots.length; i++) {
-            if (i == currentPosition) {
-                dots[i].setCardBackgroundColor(colorActive);
-            } else {
-                dots[i].setCardBackgroundColor(colorInactive);
-            }
+    private void selectTab(
+      int index,
+      MaterialCardView[] tabs,
+      LinearLayout[] contents,
+      View[] indicators,
+      int colorSelected,
+      int colorUnselected,
+      int indicatorSelected,
+      int indicatorUnselected
+    ) {
+        for (int i = 0; i < tabs.length; i++) {
+            boolean active = (i == index);
+            tabs[i].setCardBackgroundColor(active ? colorSelected : colorUnselected);
+            indicators[i].setBackgroundColor(active ? indicatorSelected : indicatorUnselected);
+            contents[i].setVisibility(active ? View.VISIBLE : View.GONE);
         }
     }
-
-    /**
-     * Thiết lập logic tự động trượt
-     */
+    
+    /** Auto scroll setup */
     private void setupAutoSlider() {
         sliderHandler = new Handler(Looper.getMainLooper());
-        sliderRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Tăng item lên 1
-                viewPagerImages.setCurrentItem(viewPagerImages.getCurrentItem() + 1);
-                // Lặp lại
-                sliderHandler.postDelayed(this, SLIDE_DELAY_MS);
-            }
+        sliderRunnable = () -> {
+            if (viewPagerImages == null) return;
+            int next = viewPagerImages.getCurrentItem() + 1;
+            viewPagerImages.setCurrentItem(next, true);
+            sliderHandler.postDelayed(sliderRunnable, SLIDE_DELAY_MS);
         };
     }
-
-    // === QUẢN LÝ VÒNG ĐỜI (LIFECYCLE) ===
-    // Rất quan trọng để tránh crash
-
-    @Override
-    public void onResume() {
+    
+    @Override public void onResume() {
         super.onResume();
-        // Bắt đầu trượt khi Fragment hiển thị
         if (sliderHandler != null && sliderRunnable != null) {
             sliderHandler.postDelayed(sliderRunnable, SLIDE_DELAY_MS);
         }
     }
-
-    @Override
-    public void onPause() {
+    
+    @Override public void onPause() {
         super.onPause();
-        // Dừng trượt khi Fragment bị tạm dừng
         if (sliderHandler != null && sliderRunnable != null) {
             sliderHandler.removeCallbacks(sliderRunnable);
         }
     }
-
-    // === HÀM CHỌN TAB ===
-    private void selectTab(MaterialCardView selectedTab, LinearLayout contentToShow, View selectedIndicator) {
-        // Reset tab
-        tabDescription.setCardBackgroundColor(getResources().getColor(COLOR_UNSELECTED));
-        tabSource.setCardBackgroundColor(getResources().getColor(COLOR_UNSELECTED));
-        tabEvidence.setCardBackgroundColor(getResources().getColor(COLOR_UNSELECTED));
-        tabOther.setCardBackgroundColor(getResources().getColor(COLOR_UNSELECTED));
-
-        // Reset thanh ngang → trắng
-        indicatorDescription.setBackgroundColor(getResources().getColor(INDICATOR_UNSELECTED));
-        indicatorSource.setBackgroundColor(getResources().getColor(INDICATOR_UNSELECTED));
-        indicatorEvidence.setBackgroundColor(getResources().getColor(INDICATOR_UNSELECTED));
-        indicatorOther.setBackgroundColor(getResources().getColor(INDICATOR_UNSELECTED));
-
-        // Ẩn nội dung
-        contentDescription.setVisibility(View.GONE);
-        contentSource.setVisibility(View.GONE);
-        contentEvidence.setVisibility(View.GONE);
-        contentOther.setVisibility(View.GONE);
-
-        // Hiển thị tab + thanh ngang
-        selectedTab.setCardBackgroundColor(getResources().getColor(COLOR_SELECTED));
-        selectedIndicator.setBackgroundColor(getResources().getColor(INDICATOR_SELECTED));
-        contentToShow.setVisibility(View.VISIBLE);
-    }
-
-    // === DIALOG THƯƠNG LƯỢNG ===
-    private void showNegotiationDialog(ProductCard product) {
-        Dialog inputDialog = new Dialog(requireContext());
-        inputDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        inputDialog.setContentView(R.layout.dialog_input_negotiation);
-        inputDialog.setCancelable(true);
-
-        TextView tvOriginalPrice = inputDialog.findViewById(R.id.tvOriginalPrice);
-        EditText etPrice = inputDialog.findViewById(R.id.etNegotiationPrice);
-        EditText etReason = inputDialog.findViewById(R.id.etReason);
-        MaterialButton btnSend = inputDialog.findViewById(R.id.btnRegisterSeller);
-        ImageView btnClose = inputDialog.findViewById(R.id.btnCloseSuccess);
-
-        String priceStr = product.getPrice().replace("đ", "").replace(".", "").trim();
-        double originalPrice = Double.parseDouble(priceStr);
-        tvOriginalPrice.setText(String.format("%,.0f", originalPrice));
-        int suggested = (int) (originalPrice * 0.8);
-        etPrice.setText(String.valueOf(suggested));
-        etPrice.setSelection(etPrice.getText().length());
-
-        etPrice.requestFocus();
-        inputDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-        btnClose.setOnClickListener(v -> inputDialog.dismiss());
-
-        btnSend.setOnClickListener(v -> {
-            String inputPrice = etPrice.getText().toString().trim();
-            String reason = etReason.getText().toString().trim();
-
-            if (inputPrice.isEmpty() || reason.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng điền đầy đủ!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            double offerPrice;
-            try {
-                offerPrice = Double.parseDouble(inputPrice);
-            } catch (NumberFormatException e) {
-                Toast.makeText(requireContext(), "Giá không hợp lệ!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (offerPrice >= originalPrice) {
-                Toast.makeText(requireContext(), "Giá phải nhỏ hơn giá gốc!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            inputDialog.dismiss();
-            showSuccessDialog();
-        });
-
-        inputDialog.show();
-    }
-
-    private void showSuccessDialog() {
-        Dialog successDialog = new Dialog(requireContext());
-        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        successDialog.setContentView(R.layout.dialog_negotiation_send);
-        successDialog.setCancelable(false);
-
-        MaterialButton btnNextTime = successDialog.findViewById(R.id.btnNextTime);
-        MaterialButton btnSeeNow = successDialog.findViewById(R.id.btnSeeNow);
-
-        btnSeeNow.setOnClickListener(v -> {
-            successDialog.dismiss();
-            NavController navController = NavHostFragment.findNavController(DetailProductFragment.this);
-            NavOptions navOptions = new NavOptions.Builder()
-                    .setLaunchSingleTop(true)
-                    .setRestoreState(true)
-                    .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
-                    .build();
-
-            navController.navigate(R.id.navigation_negotiation, null, navOptions);
-        });
-
-        successDialog.show();
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void showProduct(ProductCard product) {
-        // 🔁 Load ảnh: ưu tiên URL, fallback về imageRes/placeholder
-        if (!TextUtils.isEmpty(product.getImageUrl())) {
-            Glide.with(binding.shopAvatar)
-              .load(product.getImageUrl())
-              .into(binding.shopAvatar);
-        }
-        
-        binding.textViewTitle.setText(product.getTitle());
-        binding.priceValue.setText(product.getPrice());
-        binding.priceCurrency.setText("đ");
-        binding.productQuantity.setText("Số lượng: " + product.getQuantity());
-        binding.productDescription.setText(product.getDescription());
-        
-        int bgColor = product.getProductType() == ProductCard.ProductType.NEGOTIATION
-          ? R.color.highlight3blur : R.color.grayDay;
-        binding.cardNegotiation.setCardBackgroundColor(requireContext().getColor(bgColor));
-        
-        if (product.getProductType() == ProductCard.ProductType.AUCTION) {
-            binding.textBuyNow.setText("ĐẤU GIÁ");
-            binding.cardBuyNow.setCardBackgroundColor(requireContext().getColor(R.color.normalDay));
-            binding.iconcart.setImageResource(R.drawable.timer);
-            binding.textAddToCart.setText(product.getTimeRemaining());
-            binding.textAddToCart.setGravity(Gravity.CENTER);
-            binding.cardAddToCart.setCardBackgroundColor(requireContext().getColor(R.color.highlight4blur));
-        } else {
-            binding.textBuyNow.setText("MUA NGAY");
-            binding.cardBuyNow.setCardBackgroundColor(requireContext().getColor(R.color.normalDay));
-            binding.iconcart.setImageResource(R.drawable.shopping_cart_02);
-            binding.textAddToCart.setText("Thêm vào giỏ hàng");
-            binding.textAddToCart.setGravity(Gravity.CENTER);
-            binding.cardAddToCart.setCardBackgroundColor(requireContext().getColor(R.color.highlight4blur));
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
+    
+    @Override public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
-        // Dừng trượt khi Fragment bị hủy
+        if (viewPagerImages != null) viewPagerImages.unregisterOnPageChangeCallback(pageCallback);
         if (sliderHandler != null && sliderRunnable != null) {
             sliderHandler.removeCallbacks(sliderRunnable);
         }
+        binding = null;
+    }
+    
+    // =================== API ===================
+    
+    private void fetchAndShowProduct(String productId) {
+        showLoading(true);
+        homeApi.getProductDetail(productId).enqueue(new Callback<ProductDetailResponse>() {
+            @Override public void onResponse(@NonNull Call<ProductDetailResponse> call,
+                                             @NonNull Response<ProductDetailResponse> res) {
+                showLoading(false);
+                if (!res.isSuccessful() || res.body() == null || !res.body().success || res.body().data == null) {
+                    Toast.makeText(requireContext(), "Không tải được sản phẩm", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bindUi(res.body().data);
+            }
+            
+            @Override public void onFailure(@NonNull Call<ProductDetailResponse> call, @NonNull Throwable t) {
+                showLoading(false);
+                Toast.makeText(requireContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @SuppressLint("SetTextI18n")
+    private void bindUi(ProductDetailResponse.Data p) {
+        if (!isAdded() || binding == null) return;
+        
+        // Texts
+        binding.textViewTitle.setText(safe(p.name));
+        binding.productQuantity.setText("Số lượng: " + p.quantity);
+        binding.priceCurrency.setText(p.currency != null && p.currency.equalsIgnoreCase("VND") ? "đ" : safe(p.currency));
+        binding.priceValue.setText(formatVnd(p.price));
+        
+        
+        binding.contentDescription.removeAllViews();
+        binding.contentSource.removeAllViews();
+        binding.contentEvidence.removeAllViews();
+        binding.contentOther.removeAllViews();
+        
+        // Description
+        if (!TextUtils.isEmpty(p.description)) {
+            addMutedText(binding.contentDescription, p.description);
+        }
+
+        // Source
+        if (p.hasOrigin) {
+            addMutedText(binding.contentSource, safe(p.originLink.description));
+        } else {
+            addMutedText(binding.contentSource, "Chưa có nguồn gốc xác minh.");
+        }
+
+        // Evidence
+        if (p.originLink != null && p.originLink.url != null && !p.originLink.url.isEmpty()) {
+            addThumbRow(binding.contentEvidence, p.originLink.url);
+        } else {
+            addMutedText(binding.contentEvidence, "Chưa có ảnh minh chứng.");
+        }
+
+        // Other
+        addMutedText(binding.contentOther, "Không có dữ liệu");
+        
+        Gson gson = new Gson();
+        String json = gson.toJson(p);
+        Log.d("DetailProductFragment", "bindUi: " + json);
+        // Seller avatar
+        if (p.seller != null) {
+            Glide.with(binding.shopAvatar)
+              .load(p.seller.userAvatar)
+              .placeholder(R.drawable.avatar1)
+              .error(R.drawable.avatar1)
+              .into(binding.shopAvatar);
+            
+            String sellerName = p.seller.shopName ;
+            binding.tvSellerName.setText(sellerName != null ? sellerName : "Người bán");
+            
+            binding.sellerInfoContainer.setVisibility(View.VISIBLE);
+            binding.customerReviewCard.setVisibility(View.VISIBLE);
+            
+            // 2) Avatar shop
+            Glide.with(this)
+              .load(p.seller.firstComment.byUser.avatar)
+              .placeholder(R.drawable.avatar1)
+              .error(R.drawable.avatar1)
+              .into(binding.ivCustomerAvatar);
+            
+            // 3) Tên hiển thị: ưu tiên seller.shopName, fallback byUser.name
+            String displayName = p.seller.firstComment.byUser.name;
+            binding.tvCustomerName.setText(!TextUtils.isEmpty(displayName) ? displayName : "Người mua");
+            
+            // 4) Ngày comment (nếu có createdAt trong firstComment)
+            String dateText = "";
+            if (p.seller.firstComment != null && !TextUtils.isEmpty(p.seller.firstComment.createdAt)) {
+                dateText = formatDateVN(p.seller.firstComment.createdAt); // "dd/MM/yyyy"
+            } else if (!TextUtils.isEmpty(p.createdAt)) {
+                dateText = formatDateVN(p.createdAt);
+            }
+            binding.tvCommentDate.setText(!TextUtils.isEmpty(dateText) ? dateText : "");
+            
+            // 5) Subtitle tuỳ chọn (có thể dùng conditionNote)
+//            binding.tvCustomerSubtitle.setText(safe(p.conditionNote));
+            
+            // 6) Rating
+            double rating = 0.0;
+            if (p.seller.firstComment != null) {
+                // Nếu BE trả rate dạng 1..5 thì dùng trực tiếp; nếu 0..50 (×10) thì chia 10.0
+                rating = p.seller.firstComment.rate;
+                if (rating > 5) rating = rating / 10.0;
+            }
+            binding.tvCustomerRating.setText(rating > 0 ? String.format(java.util.Locale.US, "%.1f", rating) : "—");
+            
+            // 7) Nội dung review
+            String reviewText = (p.seller.firstComment != null) ? p.seller.firstComment.description : null;
+            binding.tvReviewText.setText(!TextUtils.isEmpty(reviewText) ? reviewText : "Chưa có nhận xét.");
+            
+            // 8) Thumbnails: clear cũ rồi thêm mới
+            binding.llReviewThumbs.removeAllViews();
+            if (p.seller.firstComment != null && p.seller.firstComment.media != null && !p.seller.firstComment.media.isEmpty()) {
+                addThumbRow(binding.llReviewThumbs, p.seller.firstComment.media);
+            }
+        } else {
+            binding.customerReviewCard.setVisibility(View.GONE);
+        }
+        
+        // Ảnh slider từ BE
+        List<String> media = (p.media != null) ? p.media : new ArrayList<>();
+        urlAdapter.setData(media);
+        
+        // COMMON INFO (Thông tin chung)
+        setChip(binding.mcvConditionNote, binding.tvConditionNote, (p.conditionNote));                     // "Chưa sử dụng"
+        setChip(binding.mcvNewPercent,   binding.tvNewPercent,   (p.newPercent != null ? "Mới " + pct(p.newPercent) : null)); // "Mới 99%"
+        setChip(binding.mcvDamagePercent,binding.tvDamagePercent,(p.damagePercent != null ? "Hỏng " + pct(p.damagePercent) : null)); // "Hỏng 0%"
+
+        setChip(binding.mcvSource, binding.tvSource, null);
+
+        // Bảo hành
+        setChip(binding.mcvWarranty, binding.tvWarranty,
+          p.warrantyMonths != null ? ("Bảo hành " + months(p.warrantyMonths)) : null);
+
+        // Đổi trả (BE chưa trả field → ẩn nếu không có)
+        setChip(binding.mcvReturn, binding.tvReturn, null);
+        
+        // Dựng dot theo số ảnh
+        buildDots(media.size());
+        updateDots(0); // an toàn vì đã build dots
+        viewPagerImages.setCurrentItem(0, false);
+        
+        // Nút hành động cơ bản
+        binding.textBuyNow.setText("MUA NGAY");
+        binding.cardBuyNow.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.normalDay));
+        binding.iconcart.setImageResource(R.drawable.shopping_cart_02);
+        binding.textAddToCart.setText("Thêm vào giỏ hàng");
+        binding.cardAddToCart.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight4blur));
+        binding.cardNegotiation.setCardBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grayDay));
+    }
+    private int dp(int value) {
+        float d = getResources().getDisplayMetrics().density;
+        return Math.round(value * d);
+    }
+    
+    /** Thêm 1 dòng chữ "nhạt" (màu xám nhẹ) vào parent */
+    private void addMutedText(@NonNull LinearLayout parent, @NonNull String text) {
+        if (!isAdded() || parent == null) return;
+        
+        TextView tv = new TextView(requireContext());
+        tv.setText(text);
+        tv.setTextSize(14);
+        tv.setTextColor(requireContext().getColor(R.color.darkerDay)); // màu nhạt
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        lp.setMargins(0, dp(4), 0, dp(4));
+        tv.setLayoutParams(lp);
+        
+        parent.addView(tv);
+    }
+    
+    /**
+     * Thêm một hàng thumbnail ảnh cuộn ngang vào parent.
+     * - Mỗi ảnh 80dp, bo góc nhẹ bằng Glide RoundedCorners
+     * - Khoảng cách 8dp giữa các ảnh
+     * - Hiển thị placeholder khi load
+     */
+    private void addThumbRow(@NonNull LinearLayout parent, @Nullable List<String> urls) {
+        if (!isAdded() || parent == null || urls == null || urls.isEmpty()) return;
+        
+        // Scroll ngang chứa 1 hàng ảnh
+        HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
+        hsv.setHorizontalScrollBarEnabled(false);
+        LinearLayout.LayoutParams hsvLp = new LinearLayout.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        hsvLp.setMargins(0, dp(6), 0, dp(6));
+        hsv.setLayoutParams(hsvLp);
+        
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutParams(new LinearLayout.LayoutParams(
+          ViewGroup.LayoutParams.WRAP_CONTENT,
+          ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        
+        int size = dp(80);
+        int radius = dp(8);
+        int space = dp(8);
+        
+        for (int i = 0; i < urls.size(); i++) {
+            String url = urls.get(i);
+            ImageView iv = new ImageView(requireContext());
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(size, size);
+            if (i > 0) lp.setMargins(space, 0, 0, 0);
+            iv.setLayoutParams(lp);
+            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            iv.setAdjustViewBounds(true);
+            
+            Glide.with(this)
+              .load(url)
+              .transform(new com.bumptech.glide.load.resource.bitmap.CenterCrop(),
+                new com.bumptech.glide.load.resource.bitmap.RoundedCorners(radius))
+              .into(iv);
+            
+            // (Tuỳ chọn) click để xem lớn — bạn có thể mở dialog/photoview ở đây
+            // iv.setOnClickListener(v -> openImagePreview(url));
+            
+            row.addView(iv);
+        }
+        
+        hsv.addView(row);
+        parent.addView(hsv);
+    }
+    private void setChip(MaterialCardView card, TextView tv, String textOrNull) {
+        if (card == null || tv == null) return;
+        if (textOrNull == null || textOrNull.trim().isEmpty() || "—".equals(textOrNull)) {
+            card.setVisibility(View.GONE);
+        } else {
+            card.setVisibility(View.VISIBLE);
+            tv.setText(textOrNull);
+        }
+    }
+    
+    private String pct(Integer v) { return v == null ? null : (v + "%"); }
+    private String months(Integer v){ return v == null ? null : (v + " tháng"); }
+    
+    
+    // =================== DOTS ===================
+    
+    /** Tạo lại toàn bộ dot theo count ảnh */
+    private void buildDots(int count) {
+        if (dotsContainer == null) return;
+        dotsContainer.removeAllViews();
+        dots.clear();
+        
+        if (count <= 0) return;
+        
+        int size = dp(10);
+        int margin = dp(3);
+        
+        for (int i = 0; i < count; i++) {
+            MaterialCardView dot = new MaterialCardView(requireContext());
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(size, size);
+            lp.setMargins(margin, 0, margin, 0);
+            dot.setLayoutParams(lp);
+            dot.setCardBackgroundColor(colorInactive);
+            dot.setRadius(dp(5));
+            dot.setClickable(true);
+            final int index = i;
+            dot.setOnClickListener(v -> {
+                // khi bấm dot: ngừng auto, nhảy trang, rồi chạy lại auto
+                if (sliderHandler != null && sliderRunnable != null) {
+                    sliderHandler.removeCallbacks(sliderRunnable);
+                }
+                viewPagerImages.setCurrentItem(index, true);
+                if (sliderHandler != null && sliderRunnable != null) {
+                    sliderHandler.postDelayed(sliderRunnable, SLIDE_DELAY_MS);
+                }
+            });
+            
+            dotsContainer.addView(dot);
+            dots.add(dot);
+        }
+    }
+    
+    /** Tô màu dot hiện tại – an toàn khi rỗng/out-of-range */
+    private void updateDots(int currentPosition) {
+        if (dots.isEmpty()) return;
+        if (currentPosition < 0 || currentPosition >= dots.size()) currentPosition = 0;
+        
+        for (int i = 0; i < dots.size(); i++) {
+            dots.get(i).setCardBackgroundColor(i == currentPosition ? colorActive : colorInactive);
+        }
+    }
+    
+    // =================== Utils ===================
+    private String formatDateVN(String iso8601) {
+        try {
+            java.time.OffsetDateTime odt = java.time.OffsetDateTime.parse(iso8601);
+            java.time.LocalDate d = odt.toLocalDate();
+            java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return d.format(fmt);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+    private String safe(String s) { return s == null ? "" : s; }
+    
+    private String formatVnd(long amount) {
+        java.text.NumberFormat nf = java.text.NumberFormat.getInstance(new java.util.Locale("vi","VN"));
+        return nf.format(amount);
+    }
+    
+    private void showLoading(boolean show) {
+        if (binding == null) return;
+        binding.getRoot().setAlpha(show ? 0.6f : 1f);
     }
 }

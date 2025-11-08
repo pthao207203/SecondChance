@@ -4,12 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.example.secondchance.R;
-import com.example.secondchance.ui.auth.AuthActivity;
-import com.example.secondchance.ui.profile.ProfileFragment;
+import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
 
 import java.util.concurrent.TimeUnit;
@@ -73,7 +68,7 @@ public class RetrofitProvider {
           // Chuyển về AuthActivity trên UI thread
           new Handler(Looper.getMainLooper()).post(() -> {
             try {
-              Intent i = new Intent(appCtx, AuthActivity.class);
+              Intent i = new Intent(appCtx, LoginFragment.class);
               i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
               appCtx.startActivity(i);
             } finally {

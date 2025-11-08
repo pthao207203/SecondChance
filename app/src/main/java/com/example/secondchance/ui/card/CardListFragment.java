@@ -20,6 +20,7 @@ import com.example.secondchance.R;
 import com.example.secondchance.data.remote.HomeApi;
 import com.example.secondchance.data.repo.HomeRepository;
 import com.example.secondchance.databinding.FragmentRecyclerCardBinding;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,7 +60,6 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        Log.d("CardFragment", "🔥 Fragment onViewCreated");
         viewModel = new ViewModelProvider(this).get(CardListViewModel.class);
         
         setupRecyclerView();
@@ -67,12 +67,16 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
         // 1) ƯU TIÊN dùng dữ liệu được truyền qua arguments
         ArrayList<ProductCard> passed = null;
         Bundle args = getArguments();
+        Gson gson = new Gson();
+        String json = gson.toJson(args);
+        Log.d("CardFragment", "Arguments: " + json);
         if (args != null) {
             Serializable s = args.getSerializable(ARG_PRODUCTS);
             if (s instanceof ArrayList) {
                 //noinspection unchecked
                 passed = (ArrayList<ProductCard>) s;
             }
+            Log.d("CardFragment", "✅ Using passed data: " + (passed != null ? passed.size() : 0));
         }
         
         if (passed != null && !passed.isEmpty()) {
@@ -130,6 +134,7 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
             ProductCard.ProductType type = decideType(it);
             
             ProductCard pc = new ProductCard();
+            pc.setId(resolveId(it));
             pc.setTitle(it.title);
             pc.setDescription(it.conditionLabel != null ? it.conditionLabel : "");
             pc.setQuantity(it.quantity);
@@ -209,11 +214,25 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
             }
         });
     }
+    private String resolveId(HomeApi.SuggestionItem it) {
+        if (it == null) return null;
+        if (it.id != null && !it.id.isEmpty()) return it.id;
+        return null;
+    }
     
     @Override
     public void onItemClick(ProductCard product) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("product", product);
+        Gson gson = new Gson();
+        String productJson = gson.toJson(product);
+        Log.d("DetailProductFragment", productJson);
+        if (product != null && product.getId() != null && !product.getId().isEmpty()) {
+            bundle.putString("productId", product.getId()); // ⭐ ƯU TIÊN TRUYỀN ID
+        } else {
+            // Fallback để không vỡ flow nếu item thiếu id (data cũ)
+            bundle.putSerializable("product", product);
+            Log.w("CardFragment", "Product missing id -> fallback to pass full product");
+        }
         NavController navController = Navigation.findNavController(requireView());
         navController.navigate(R.id.action_home_navigation_detail_product, bundle);
     }

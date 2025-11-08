@@ -1,6 +1,5 @@
 package com.example.secondchance.ui.profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,10 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import android.widget.LinearLayout;
+
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-import com.example.secondchance.ui.auth.AuthActivity;
 import com.example.secondchance.ui.auth.AuthManager;
-import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
 
 public class ProfileFragment extends Fragment {
