@@ -1,23 +1,30 @@
 // ui/auction/AuctioneerAdapter.java
 package com.example.secondchance.ui.auction;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.secondchance.R;
 import com.example.secondchance.databinding.ItemAuctioneerCardBinding;
+import com.example.secondchance.dto.response.AuctionListUserResponse;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class AuctioneerAdapter extends RecyclerView.Adapter<AuctioneerAdapter.BidViewHolder> {
+    
+    private final List<AuctionListUserResponse.Bid> data;
 
-    private List<Auctioneer> bidList;
-
-    public AuctioneerAdapter(List<Auctioneer> bidList) {
-        this.bidList = bidList;
+    public AuctioneerAdapter(List<AuctionListUserResponse.Bid> data) {
+        this.data = data;
     }
 
     @NonNull
@@ -28,16 +35,37 @@ public class AuctioneerAdapter extends RecyclerView.Adapter<AuctioneerAdapter.Bi
         return new BidViewHolder(binding);
     }
 
+    @SuppressLint("CheckResult")
     @Override
-    public void onBindViewHolder(@NonNull BidViewHolder holder, int position) {
-        Auctioneer bid = bidList.get(position);
-        holder.bind(bid);
+    public void onBindViewHolder(@NonNull BidViewHolder h, int position) {
+        AuctionListUserResponse.Bid bid = data.get(position);
+        
+        // Dùng binding thay vì findViewById
+        NumberFormat vnd   = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
+        NumberFormat plain = NumberFormat.getInstance(new Locale("vi","VN"));
+        
+        h.binding.auctionDate.setText(com.example.secondchance.util.TimeFmt.isoToVN(bid.createdAt));
+        h.binding.price.setText(vnd.format(bid.amount));
+        h.binding.userName.setText(bid.byUser.name);
+        Glide.with(h.binding.bidAvatar)
+          .load(bid.byUser.avatar)
+          .circleCrop()
+          .into(h.binding.bidAvatar);
+        
+        long inc = position > 0 ? Math.max(0, bid.amount - data.get(position-1).amount) : 0;
+        if (inc > 0) {
+            h.binding.priceplus.setText(" (+" + plain.format(inc) + ")");
+            h.binding.priceplus.setVisibility(View.VISIBLE);
+        } else {
+            h.binding.priceplus.setText("");
+            h.binding.priceplus.setVisibility(View.GONE);
+        }
+    }
+    @Override
+    public int getItemCount(){
+        return data == null ? 0 : data.size();
     }
 
-    @Override
-    public int getItemCount() {
-        return bidList != null ? bidList.size() : 0;
-    }
 
     static class BidViewHolder extends RecyclerView.ViewHolder {
         private final ItemAuctioneerCardBinding binding;
@@ -47,29 +75,18 @@ public class AuctioneerAdapter extends RecyclerView.Adapter<AuctioneerAdapter.Bi
             this.binding = binding;
         }
 
-        public void bind(Auctioneer bid) {
-            binding.productName.setText(bid.getBidderName());
-            binding.productDate.setText(bid.getBidTime());
-            binding.price.setText(bid.getBidAmount());
-            binding.priceplus.setText(" " + bid.getPriceDiff());
-
-
-            binding.priceplus.setVisibility(bid.getPriceDiff().isEmpty() ? View.GONE : View.VISIBLE);
-
-            // Bind avatar
-            // SỬA LẠI: Truy cập trực tiếp qua binding.shapeableImageView
-            // (Giả sử ID trong XML là android:id="@+id/shapeableImageView")
-            //if (binding.shapeableImageView != null) {
-             //   binding.shapeableImageView.setImageResource(bid.getAvatarResId());
-            //}
-
-
-            // Tìm TextView "Trả giá lần X"
-            // SỬA LẠI: Truy cập trực tiếp qua binding.text1
-            // (Giả sử ID trong XML là android:id="@+id/text1")
-//            if (binding.text1 != null) {
-//                binding.text1.setText(bid.getBidRound());
-//            }
-        }
+//        public void bind(Auctioneer bid) {
+//            binding.userName.setText(bid.getBidderName());
+//            binding.auctionDate.setText(bid.getBidTime());
+//            binding.price.setText(bid.getBidAmount());
+//            binding.priceplus.setText(" " + bid.getPriceDiff());
+//            String userAvatar = bid.getAvatarResId();
+//            Glide.with(this)
+//              .load()
+//              .circleCrop()
+//              .into(binding.userAvatar);
+//
+//            binding.priceplus.setVisibility(bid.getPriceDiff().isEmpty() ? View.GONE : View.VISIBLE);
+//        }
     }
 }

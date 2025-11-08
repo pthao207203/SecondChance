@@ -1,6 +1,7 @@
 package com.example.secondchance.ui.card;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,10 +9,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,7 +25,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -31,13 +37,12 @@ import com.example.secondchance.data.remote.HomeApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.FragmentDetailProductBinding;
 import com.example.secondchance.dto.response.ProductDetailResponse;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -407,6 +412,99 @@ public class DetailProductFragment extends Fragment {
         buildDots(media.size());
         updateDots(0); // an toàn vì đã build dots
         viewPagerImages.setCurrentItem(0, false);
+        
+        // === NÚT ĐẤU GIÁ ===
+        binding.cardBuyNow.setOnClickListener(v -> {
+            if (p.priceType == 3) {
+                Bundle bundle = new Bundle();
+                bundle.putString("productId", p.id);
+                Navigation.findNavController(v).navigate(R.id.navigation_rule_auction, bundle);
+            } else {
+                // TODO: Chuyển sang trang mua ngay
+                Toast.makeText(requireContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        // === NÚT THƯƠNG LƯỢNG ===
+        binding.cardNegotiation.setOnClickListener(v -> {
+            if (p.priceType == 2) {
+                showNegotiationDialog(p);
+            }
+        });
+    }
+    private void showNegotiationDialog(ProductDetailResponse.Data product) {
+        Dialog inputDialog = new Dialog(requireContext());
+        inputDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        inputDialog.setContentView(R.layout.dialog_input_negotiation);
+        inputDialog.setCancelable(true);
+        
+        TextView tvOriginalPrice = inputDialog.findViewById(R.id.tvOriginalPrice);
+        EditText etPrice = inputDialog.findViewById(R.id.etNegotiationPrice);
+        EditText etReason = inputDialog.findViewById(R.id.etReason);
+        MaterialButton btnSend = inputDialog.findViewById(R.id.btnRegisterSeller);
+        ImageView btnClose = inputDialog.findViewById(R.id.btnCloseSuccess);
+        
+        double originalPrice = Double.parseDouble(String.valueOf(product.price));
+        tvOriginalPrice.setText(String.format("%,.0f", originalPrice));
+        int suggested = (int) (originalPrice * 0.8);
+        etPrice.setText(String.valueOf(suggested));
+        etPrice.setSelection(etPrice.getText().length());
+        
+        etPrice.requestFocus();
+        inputDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        
+        btnClose.setOnClickListener(v -> inputDialog.dismiss());
+        
+        btnSend.setOnClickListener(v -> {
+            String inputPrice = etPrice.getText().toString().trim();
+            String reason = etReason.getText().toString().trim();
+            
+            if (inputPrice.isEmpty() || reason.isEmpty()) {
+                Toast.makeText(requireContext(), "Vui lòng điền đầy đủ!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            double offerPrice;
+            try {
+                offerPrice = Double.parseDouble(inputPrice);
+            } catch (NumberFormatException e) {
+                Toast.makeText(requireContext(), "Giá không hợp lệ!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            if (offerPrice >= originalPrice) {
+                Toast.makeText(requireContext(), "Giá phải nhỏ hơn giá gốc!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            inputDialog.dismiss();
+            showSuccessDialog();
+        });
+        
+        inputDialog.show();
+    }
+    private void showSuccessDialog() {
+        Dialog successDialog = new Dialog(requireContext());
+        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        successDialog.setContentView(R.layout.dialog_negotiation_send);
+        successDialog.setCancelable(false);
+        
+        MaterialButton btnNextTime = successDialog.findViewById(R.id.btnNextTime);
+        MaterialButton btnSeeNow = successDialog.findViewById(R.id.btnSeeNow);
+        
+        btnSeeNow.setOnClickListener(v -> {
+            successDialog.dismiss();
+            NavController navController = NavHostFragment.findNavController(DetailProductFragment.this);
+            NavOptions navOptions = new NavOptions.Builder()
+              .setLaunchSingleTop(true)
+              .setRestoreState(true)
+              .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
+              .build();
+            
+            navController.navigate(R.id.navigation_negotiation, null, navOptions);
+        });
+        
+        successDialog.show();
     }
     private void startAuctionCountdown(String auctionEndsAtIso) {
         long target = parseIso8601ToMillis(auctionEndsAtIso);

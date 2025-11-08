@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 
+import com.example.secondchance.R;
 import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
 
@@ -65,14 +66,17 @@ public class RetrofitProvider {
 
         // Tránh mở nhiều activity nếu nhiều call cùng 401
         if (logoutInProgress.compareAndSet(false, true)) {
-          // Chuyển về AuthActivity trên UI thread
           new Handler(Looper.getMainLooper()).post(() -> {
             try {
-              Intent i = new Intent(appCtx, LoginFragment.class);
-              i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-              appCtx.startActivity(i);
+              
+              new androidx.navigation.NavDeepLinkBuilder(appCtx)
+                .setComponentName(com.example.secondchance.MainActivity.class)   // Activity chứa NavHost
+                .setGraph(R.navigation.mobile_navigation)                           // navGraph bạn đang gắn ở layout
+                .setDestination(R.id.loginFragment)                                 // ID của loginFragment trong graph
+                // .setArguments(bundle)                                            // nếu cần truyền args
+                .createTaskStackBuilder()
+                .startActivities();
             } finally {
-              // Cho phép các lần sau nếu người dùng đăng nhập lại rồi
               logoutInProgress.set(false);
             }
           });

@@ -111,16 +111,18 @@ public class HomeFragment extends Fragment {
           
           View auctionCard = view.findViewById(R.id.auction_card_home);
           ProductCard product = new ProductCard();
+          product.setId(f.id);
           product.setTitle(f.title);
           product.setPrice(formatVnd(f.currentPrice));
           product.setQuantity(f.quantity);
           product.setProductType(ProductCard.ProductType.AUCTION);
           product.setTimeRemaining(calcRemainingFromIso(f.endsAt));
           product.setImageUrl(f.imageUrl);
+          Log.d("HomeFragment", "auction: " + gson.toJson(product));
           
           auctionCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("product", product);
+            bundle.putString("productId", product.getId());
             Navigation.findNavController(v)
               .navigate(R.id.action_home_navigation_detail_product, bundle);
           });
@@ -138,10 +140,6 @@ public class HomeFragment extends Fragment {
         ArrayList<ProductCard> cards = mapSuggestionsToCards(
           data != null && data.suggestions != null ? data.suggestions.items : null
         );
-        Gson gson = new Gson();
-        String jsonData = gson.toJson(data.suggestions);
-        Log.d("HomeFragment", "Dữ liệu nhận được từ backend: " + jsonData);
-        
         // Gắn vào container: nếu chưa có fragment con -> tạo bằng newInstance
         Fragment existing = getChildFragmentManager().findFragmentById(R.id.cardListFragmentContainer);
         if (existing == null) {

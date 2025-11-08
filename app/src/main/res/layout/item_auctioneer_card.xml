@@ -49,6 +49,7 @@
 
                     <!-- Avatar -->
                     <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/bidAvatar"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/avatar2"
@@ -73,7 +74,7 @@
                             android:layout_marginBottom="4dp">
 
                             <TextView
-                                android:id="@+id/product_name"
+                                android:id="@+id/user_name"
                                 android:layout_weight="1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
                                 android:textSize="@dimen/text_16" />
 
                             <TextView
-                                android:id="@+id/product_date"
+                                android:id="@+id/auction_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="10:05:59, 06/08/2024  "
@@ -99,10 +100,11 @@
                             android:gravity="center_vertical">
 
                             <TextView
+                                android:id="@+id/description"
                                 android:layout_weight="1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Trả giá lần 1"
+                                android:text=""
                                 android:textColor="@color/darkerDay"
                                 android:textSize="@dimen/text_13"
                                 android:textStyle="bold" />
