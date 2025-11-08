@@ -134,11 +134,10 @@ Tài sản sẽ được bàn giao khi Người trúng đấu giá hoàn tất n
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="@color/normalDay"
+                    app:cardBackgroundColor="@color/lightActiveDay"
                     app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:cardCornerRadius="8dp"
-                    app:strokeColor="@color/normalDay">
+                    app:strokeWidth="0dp"
+                    app:cardCornerRadius="8dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="44dp"

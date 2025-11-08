@@ -1,12 +1,16 @@
 package com.example.secondchance.data.remote;
 
+import com.example.secondchance.dto.request.BidRequest;
+import com.example.secondchance.dto.response.AuctionListUserResponse;
 import com.example.secondchance.dto.response.ProductDetailResponse;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -19,6 +23,13 @@ public interface HomeApi {
   // GET /api/products/{id}
   @GET("products/{id}")
   Call<ProductDetailResponse> getProductDetail(@Path("id") String productId);
+  
+  // GET /api/products/{id}
+  @GET("products/auctions/{id}")
+  Call<AuctionListUserResponse> getProductAuctionUser(@Path("id") String productId);
+  
+  @POST("/api/products/auctions/{id}/bid")
+  Call<Void> placeBid(@Path("id") String auctionId, @Body BidRequest body);
   
   class HomeEnvelope {
     @SerializedName("success") public boolean success;
