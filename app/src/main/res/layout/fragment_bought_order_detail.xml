@@ -150,7 +150,7 @@
                         android:layout_height="wrap_content"
                         android:text="₫ "
                         android:textColor="@color/normalDay"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
 
                     <TextView
@@ -159,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:text="200.000"
                         android:textColor="@color/darkerDay"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -305,17 +305,17 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp">
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReturnOrder"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="Hoàn trả đơn hàng"
+                    android:text="Hoàn trả"
                     android:textColor="@color/normalDay"
                     app:strokeColor="@color/normalDay"
                     android:backgroundTint="@color/lighterDay"
@@ -323,8 +323,9 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnRateShop"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="ĐÁNH GIÁ SHOP"

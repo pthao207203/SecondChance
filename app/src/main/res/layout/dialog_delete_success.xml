@@ -44,7 +44,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Đã xóa thành công"
                 android:textColor="@color/darkerDay"
-                android:textSize="18sp" />
+                android:textSize="@dimen/text_16" />
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

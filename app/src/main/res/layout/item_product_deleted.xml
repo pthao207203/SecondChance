@@ -54,7 +54,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/darkerDay"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_16"
                     android:textStyle="bold"
                     tools:text="Giỏ gỗ cắm hoa" />
 

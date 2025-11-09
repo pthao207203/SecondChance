@@ -183,12 +183,11 @@ public class HomeFragment extends Fragment {
       ProductCard pc = new ProductCard();
       pc.setId(it.id);
       pc.setTitle(it.title);
-      pc.setDescription(it.conditionLabel != null ? it.conditionLabel : "");
       pc.setQuantity(it.quantity);
       pc.setProductType(type);
       pc.setImageUrl(it.imageUrl);
       
-      String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "—";
+      String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "0";
       pc.setPrice(priceText);
       
       if (type == ProductCard.ProductType.AUCTION) {
@@ -214,7 +213,7 @@ public class HomeFragment extends Fragment {
   }
   
   private String formatVnd(long v) {
-    return "₫" + String.format("%,d", v).replace(',', '.');
+    return String.format("%,d", v).replace(',', '.');
   }
   
   private String calcRemainingFromIso(String iso) {

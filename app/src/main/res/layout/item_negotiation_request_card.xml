@@ -90,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nhắn tin"
                     android:textColor="@color/darkerDay"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_13"
                     android:textStyle="bold" />
 
                 <ImageView

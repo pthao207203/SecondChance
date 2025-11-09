@@ -70,7 +70,7 @@
                                 android:padding="4dp"
                                 android:text="00"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -82,7 +82,7 @@
                             android:layout_marginEnd="4dp"
                             android:text="h"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/minutes_card"
@@ -102,7 +102,7 @@
                                 android:padding="4dp"
                                 android:text="00"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -114,7 +114,7 @@
                             android:layout_marginEnd="4dp"
                             android:text="m"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/seconds_card"
@@ -134,7 +134,7 @@
                                 android:padding="4dp"
                                 android:text="00"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -145,7 +145,7 @@
                             android:layout_marginStart="4dp"
                             android:text="s"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
                     </LinearLayout>
 
                     <TextView
@@ -174,7 +174,7 @@
                             android:layout_weight="1"
                             android:text="Số lượng:"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_13"
                             android:textStyle="normal" />
 
                         <TextView
@@ -201,7 +201,7 @@
                             android:layout_weight="1"
                             android:text="Giá hiện tại:"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_13"
                             android:textStyle="normal" />
 
                         <TextView

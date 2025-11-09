@@ -72,7 +72,7 @@
                                 android:padding="4dp"
                                 android:text="02"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -83,7 +83,7 @@
                             android:layout_marginEnd="4dp"
                             android:text="h"
                             android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             style="@style/Widget.SecondChance.Card.Number"
@@ -101,7 +101,7 @@
                                 android:padding="4dp"
                                 android:text="39"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -112,7 +112,7 @@
                             android:layout_marginEnd="4dp"
                             android:text="m"
                             android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             style="@style/Widget.SecondChance.Card.Number"
@@ -130,7 +130,7 @@
                                 android:padding="4dp"
                                 android:text="12"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -140,7 +140,7 @@
                             android:layout_marginStart="4dp"
                             android:text="s"
                             android:textColor="@android:color/white"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
                     </LinearLayout>
 
                     <!-- Product Name -->
@@ -169,7 +169,7 @@
                             android:layout_weight="1"
                             android:text="Số lượng:"
                             android:textColor="@color/whiteDay"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/text_13" />
 
                         <TextView
                             android:id="@+id/tv_quantity"
@@ -194,7 +194,7 @@
                             android:layout_weight="1"
                             android:text="Giá hiện tại:"
                             android:textColor="@color/whiteDay"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/text_13" />
 
                         <TextView
                             android:id="@+id/tv_current_price"
@@ -375,14 +375,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chưa có lượt đấu giá nào"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textColor="#999999" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lịch sử đấu giá sẽ hiển thị ở đây"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_13"
             android:textColor="#CCCCCC"
             android:layout_marginTop="8dp" />
     </LinearLayout>

@@ -79,7 +79,6 @@ public class RetrofitProvider {
                 .createTaskStackBuilder()
                 .startActivities();
             } finally {
-              // Cho phép các lần sau nếu người dùng đăng nhập lại rồi
               logoutInProgress.set(false);
             }
           });
@@ -102,10 +101,10 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000/api/") // Emulator ↔ server local
-            .client(ok)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+      .baseUrl("http://52.195.233.219:3000/api/")
+      .client(ok)
+      .addConverterFactory(GsonConverterFactory.create())
+      .build();
 
     return retrofit;
   }
@@ -156,7 +155,7 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000/api/")
+            .baseUrl("http://52.195.233.219:3000/api/")
             .client(ok)
             .addConverterFactory(GsonConverterFactory.create())
             .build();

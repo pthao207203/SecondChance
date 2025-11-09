@@ -55,7 +55,7 @@
                     android:layout_weight="1"
                     android:text="Áo vàng cổ điển"
                     android:textColor="@color/darkerDay"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_16"
                     android:textStyle="bold" />
 
                 <TextView

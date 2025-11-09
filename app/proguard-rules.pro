@@ -1,21 +1,28 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# --- Giữ annotation & generic info cho Gson/Retrofit ---
+-keepattributes Signature, *Annotation*, InnerClasses, EnclosingMethod, RuntimeVisibleAnnotations, RuntimeInvisibleAnnotations
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# --- Retrofit interfaces & HTTP annotations (đừng để R8 lược bỏ) ---
+-keep class retrofit2.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# --- OkHttp/Okio (giữ tối thiểu, hạn chế dontwarn nếu có thể) ---
+-keep class okhttp3.** { *; }
+-keep class okio.** { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# --- GIỮ NGUYÊN các DTO/Envelope bạn parse JSON ---
+# Đổi package cho đúng project của bạn!
+-keep class com.example.secondchance.dto.** { *; }
+-keep class com.example.secondchance.api.** { *; }
+
+# Nếu bạn đặt các lớp Envelope/Token trong AuthApi (inner classes), giữ cả inner:
+-keep class com.example.secondchance.api.AuthApi$** { *; }
+
+# --- Giữ các field có @SerializedName/@Expose để Gson map đúng ---
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+    @com.google.gson.annotations.Expose <fields>;
+}
+
+# (Nếu nhiều model chưa dùng @SerializedName, vẫn keep toàn bộ DTO ở trên nên an toàn)

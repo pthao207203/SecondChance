@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:text="Vui lòng chuyển khoản theo mã QR hoặc STK dưới đây:"
         android:textColor="@color/darkerDay"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_16"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp" />
 

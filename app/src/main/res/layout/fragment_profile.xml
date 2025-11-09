@@ -54,8 +54,8 @@
                 android:background="?attr/selectableItemBackground">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/ic_circle_questionmark"
                     app:tint="@color/darkerDay"
                     android:contentDescription="Hỗ trợ" />
@@ -79,8 +79,8 @@
                 android:background="?attr/selectableItemBackground">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:contentDescription="Cài đặt"
                     android:src="@drawable/ic_setting"
                     app:tint="@color/darkerDay" />
@@ -104,8 +104,8 @@
                 android:background="?attr/selectableItemBackground">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:src="@drawable/ic_logout"
                     app:tint="@color/darkerDay"
                     android:contentDescription="Đăng xuất" />
@@ -408,7 +408,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đánh giá"
                     android:textColor="@color/darkerDay"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_13" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -436,7 +436,7 @@
                     android:layout_height="wrap_content"
                     android:text="Tỉ lệ thương lượng"
                     android:textColor="@color/darkerDay"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_13" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -466,7 +466,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sản phẩm"
                     android:textColor="@color/darkerDay"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_13" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -543,6 +543,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:text="Ví tiền của tôi:"
                         android:textColor="@color/darkerDay"
                         android:textSize="@dimen/text_16" />
@@ -555,6 +556,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:orientation="horizontal">
 
                         <TextView
@@ -601,7 +603,7 @@
             android:baselineAligned="false">
             <LinearLayout
                 android:id="@+id/btnPending"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -619,25 +621,25 @@
                         android:layout_height="wrap_content"
                         android:text="Xác nhận"
                         android:textSize="@dimen/text_13" android:textColor="@color/darkerDay" />
-                    <TextView
-                        android:id="@+id/tvPendingCount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/bg_badge_count"
-                        android:gravity="center"
-                        android:minWidth="18dp"
-                        android:minHeight="18dp"
-                        android:paddingHorizontal="5dp"
-                        android:text="0" android:textColor="@color/whiteDay"
-                        android:textSize="10sp"
-                        android:visibility="gone" tools:visibility="visible"
-                        tools:text="17"/>
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvPendingCount"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="4dp"-->
+<!--                        android:background="@drawable/bg_badge_count"-->
+<!--                        android:gravity="center"-->
+<!--                        android:minWidth="18dp"-->
+<!--                        android:minHeight="18dp"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:text="0" android:textColor="@color/whiteDay"-->
+<!--                        android:textSize="@dimen/text_13"-->
+<!--                        android:visibility="gone" tools:visibility="visible"-->
+<!--                        tools:text="17"/>-->
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_clock2"
                     app:tint="@color/darkerDay"
@@ -646,7 +648,7 @@
 
             <LinearLayout
                 android:id="@+id/btnShipping"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -654,47 +656,55 @@
                 android:paddingVertical="12dp"
                 android:background="?attr/selectableItemBackground">
 
-                <LinearLayout
+                <!-- Dòng text tiêu đề -->
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đang giao"
-                        android:textSize="@dimen/text_13"
-                        android:textColor="@color/darkerDay" />
-                    <TextView
-                        android:id="@+id/tvShippingCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/bg_badge_count"
-                        android:gravity="center"
-                        android:minWidth="18dp"
-                        android:minHeight="18dp"
-                        android:paddingHorizontal="5dp"
-                        android:text="0"
-                        android:textColor="@color/whiteDay"
-                        android:textSize="10sp"
-                        android:visibility="gone"
-                        tools:visibility="visible"
-                        tools:text="17"/>
-                </LinearLayout>
+                    android:text="Đang giao"
+                    android:textSize="@dimen/text_13"
+                    android:textColor="@color/darkerDay" />
 
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                <!-- Icon + badge chồng lên nhau -->
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_eta"
-                    app:tint="@color/darkerDay"
-                    android:contentDescription="Đang giao" />
+                    android:clipToPadding="false"
+                    android:clipToOutline="false">
+
+                    <ImageView
+                        android:id="@+id/ivShippingIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_eta"
+                        app:tint="@color/darkerDay"
+                        android:contentDescription="Đang giao" />
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvShippingCount"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="4dp"-->
+<!--                        android:background="@drawable/bg_badge_count"-->
+<!--                        android:gravity="center"-->
+<!--                        android:minWidth="18dp"-->
+<!--                        android:minHeight="18dp"-->
+<!--                        android:paddingHorizontal="5dp"-->
+<!--                        android:text="0"-->
+<!--                        android:textColor="@color/whiteDay"-->
+<!--                        android:textSize="8sp"-->
+<!--                        android:visibility="gone"-->
+<!--                        tools:visibility="visible"-->
+<!--                        android:layout_gravity="top|end"-->
+<!--                        tools:text="17"/>-->
+                </FrameLayout>
+
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/btnPurchased"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -708,8 +718,8 @@
                     android:textSize="@dimen/text_13"
                     android:textColor="@color/darkerDay" />
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_completed"
                     app:tint="@color/darkerDay"
@@ -718,7 +728,7 @@
 
             <LinearLayout
                 android:id="@+id/btnCancelled"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -732,8 +742,8 @@
                     android:textSize="@dimen/text_13"
                     android:textColor="@color/darkerDay" />
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_cancelled"
                     app:tint="@color/darkerDay"
@@ -742,7 +752,7 @@
 
             <LinearLayout
                 android:id="@+id/btnRefund"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -756,8 +766,8 @@
                     android:textSize="@dimen/text_13"
                     android:textColor="@color/darkerDay" />
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_refund"
                     app:tint="@color/darkerDay"
@@ -771,7 +781,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sản phẩm của bạn"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold"
             android:textColor="@color/darkerDay"
             android:layout_marginStart="@dimen/space_16"

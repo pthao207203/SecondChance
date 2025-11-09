@@ -45,7 +45,7 @@
                 android:layout_marginTop="@dimen/text_16"
                 android:text="Thêm vào giỏ hàng thành công"
                 android:textColor="@color/darkerDay"
-                android:textSize="18sp" />
+                android:textSize="@dimen/text_16" />
         </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

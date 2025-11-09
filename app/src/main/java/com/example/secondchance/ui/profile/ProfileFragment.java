@@ -62,7 +62,7 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-        setupBadgeCounts();
+//        setupBadgeCounts();
         setupClickListeners(view);
         observeViewModel();
         observeSellerStatus();
@@ -96,8 +96,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        tvPendingCount = view.findViewById(R.id.tvPendingCount);
-        tvShippingCount = view.findViewById(R.id.tvShippingCount);
+//        tvPendingCount = view.findViewById(R.id.tvPendingCount);
+//        tvShippingCount = view.findViewById(R.id.tvShippingCount);
         tvName = view.findViewById(R.id.tvName);
         tvPhone = view.findViewById(R.id.tvPhone);
         tvAddress = view.findViewById(R.id.tvAddress);
@@ -151,24 +151,24 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    private void setupBadgeCounts() {
-        int pendingCount = 0;
-        int shippingCount = 17;
-
-        if (pendingCount > 0) {
-            tvPendingCount.setText(String.valueOf(pendingCount));
-            tvPendingCount.setVisibility(View.VISIBLE);
-        } else {
-            tvPendingCount.setVisibility(View.GONE);
-        }
-
-        if (shippingCount > 0) {
-            tvShippingCount.setText(String.valueOf(shippingCount));
-            tvShippingCount.setVisibility(View.VISIBLE);
-        } else {
-            tvShippingCount.setVisibility(View.GONE);
-        }
-    }
+//    private void setupBadgeCounts() {
+//        int pendingCount = 0;
+//        int shippingCount = 17;
+//
+//        if (pendingCount > 0) {
+//            tvPendingCount.setText(String.valueOf(pendingCount));
+//            tvPendingCount.setVisibility(View.VISIBLE);
+//        } else {
+//            tvPendingCount.setVisibility(View.GONE);
+//        }
+//
+//        if (shippingCount > 0) {
+//            tvShippingCount.setText(String.valueOf(shippingCount));
+//            tvShippingCount.setVisibility(View.VISIBLE);
+//        } else {
+//            tvShippingCount.setVisibility(View.GONE);
+//        }
+//    }
 
     private void setupClickListeners(View view) {
         NavController navController = Navigation.findNavController(view);
@@ -267,24 +267,24 @@ public class ProfileFragment extends Fragment {
     }
 
     // Hàm public để update badge từ bên ngoài (nếu cần)
-    public void updateBadgeCounts(int pendingCount, int shippingCount) {
-        if (tvPendingCount != null) {
-            if (pendingCount > 0) {
-                tvPendingCount.setText(String.valueOf(pendingCount));
-                tvPendingCount.setVisibility(View.VISIBLE);
-            } else {
-                tvPendingCount.setVisibility(View.GONE);
-            }
-        }
-
-        if (tvShippingCount != null) {
-            if (shippingCount > 0) {
-                tvShippingCount.setText(String.valueOf(shippingCount));
-                tvShippingCount.setVisibility(View.VISIBLE);
-            } else {
-                tvShippingCount.setVisibility(View.GONE);
-            }
-        }
-    }
+//    public void updateBadgeCounts(int pendingCount, int shippingCount) {
+//        if (tvPendingCount != null) {
+//            if (pendingCount > 0) {
+//                tvPendingCount.setText(String.valueOf(pendingCount));
+//                tvPendingCount.setVisibility(View.VISIBLE);
+//            } else {
+//                tvPendingCount.setVisibility(View.GONE);
+//            }
+//        }
+//
+//        if (tvShippingCount != null) {
+//            if (shippingCount > 0) {
+//                tvShippingCount.setText(String.valueOf(shippingCount));
+//                tvShippingCount.setVisibility(View.VISIBLE);
+//            } else {
+//                tvShippingCount.setVisibility(View.GONE);
+//            }
+//        }
+//    }
 }
 

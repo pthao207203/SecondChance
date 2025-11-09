@@ -141,7 +141,7 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
             pc.setProductType(type);
             pc.setImageUrl(it.imageUrl);
             
-            String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "—";
+            String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "0";
             pc.setPrice(priceText);
             
             if (type == ProductCard.ProductType.AUCTION) {

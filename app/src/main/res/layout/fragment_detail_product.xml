@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Giỏ gỗ cắm hoa"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
 
                 <TextView
@@ -75,7 +75,7 @@
                     android:gravity="center_vertical"
                     android:text="đ"
                     android:textColor="@color/normalDay"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_16"
                     android:textStyle="bold" />
 
                 <TextView
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:text="4.9"
                         android:textColor="#000"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_13"
                         android:layout_gravity="center" />
                 </LinearLayout>
 
@@ -194,7 +194,7 @@
                             android:text="Còn lại"
                             android:textStyle="bold"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             style="@style/Widget.SecondChance.Card.Number"
@@ -213,7 +213,7 @@
                                 android:padding="4dp"
                                 android:text="02"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -226,7 +226,7 @@
                             android:text="h"
                             android:textStyle="bold"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             style="@style/Widget.SecondChance.Card.Number"
@@ -245,7 +245,7 @@
                                 android:padding="4dp"
                                 android:text="39"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -258,7 +258,7 @@
                             android:text="m"
                             android:textStyle="bold"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
 
                         <com.google.android.material.card.MaterialCardView
                             style="@style/Widget.SecondChance.Card.Number"
@@ -277,7 +277,7 @@
                                 android:padding="4dp"
                                 android:text="12"
                                 android:textColor="@color/whiteDay"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_16"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -289,7 +289,7 @@
                             android:text="s"
                             android:textStyle="bold"
                             android:textColor="@color/darkerDay"
-                            android:textSize="16sp" />
+                            android:textSize="@dimen/text_16" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -312,7 +312,7 @@
                         android:gravity="center"
                         android:text="MUA NGAY"
                         android:textColor="@color/whiteDay"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_13"
                         android:textStyle="normal" />
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -384,7 +384,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -407,7 +407,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -430,7 +430,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
@@ -462,7 +462,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -485,7 +485,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -508,7 +508,7 @@
                             android:gravity="center"
                             android:text="—"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"/>
+                            android:textSize="@dimen/text_13"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </LinearLayout>
@@ -554,7 +554,7 @@
                             android:layout_marginBottom="8dp"
                             android:text="Khoảng 3 ngày từ ngày đặt"
                             android:textColor="@color/darkerDay"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_13"
                             android:textStyle="normal" />
 
                         <LinearLayout
@@ -850,7 +850,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Giỏ gỗ cắm hoa đã mua, chưa qua sử dụng new 99%.\nĐảm bảo chất lượng trong quá trình vận hành"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="14sp" />
+                                android:textSize="@dimen/text_13" />
                         </LinearLayout>
 
                         <!-- NGUỒN -->
@@ -867,7 +867,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Nguồn: Shopee - Shop Hoa Tươi ABC"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="14sp" />
+                                android:textSize="@dimen/text_13" />
                         </LinearLayout>
 
                         <!-- MINH CHỨNG -->
@@ -885,7 +885,7 @@
                                 android:text="Minh chứng:"
                                 android:textStyle="bold"
                                 android:textColor="@color/darkerDay"
-                                android:textSize="14sp"
+                                android:textSize="@dimen/text_13"
                                 android:layout_marginBottom="8dp" />
 
                             <LinearLayout
@@ -924,7 +924,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Không có thông tin khác."
                                 android:textColor="@color/darkerDay"
-                                android:textSize="14sp" />
+                                android:textSize="@dimen/text_13" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -1061,7 +1061,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="4.9"
                                     android:textColor="@color/darkerDay"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/text_13"
                                     android:textStyle="bold" />
 
                                 <ImageView

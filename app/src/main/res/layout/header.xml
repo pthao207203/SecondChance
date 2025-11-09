@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Tiêu đề"
             android:textColor="#E56D2D"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold"
             android:gravity="center_vertical"
             android:visibility="gone" android:layout_marginStart="8dp"
@@ -72,7 +72,7 @@
                     android:textColor="@color/normalDay"
                     android:textColorHint="@color/normalDay"
                     android:inputType="text"
-                    android:textSize="13sp"/>
+                    android:textSize="@dimen/text_16"/>
 
                 <ImageView
                     android:id="@+id/icon_search"

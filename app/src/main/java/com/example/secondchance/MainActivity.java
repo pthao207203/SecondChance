@@ -51,12 +51,7 @@ public class MainActivity extends AppCompatActivity {
     navController = navHostFragment.getNavController();
     
     // 3.1 Chọn graph ban đầu theo trạng thái đăng nhập (giữ y như bạn muốn)
-    boolean isLoggedIn = AuthManager.getInstance(this).isLoggedIn();
-    if (isLoggedIn) {
-      navController.setGraph(R.navigation.mobile_navigation);      // 🔧 CHANGED (switch graph)
-    } else {
-      navController.setGraph(R.navigation.nav_auth);               // 🔧 CHANGED (switch graph)
-    }
+    navController.setGraph(R.navigation.mobile_navigation);
     
     // Gắn click sample của bạn (Home icon ở custom menu)
     binding.myCustomMenu.navigationHome.setOnClickListener(v -> {

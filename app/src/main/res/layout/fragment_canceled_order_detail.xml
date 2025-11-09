@@ -108,14 +108,14 @@
                         android:layout_height="wrap_content"
                         android:text="₫ "
                         android:textColor="@color/normalDay"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="200.000"
                         android:textColor="@color/darkerDay"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
                 </LinearLayout>
 
