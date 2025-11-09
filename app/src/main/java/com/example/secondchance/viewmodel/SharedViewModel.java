@@ -34,7 +34,14 @@ public class SharedViewModel extends ViewModel {
         refreshLists.setValue(null);
     }
     private final String[] tabTitles = new String[]{"Xác nhận", "Đang giao", "Đã mua", "Đã hủy", "Hoàn trả"};
+    private final String[] ShoptabTitles = new String[]{"Xác nhận", "Đang giao", "Đã bán", "Đã hủy", "Hoàn trả"};
     public String[] getTabTitles() {
         return tabTitles;
     }
+
+    public String[] getShopTabTitles() {
+        return ShoptabTitles;
+    }
+
+
 }

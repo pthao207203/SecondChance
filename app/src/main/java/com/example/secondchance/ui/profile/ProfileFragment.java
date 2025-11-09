@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private LinearLayout layoutNameShop;
     private TextView tvNoProduct;
     private AppCompatButton btnBecomeSeller;
+    private LinearLayout btn_order;
 
 
     @Override
@@ -110,6 +111,8 @@ public class ProfileFragment extends Fragment {
         layoutProductsOrders = view.findViewById(R.id.Products_Orders);
         layoutNegotiationsDashboards = view.findViewById(R.id.Negoitations_Dashboards);
         layoutNameShop = view.findViewById(R.id.NameShop);
+
+        btn_order = view.findViewById(R.id.btn_order);
     }
 
     private void observeSellerStatus() {
@@ -202,9 +205,6 @@ public class ProfileFragment extends Fragment {
             nav.navigate(R.id.loginFragment);
         });
 
-        view.findViewById(R.id.tvViewDetails).setOnClickListener(
-          v -> Navigation.findNavController(v).navigate(R.id.action_profile_to_wallet)
-        );
 
         // Order History
         LinearLayout btnPending = view.findViewById(R.id.btnPending);
@@ -258,6 +258,11 @@ public class ProfileFragment extends Fragment {
         View btnTest = view.findViewById(R.id.btn_test);
         if (btnTest != null) {
             btnTest.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_productTab));
+        }
+        View btn_order = view.findViewById(R.id.btn_order);
+        if (btn_order != null) {
+            btn_order.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_shoporderFragment)
+            );
         }
     }
 
