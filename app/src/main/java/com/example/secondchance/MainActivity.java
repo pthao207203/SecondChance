@@ -207,7 +207,9 @@ public class MainActivity extends AppCompatActivity {
   
   // --- Các hàm xử lý chung khi click icon ---
   private void openCartScreen() {
-    Toast.makeText(this, "Mở Giỏ hàng", Toast.LENGTH_SHORT).show();
+    if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.cartFragment) {
+        navController.navigate(R.id.action_global_to_cartFragment);
+    }
   }
   private void openChatScreen() {
     Toast.makeText(this, "Mở Chat", Toast.LENGTH_SHORT).show();
