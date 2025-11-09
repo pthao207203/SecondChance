@@ -3,6 +3,8 @@ package com.example.secondchance.ui.card;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,8 +36,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
+import com.example.secondchance.data.remote.CartApi;
 import com.example.secondchance.data.remote.HomeApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.data.repo.CartRepository;
 import com.example.secondchance.databinding.FragmentDetailProductBinding;
 import com.example.secondchance.dto.response.ProductDetailResponse;
 import com.google.android.material.button.MaterialButton;
@@ -70,7 +75,11 @@ public class DetailProductFragment extends Fragment {
     // API
     private HomeApi homeApi;
     private CountDownTimer auctionTimer;
-    
+
+    // Thêm các biến cần thiết
+    private String currentProductId;
+    private boolean isAddingToCart = false;
+
     // PageChangeCallback để unregister khi destroy
     private final ViewPager2.OnPageChangeCallback pageCallback = new ViewPager2.OnPageChangeCallback() {
         @Override public void onPageSelected(int position) {
@@ -131,8 +140,12 @@ public class DetailProductFragment extends Fragment {
             Navigation.findNavController(view).popBackStack();
             return;
         }
+        this.currentProductId = productIdArg; // Lưu ID sản phẩm hiện tại
         fetchAndShowProduct(productIdArg);
         
+        // Gán listener cho nút "Thêm vào giỏ hàng"
+        binding.cardAddToCart.setOnClickListener(v -> addToCart());
+
         // Avatar seller (giữ ví dụ đơn giản)
         binding.shopAvatar.setOnClickListener(v -> {
             Bundle b = new Bundle();
@@ -231,7 +244,56 @@ public class DetailProductFragment extends Fragment {
         }
         binding = null;
     }
-    
+
+    // =================== LOGIC THÊM VÀO GIỎ HÀNG ===================
+    private void addToCart() {
+        if (isAddingToCart) return;
+        if (TextUtils.isEmpty(currentProductId)) {
+            Toast.makeText(getContext(), "Lỗi: Mã sản phẩm không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        isAddingToCart = true;
+        binding.cardAddToCart.setEnabled(false);
+
+        CartRepository.getInstance().addToCart(currentProductId, 1, new CartRepository.CartCallback() {
+            @Override
+            public void onSuccess(List<CartApi.CartItem> items) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    isAddingToCart = false;
+                    showAddToCartSuccessDialog(); // HIỂN THỊ DIALOG
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    isAddingToCart = false;
+                    binding.cardAddToCart.setEnabled(true);
+                    Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    private void showAddToCartSuccessDialog() {
+        if (!isAdded()) return;
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_add_to_cart_success);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().dimAmount = 0.6f;
+        }
+
+        ImageView btnClose = dialog.findViewById(R.id.btnCloseSuccess);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
     // =================== API ===================
     
     private void fetchAndShowProduct(String productId) {
@@ -359,7 +421,7 @@ public class DetailProductFragment extends Fragment {
             // 4) Ngày comment (nếu có createdAt trong firstComment)
             String dateText = "";
             if (p.seller.firstComment != null && !TextUtils.isEmpty(p.seller.firstComment.createdAt)) {
-                dateText = formatDateVN(p.seller.firstComment.createdAt); // "dd/MM/yyyy"
+                dateText = formatDateVN(p.seller.firstComment.createdAt);
             } else if (!TextUtils.isEmpty(p.createdAt)) {
                 dateText = formatDateVN(p.createdAt);
             }
@@ -412,7 +474,7 @@ public class DetailProductFragment extends Fragment {
         buildDots(media.size());
         updateDots(0); // an toàn vì đã build dots
         viewPagerImages.setCurrentItem(0, false);
-        
+
         // === NÚT ĐẤU GIÁ ===
         binding.cardBuyNow.setOnClickListener(v -> {
             if (p.priceType == 3) {
@@ -424,7 +486,7 @@ public class DetailProductFragment extends Fragment {
                 Toast.makeText(requireContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
             }
         });
-        
+
         // === NÚT THƯƠNG LƯỢNG ===
         binding.cardNegotiation.setOnClickListener(v -> {
             if (p.priceType == 2) {
@@ -437,33 +499,33 @@ public class DetailProductFragment extends Fragment {
         inputDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         inputDialog.setContentView(R.layout.dialog_input_negotiation);
         inputDialog.setCancelable(true);
-        
+
         TextView tvOriginalPrice = inputDialog.findViewById(R.id.tvOriginalPrice);
         EditText etPrice = inputDialog.findViewById(R.id.etNegotiationPrice);
         EditText etReason = inputDialog.findViewById(R.id.etReason);
         MaterialButton btnSend = inputDialog.findViewById(R.id.btnRegisterSeller);
         ImageView btnClose = inputDialog.findViewById(R.id.btnCloseSuccess);
-        
+
         double originalPrice = Double.parseDouble(String.valueOf(product.price));
         tvOriginalPrice.setText(String.format("%,.0f", originalPrice));
         int suggested = (int) (originalPrice * 0.8);
         etPrice.setText(String.valueOf(suggested));
         etPrice.setSelection(etPrice.getText().length());
-        
+
         etPrice.requestFocus();
         inputDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        
+
         btnClose.setOnClickListener(v -> inputDialog.dismiss());
-        
+
         btnSend.setOnClickListener(v -> {
             String inputPrice = etPrice.getText().toString().trim();
             String reason = etReason.getText().toString().trim();
-            
+
             if (inputPrice.isEmpty() || reason.isEmpty()) {
                 Toast.makeText(requireContext(), "Vui lòng điền đầy đủ!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
             double offerPrice;
             try {
                 offerPrice = Double.parseDouble(inputPrice);
@@ -471,16 +533,16 @@ public class DetailProductFragment extends Fragment {
                 Toast.makeText(requireContext(), "Giá không hợp lệ!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
             if (offerPrice >= originalPrice) {
                 Toast.makeText(requireContext(), "Giá phải nhỏ hơn giá gốc!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
             inputDialog.dismiss();
             showSuccessDialog();
         });
-        
+
         inputDialog.show();
     }
     private void showSuccessDialog() {
@@ -488,10 +550,10 @@ public class DetailProductFragment extends Fragment {
         successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         successDialog.setContentView(R.layout.dialog_negotiation_send);
         successDialog.setCancelable(false);
-        
+
         MaterialButton btnNextTime = successDialog.findViewById(R.id.btnNextTime);
         MaterialButton btnSeeNow = successDialog.findViewById(R.id.btnSeeNow);
-        
+
         btnSeeNow.setOnClickListener(v -> {
             successDialog.dismiss();
             NavController navController = NavHostFragment.findNavController(DetailProductFragment.this);
@@ -500,10 +562,10 @@ public class DetailProductFragment extends Fragment {
               .setRestoreState(true)
               .setPopUpTo(navController.getGraph().getStartDestinationId(), false)
               .build();
-            
+
             navController.navigate(R.id.navigation_negotiation, null, navOptions);
         });
-        
+
         successDialog.show();
     }
     private void startAuctionCountdown(String auctionEndsAtIso) {

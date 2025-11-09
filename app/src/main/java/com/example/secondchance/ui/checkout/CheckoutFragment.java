@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.secondchance.R;
-import com.example.secondchance.ui.cart.CartItem;
+import com.example.secondchance.data.remote.CartApi; // ✅ Thay đổi import
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class CheckoutFragment extends Fragment {
     private View btnBuyNow;
     private View btnShippingMethod, btnPaymentMethod, btnShippingAddress;
     private CheckoutProductsAdapter productsAdapter;
-    private List<CartItem> selectedProducts;
+    private List<CartApi.CartItem> selectedProducts = new ArrayList<>(); // ✅ Thay đổi type
     private int shippingFee = 15000;
     private int totalAmount = 0;
 
@@ -52,25 +52,20 @@ public class CheckoutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Nhận dữ liệu từ CartFragment
-        if (getArguments() != null) {
-            selectedProducts = (List<CartItem>) getArguments().getSerializable("selectedItems");
+        // ✅ Nhận dữ liệu từ CartFragment
+        if (getArguments() != null && getArguments().containsKey("selectedItems")) {
+            // Note: Bạn cần convert ArrayList<CartApi.CartItem> thành serializable
+            // hoặc dùng Parcelable
+            ArrayList<CartApi.CartItem> items = (ArrayList<CartApi.CartItem>)
+                    getArguments().getSerializable("selectedItems");
+            if (items != null) {
+                selectedProducts = items;
+            }
         }
 
-        if (selectedProducts == null) {
-            selectedProducts = new ArrayList<>();
-        }
-
-        // Khởi tạo views
         initViews(view);
-
-        // Thiết lập ViewPager
         setupViewPager();
-
-        // Thiết lập các sự kiện click
         setupClickListeners();
-
-        // Cập nhật tổng giá
         updateTotalPrice();
     }
 
@@ -88,10 +83,8 @@ public class CheckoutFragment extends Fragment {
         productsAdapter = new CheckoutProductsAdapter(selectedProducts);
         viewPagerProducts.setAdapter(productsAdapter);
 
-        // Thiết lập indicator
         setupIndicators(selectedProducts.size());
 
-        // Cập nhật indicator khi page thay đổi
         viewPagerProducts.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -125,7 +118,6 @@ public class CheckoutFragment extends Fragment {
             indicatorLayout.addView(indicators[i]);
         }
 
-        // Set first indicator as active
         if (count > 0) {
             indicators[0].setBackgroundResource(R.drawable.indicator_active);
         }
@@ -144,23 +136,19 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        // Nút mua ngay - Hiển thị dialog QR payment
         btnBuyNow.setOnClickListener(v -> {
-            remainingTime = 900000; // Reset về 15 phút
+            remainingTime = 900000;
             showQRPaymentDialog();
         });
 
-        // Phương thức vận chuyển
         btnShippingMethod.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Chọn phương thức vận chuyển", Toast.LENGTH_SHORT).show()
         );
 
-        // Phương thức thanh toán
         btnPaymentMethod.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Chọn phương thức thanh toán", Toast.LENGTH_SHORT).show()
         );
 
-        // Địa chỉ nhận hàng
         btnShippingAddress.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Chỉnh sửa địa chỉ nhận hàng", Toast.LENGTH_SHORT).show()
         );
@@ -169,11 +157,12 @@ public class CheckoutFragment extends Fragment {
     private void updateTotalPrice() {
         totalAmount = shippingFee;
 
-        for (CartItem item : selectedProducts) {
-            totalAmount += item.getPrice();
+        for (CartApi.CartItem item : selectedProducts) {
+            totalAmount += item.getTotalPrice(); // ✅ Thay đổi method call
         }
 
-        tvTotalPrice.setText("đ " + String.format("%,d", totalAmount));
+        String formatted = String.format("%,d", totalAmount).replace(",", ".");
+        tvTotalPrice.setText("₫ " + formatted);
     }
 
     private void showQRPaymentDialog() {
@@ -182,33 +171,28 @@ public class CheckoutFragment extends Fragment {
         qrPaymentDialog.setContentView(dialogView);
         qrPaymentDialog.setCancelable(false);
 
-        // Khởi tạo views trong dialog
         ImageView btnClose = dialogView.findViewById(R.id.btnClose);
         TextView tvCountdown = dialogView.findViewById(R.id.tvCountdown);
         TextView tvAmount = dialogView.findViewById(R.id.tvAmount);
         View btnConfirmPayment = dialogView.findViewById(R.id.btnConfirmPayment);
 
-        // Set amount
-        tvAmount.setText("đ " + String.format("%,d", totalAmount));
+        String formatted = String.format("%,d", totalAmount).replace(",", ".");
+        tvAmount.setText("₫ " + formatted);
 
-        // Countdown timer
         startCountdown(tvCountdown);
 
-        // Nút đóng - Hiển thị dialog xác nhận hủy
         btnClose.setOnClickListener(v -> {
             stopCountdown();
             qrPaymentDialog.dismiss();
             showCancelPaymentDialog();
         });
 
-        // Nút xác nhận thanh toán
         btnConfirmPayment.setOnClickListener(v -> {
             stopCountdown();
             qrPaymentDialog.dismiss();
             showPaymentSuccessDialog();
         });
 
-        // Khi dialog bị đóng
         qrPaymentDialog.setOnDismissListener(dialog -> stopCountdown());
 
         qrPaymentDialog.show();
@@ -229,7 +213,6 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             public void onFinish() {
-                // Hết thời gian - Tự động hủy thanh toán
                 if (qrPaymentDialog != null && qrPaymentDialog.isShowing()) {
                     qrPaymentDialog.dismiss();
                     showPaymentTimeoutDialog();
@@ -257,17 +240,15 @@ public class CheckoutFragment extends Fragment {
         MaterialButton btnConfirmCancel = dialog.findViewById(R.id.btnConfirmCancel);
         MaterialButton btnAbortCancel = dialog.findViewById(R.id.btnAbortCancel);
 
-        // Xác nhận hủy - Hiển thị dialog hủy thành công
         btnConfirmCancel.setOnClickListener(v -> {
             dialog.dismiss();
-            remainingTime = 900000; // Reset thời gian
+            remainingTime = 900000;
             showCancelSuccessDialog();
         });
 
-        // Hủy việc hủy - Quay lại QR dialog và tiếp tục đếm ngược
         btnAbortCancel.setOnClickListener(v -> {
             dialog.dismiss();
-            showQRPaymentDialog(); // Mở lại QR dialog với thời gian còn lại
+            showQRPaymentDialog();
         });
 
         dialog.show();
@@ -287,7 +268,6 @@ public class CheckoutFragment extends Fragment {
             requireActivity().onBackPressed();
         });
 
-        // Auto dismiss after 2 seconds
         requireView().postDelayed(() -> {
             if (dialog.isShowing()) {
                 dialog.dismiss();
@@ -310,17 +290,15 @@ public class CheckoutFragment extends Fragment {
         MaterialButton btnGoHome = dialog.findViewById(R.id.btnGoHome);
         MaterialButton btnRetry = dialog.findViewById(R.id.btnRetry);
 
-        // Về trang chủ
         btnGoHome.setOnClickListener(v -> {
             dialog.dismiss();
             Toast.makeText(requireContext(), "Đã hết thời gian thanh toán", Toast.LENGTH_SHORT).show();
             requireActivity().onBackPressed();
         });
 
-        // Thử lại - Reset thời gian về 15 phút
         btnRetry.setOnClickListener(v -> {
             dialog.dismiss();
-            remainingTime = 900000; // Reset về 15 phút
+            remainingTime = 900000;
             showQRPaymentDialog();
         });
 
@@ -342,7 +320,6 @@ public class CheckoutFragment extends Fragment {
             requireActivity().onBackPressed();
         });
 
-        // Auto dismiss after 3 seconds
         requireView().postDelayed(() -> {
             if (dialog.isShowing()) {
                 dialog.dismiss();

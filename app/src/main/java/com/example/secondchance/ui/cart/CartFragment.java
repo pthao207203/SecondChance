@@ -1,19 +1,27 @@
 package com.example.secondchance.ui.cart;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondchance.R;
+import com.example.secondchance.data.repo.CartRepository;
+import com.example.secondchance.data.remote.CartApi;
+import com.example.secondchance.ui.card.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +30,10 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     private RecyclerView recyclerViewCart;
     private ImageView checkboxSelectAll;
     private TextView tvTotalPrice;
-    private View btnBuyNow, layoutSelectAll;
+    private AppCompatButton btnBuyNow;
+    private View layoutSelectAll;
     private CartAdapter adapter;
-    private List<CartItem> cartItems;
-    private boolean isAllSelected = false;
+    private boolean isLoading = false;
 
     @Nullable
     @Override
@@ -35,23 +43,17 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadCartData();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Khởi tạo views
         initViews(view);
-
-        // Khởi tạo dữ liệu mẫu
-        initSampleData();
-
-        // Thiết lập RecyclerView
         setupRecyclerView();
-
-        // Thiết lập các sự kiện click
         setupClickListeners();
-
-        // Cập nhật tổng giá
-        updateTotalPrice();
     }
 
     private void initViews(View view) {
@@ -62,119 +64,162 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
         layoutSelectAll = view.findViewById(R.id.layoutSelectAll);
     }
 
-    private void initSampleData() {
-        cartItems = new ArrayList<>();
-
-        // Thêm dữ liệu mẫu
-        cartItems.add(new CartItem(
-                "1",
-                "Áo vàng cổ điển",
-                "1 mẫu, giá cố định, đổi hư hại 100%, có bảo hành, đổi trả với shop",
-                50000,
-                ""
-        ));
-
-        cartItems.add(new CartItem(
-                "2",
-                "Áo vàng cổ điển",
-                "1 mẫu, giá cố định, đổi hư hại 100%, có bảo hành, đổi trả với shop",
-                50000,
-                ""
-        ));
-
-        cartItems.add(new CartItem(
-                "3",
-                "Áo vàng cổ điển",
-                "1 mẫu, giá cố định, đổi hư hại 100%, có bảo hành, đổi trả với shop",
-                50000,
-                ""
-        ));
-    }
-
     private void setupRecyclerView() {
-        adapter = new CartAdapter(cartItems, this);
+        adapter = new CartAdapter(this);
         recyclerViewCart.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewCart.setAdapter(adapter);
     }
 
     private void setupClickListeners() {
-        // Checkbox chọn tất cả
         layoutSelectAll.setOnClickListener(v -> toggleSelectAll());
-
-        // Nút mua ngay
         btnBuyNow.setOnClickListener(v -> handleBuyNow());
     }
 
-    private void toggleSelectAll() {
-        isAllSelected = !isAllSelected;
+    private void loadCartData() {
+        List<CartApi.CartItem> cachedItems = CartRepository.getInstance().getCachedCart();
+        adapter.updateItems(cachedItems);
+        updateUIState(cachedItems);
+        fetchCartFromServer();
+    }
 
-        checkboxSelectAll.setImageResource(
-                isAllSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
-        );
+    private void fetchCartFromServer() {
+        if (isLoading) return;
+        setLoadingState(true);
 
-        adapter.selectAll(isAllSelected);
+        CartRepository.getInstance().fetchCart(new CartRepository.CartCallback() {
+            @Override
+            public void onSuccess(List<CartApi.CartItem> items) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    adapter.updateItems(items);
+                    updateUIState(items);
+                    setLoadingState(false);
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    setLoadingState(false);
+                });
+            }
+        });
+    }
+
+    private void updateUIState(List<CartApi.CartItem> items) {
+        if (items.isEmpty()) {
+            layoutSelectAll.setVisibility(View.GONE);
+        } else {
+            layoutSelectAll.setVisibility(View.VISIBLE);
+        }
         updateTotalPrice();
+        checkboxSelectAll.setImageResource(
+                adapter.areAllItemsSelected() ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+        );
+    }
+
+    private void setLoadingState(boolean loading) {
+        isLoading = loading;
+        btnBuyNow.setEnabled(!loading);
+    }
+
+    private void toggleSelectAll() {
+        boolean shouldSelectAll = !adapter.areAllItemsSelected();
+        adapter.selectAll(shouldSelectAll);
+        updateUIState(adapter.getItems());
     }
 
     private void handleBuyNow() {
-        List<CartItem> selectedItems = adapter.getSelectedItems();
-
+        List<CartApi.CartItem> selectedItems = adapter.getSelectedItems();
         if (selectedItems.isEmpty()) {
             Toast.makeText(requireContext(), "Vui lòng chọn sản phẩm để mua", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Chuyển sang CheckoutFragment
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("selectedItems", new ArrayList<>(selectedItems));
-
-        Navigation.findNavController(requireView())
-                .navigate(R.id.action_cartFragment_to_checkoutFragment, bundle);
+        // TODO: Navigate to checkout
     }
 
     private void updateTotalPrice() {
-        int totalPrice = 0;
-        List<CartItem> selectedItems = adapter.getSelectedItems();
-
-        for (CartItem item : selectedItems) {
-            totalPrice += item.getPrice();
+        long totalPrice = 0;
+        for (CartApi.CartItem item : adapter.getSelectedItems()) {
+            totalPrice += item.getTotalPrice();
         }
-
-        tvTotalPrice.setText("đ " + String.format("%,d", totalPrice));
+        String formattedPrice = String.format("%,d", totalPrice).replace(",", ".");
+        tvTotalPrice.setText(formattedPrice);
     }
 
-    // Implement CartAdapter.OnCartItemListener
     @Override
-    public void onItemChecked(CartItem item, boolean isChecked) {
-        updateTotalPrice();
+    public void onItemChecked(CartApi.CartItem item, boolean isChecked) {
+        updateUIState(adapter.getItems());
+    }
 
-        // Cập nhật trạng thái checkbox "Chọn tất cả"
-        List<CartItem> selectedItems = adapter.getSelectedItems();
-        isAllSelected = selectedItems.size() == cartItems.size();
-        checkboxSelectAll.setImageResource(
-                isAllSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+    @Override
+    public void onViewDetail(CartApi.CartItem item) {
+        ProductCard productCard = new ProductCard(
+                item.productId,
+                item.getImageUrl(),
+                item.getName(),
+                item.getDescription(),
+                item.qty,
+                0, 
+                String.valueOf(item.price),
+                ProductCard.ProductType.FIXED, 
+                null, 0
         );
-    }
 
-    @Override
-    public void onItemDeleted(CartItem item, int position) {
-        cartItems.remove(position);
-        updateTotalPrice();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("product", productCard);
 
-        // Cập nhật trạng thái checkbox "Chọn tất cả"
-        if (cartItems.isEmpty()) {
-            isAllSelected = false;
-            checkboxSelectAll.setImageResource(R.drawable.ic_checkbox_unchecked);
+        try {
+            Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void onViewDetail(CartItem item) {
-        Toast.makeText(requireContext(), "Xem chi tiết: " + item.getName(), Toast.LENGTH_SHORT).show();
-        // TODO: Navigate to product detail fragment
-        // Bundle bundle = new Bundle();
-        // bundle.putString("productId", item.getId());
-        // Navigation.findNavController(requireView())
-        //         .navigate(R.id.action_cartFragment_to_productDetailFragment, bundle);
+    public void onItemDeleted(CartApi.CartItem item, int position) {
+        if (isLoading) return;
+        setLoadingState(true);
+
+        CartRepository.getInstance().removeFromCart(item.productId, new CartRepository.CartCallback() {
+            @Override
+            public void onSuccess(List<CartApi.CartItem> items) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    showDeleteSuccessDialog();
+                    adapter.updateItems(items);
+                    updateUIState(items);
+                    setLoadingState(false);
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                if (!isAdded()) return;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(requireContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+                    setLoadingState(false);
+                });
+            }
+        });
+    }
+
+    private void showDeleteSuccessDialog() {
+        if (!isAdded()) return;
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_delete_success);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().dimAmount = 0.6f;
+        }
+
+        ImageView btnClose = dialog.findViewById(R.id.btnCloseSuccess);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 }

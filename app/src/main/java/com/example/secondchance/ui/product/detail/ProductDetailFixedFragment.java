@@ -7,17 +7,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import com.example.secondchance.R;
 import com.example.secondchance.data.product.SampleProductData;
+import com.example.secondchance.data.remote.CartApi;
+import com.example.secondchance.data.repo.CartRepository;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDetailFixedFragment extends BaseProductDetailFragment {
 
-    private LinearLayout btnEdit, btnDelete;
+    private LinearLayout btnEdit, btnDelete, btnAddToCart;
 
     @Override
     protected String getProductType() {
@@ -35,6 +40,7 @@ public class ProductDetailFixedFragment extends BaseProductDetailFragment {
 
         btnEdit = view.findViewById(R.id.btn_edit);
         btnDelete = view.findViewById(R.id.btn_delete);
+        btnAddToCart = view.findViewById(R.id.btn_add_to_cart);
 
         setupButtons();
     }
@@ -57,6 +63,22 @@ public class ProductDetailFixedFragment extends BaseProductDetailFragment {
 
         if (btnDelete != null) {
             btnDelete.setOnClickListener(v -> showDeleteConfirmationDialog());
+        }
+
+        if (btnAddToCart != null) {
+            btnAddToCart.setOnClickListener(v -> {
+                CartRepository.getInstance().addToCart(productId, 1, new CartRepository.CartCallback() {
+                    @Override
+                    public void onSuccess(List<CartApi.CartItem> items) {
+                        Toast.makeText(getContext(), "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
         }
     }
 

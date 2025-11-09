@@ -797,4 +797,26 @@
 
     </fragment>
 
+    <action android:id="@+id/action_global_to_cartFragment"
+        app:destination="@id/cartFragment" />
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.secondchance.ui.cart.CartFragment"
+        android:label="Giỏ hàng"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_detailProductFragment"
+            app:destination="@id/navigation_detail_product" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.example.secondchance.ui.checkout.CheckoutFragment"
+        android:label="Thanh toán"
+        tools:layout="@layout/fragment_checkout" />
+
 </navigation>

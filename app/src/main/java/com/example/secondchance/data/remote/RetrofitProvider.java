@@ -26,6 +26,8 @@ public class RetrofitProvider {
   private static volatile HomeApi homeApi;
   private static volatile MeApi  meApi;
   private static volatile OrderApi  orderApi;
+  private static volatile CartApi cartApi;
+  private static volatile ProductApi productApi;
   private static Context appCtx;
   private static final AtomicBoolean logoutInProgress = new AtomicBoolean(false);
 
@@ -66,9 +68,10 @@ public class RetrofitProvider {
 
         // Tránh mở nhiều activity nếu nhiều call cùng 401
         if (logoutInProgress.compareAndSet(false, true)) {
+          // Chuyển về AuthActivity trên UI thread
           new Handler(Looper.getMainLooper()).post(() -> {
             try {
-              
+
               new androidx.navigation.NavDeepLinkBuilder(appCtx)
                 .setComponentName(com.example.secondchance.MainActivity.class)   // Activity chứa NavHost
                 .setGraph(R.navigation.mobile_navigation)                           // navGraph bạn đang gắn ở layout
@@ -97,7 +100,7 @@ public class RetrofitProvider {
       .build();
     
     retrofit = new Retrofit.Builder()
-      .baseUrl("http://10.0.2.2:3000/api/") // Emulator ↔ server local
+      .baseUrl("http://10.0.2.2:3000/api/")
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
@@ -124,6 +127,16 @@ public class RetrofitProvider {
     if (orderApi == null) orderApi = ensureRetrofit().create(OrderApi.class);
     return orderApi;
   }
+
+    public static CartApi cart() {
+        if (cartApi == null) cartApi = ensureRetrofit().create(CartApi.class);
+        return cartApi;
+    }
+
+    public static ProductApi product() {
+        if (productApi == null) productApi = ensureRetrofit().create(ProductApi.class);
+        return productApi;
+    }
 
   public static Retrofit getRetrofit() {
     if (retrofit == null) {

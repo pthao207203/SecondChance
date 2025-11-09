@@ -7,19 +7,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-import com.example.secondchance.ui.cart.CartItem;
+import com.example.secondchance.data.remote.CartApi; // ✅ Thay đổi import
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProductsAdapter.ProductViewHolder> {
 
-    private List<CartItem> products;
+    private List<CartApi.CartItem> products; // ✅ Thay đổi type
 
-
-
-    public CheckoutProductsAdapter(List<CartItem> selectedProducts) {
+    public CheckoutProductsAdapter(List<CartApi.CartItem> selectedProducts) {
+        if (selectedProducts != null) {
+            this.products = selectedProducts;
+        } else {
+            this.products = new ArrayList<>();
+        }
     }
 
     @NonNull
@@ -32,7 +36,7 @@ public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProduc
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        CartItem product = products.get(position);
+        CartApi.CartItem product = products.get(position);
         holder.bind(product);
     }
 
@@ -53,13 +57,28 @@ public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProduc
             tvProductDescription = itemView.findViewById(R.id.tvProductDescription);
         }
 
-        public void bind(CartItem product) {
+        public void bind(CartApi.CartItem product) {
             tvProductName.setText(product.getName());
-            tvProductPrice.setText("đ " + String.format("%,d", product.getPrice()));
+
+            // Format price với dấu chấm
+            String priceFormatted = String.format("%,d", product.getTotalPrice()).replace(",", ".");
+            tvProductPrice.setText("₫ " + priceFormatted);
+
             tvProductDescription.setText(product.getDescription());
 
-            // Load image if you have image URL
-            // Glide.with(itemView.getContext()).load(product.getImageUrl()).into(ivProductImage);
+            // ✅ Load image với Glide
+            String imageUrl = product.getImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.color.grayLight)
+                        .error(R.color.grayLight)
+                        .centerCrop()
+                        .into(ivProductImage);
+            } else {
+                ivProductImage.setBackgroundColor(itemView.getContext()
+                        .getResources().getColor(R.color.grayLight, null));
+            }
         }
     }
 }

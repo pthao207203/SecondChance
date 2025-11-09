@@ -3,6 +3,7 @@ package com.example.secondchance.ui.cart;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +12,70 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
+import com.example.secondchance.data.remote.CartApi;
+import com.example.secondchance.data.remote.ProductApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
 import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private List<CartItem> cartItems;
-    private OnCartItemListener listener;
+    private static final String TAG = "CartAdapter";
+    private List<CartApi.CartItem> cartItems;
+    private final OnCartItemListener listener;
 
     public interface OnCartItemListener {
-        void onItemChecked(CartItem item, boolean isChecked);
-        void onItemDeleted(CartItem item, int position);
-        void onViewDetail(CartItem item);
+        void onItemChecked(CartApi.CartItem item, boolean isChecked);
+        void onViewDetail(CartApi.CartItem item);
+        void onItemDeleted(CartApi.CartItem item, int position);
     }
 
-    public CartAdapter(List<CartItem> cartItems, OnCartItemListener listener) {
-        this.cartItems = cartItems != null ? cartItems : new ArrayList<>();
+    public CartAdapter(OnCartItemListener listener) {
+        this.cartItems = new ArrayList<>();
         this.listener = listener;
+    }
+
+    public void updateItems(List<CartApi.CartItem> newItems) {
+        this.cartItems.clear();
+        if (newItems != null) {
+            this.cartItems.addAll(newItems);
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<CartApi.CartItem> getSelectedItems() {
+        List<CartApi.CartItem> selectedItems = new ArrayList<>();
+        for (CartApi.CartItem item : cartItems) {
+            if (item.isSelected) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+    }
+
+    public void selectAll(boolean select) {
+        for (CartApi.CartItem item : cartItems) {
+            item.isSelected = select;
+        }
+        notifyDataSetChanged();
+    }
+
+    public boolean areAllItemsSelected() {
+        if (cartItems.isEmpty()) return false;
+        for (CartApi.CartItem item : cartItems) {
+            if (!item.isSelected) return false;
+        }
+        return true;
+    }
+
+    public List<CartApi.CartItem> getItems() {
+        return cartItems;
     }
 
     @NonNull
@@ -42,8 +88,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        CartItem item = cartItems.get(position);
-        holder.bind(item, position);
+        CartApi.CartItem item = cartItems.get(position);
+        if (item.product == null || item.product.title == null) {
+            holder.bindLoadingState();
+            fetchProductInfo(item, holder);
+        } else {
+            holder.bind(item);
+        }
     }
 
     @Override
@@ -51,35 +102,47 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return cartItems.size();
     }
 
-    public void removeItem(int position) {
-        if (position >= 0 && position < cartItems.size()) {
-            cartItems.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, cartItems.size());
-        }
-    }
+    private void fetchProductInfo(final CartApi.CartItem item, final CartViewHolder holder) {
+        RetrofitProvider.product().getProductById(item.productId).enqueue(new Callback<ProductApi.ProductEnvelope>() {
+            @Override
+            public void onResponse(Call<ProductApi.ProductEnvelope> call, Response<ProductApi.ProductEnvelope> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success && response.body().data != null) {
+                    ProductApi.Product product = response.body().data;
+                    
+                    if (item.product == null) {
+                        item.product = new CartApi.CartItem.ProductInfo();
+                    }
+                    item.product.id = product.id;
+                    item.product.title = product.name;
+                    item.product.description = product.description;
+                    if (product.media != null && !product.media.isEmpty()) {
+                        item.product.imageUrl = product.media.get(0);
+                    }
 
-    public List<CartItem> getSelectedItems() {
-        List<CartItem> selectedItems = new ArrayList<>();
-        for (CartItem item : cartItems) {
-            if (item.isSelected()) {
-                selectedItems.add(item);
+                    if (item.price == 0 && product.price > 0) {
+                        item.price = product.price;
+                    }
+
+                    int currentPosition = holder.getAdapterPosition();
+                    if (currentPosition != RecyclerView.NO_POSITION) {
+                        notifyItemChanged(currentPosition);
+                    }
+                } else {
+                    Log.e(TAG, "Failed to fetch product details: " + response.code());
+                }
             }
-        }
-        return selectedItems;
-    }
 
-    public void selectAll(boolean select) {
-        for (CartItem item : cartItems) {
-            item.setSelected(select);
-        }
-        notifyDataSetChanged();
+            @Override
+            public void onFailure(Call<ProductApi.ProductEnvelope> call, Throwable t) {
+                Log.e(TAG, "Error fetching product info", t);
+            }
+        });
     }
 
     class CartViewHolder extends RecyclerView.ViewHolder {
-        private ImageView checkboxItem, ivProductImage;
-        private TextView tvProductName, tvProductPrice, tvProductDescription;
-        private View layoutDelete, layoutViewDetail;
+        private final ImageView checkboxItem, ivProductImage;
+        private final TextView tvProductName, tvProductPrice, tvProductDescription, tvProductQuantity;
+        private final View layoutViewDetail, layoutDelete;
 
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,86 +151,81 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             tvProductName = itemView.findViewById(R.id.tvProductName);
             tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
             tvProductDescription = itemView.findViewById(R.id.tvProductDescription);
-            layoutDelete = itemView.findViewById(R.id.layoutDelete);
+            tvProductQuantity = itemView.findViewById(R.id.tvProductQuantity);
             layoutViewDetail = itemView.findViewById(R.id.layoutViewDetail);
+            layoutDelete = itemView.findViewById(R.id.layoutDelete);
         }
 
-        public void bind(CartItem item, int position) {
-            // Set data
-            tvProductName.setText(item.getName());
-            tvProductPrice.setText("đ " + String.format("%,d", item.getPrice()));
-            tvProductDescription.setText(item.getDescription());
+        void bindLoadingState() {
+            tvProductName.setText("Đang tải...");
+            tvProductPrice.setText("đ0");
+            tvProductDescription.setText("");
+            tvProductQuantity.setText("");
+            ivProductImage.setImageResource(R.color.grayLight);
+        }
 
-            // Set checkbox state
+        public void bind(final CartApi.CartItem item) {
+            tvProductName.setText(item.getName());
+            tvProductDescription.setText(item.getDescription());
+            tvProductQuantity.setText("Số lượng: " + item.qty);
+
+            long totalPrice = item.getTotalPrice();
+            String priceFormatted = String.format("%,d", totalPrice).replace(",", ".");
+            tvProductPrice.setText("đ" + priceFormatted);
+
             checkboxItem.setImageResource(
-                    item.isSelected() ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+                    item.isSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
             );
 
-            // Load image if you have image URL
-            // Glide.with(itemView.getContext()).load(item.getImageUrl()).into(ivProductImage);
+            Glide.with(itemView.getContext())
+                    .load(item.getImageUrl())
+                    .placeholder(R.color.grayLight)
+                    .error(R.color.grayLight)
+                    .centerCrop()
+                    .into(ivProductImage);
 
-            // Checkbox click
             checkboxItem.setOnClickListener(v -> {
-                item.setSelected(!item.isSelected());
+                item.isSelected = !item.isSelected;
                 checkboxItem.setImageResource(
-                        item.isSelected() ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+                        item.isSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
                 );
                 if (listener != null) {
-                    listener.onItemChecked(item, item.isSelected());
+                    listener.onItemChecked(item, item.isSelected);
                 }
             });
 
-            // Delete click - Show confirm dialog
-            layoutDelete.setOnClickListener(v -> showDeleteConfirmDialog(item, position));
-
-            // View detail click
             layoutViewDetail.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onViewDetail(item);
                 }
             });
+
+            layoutDelete.setOnClickListener(v -> {
+                showDeleteConfirmDialog(item, getAdapterPosition());
+            });
         }
 
-        private void showDeleteConfirmDialog(CartItem item, int position) {
-            Dialog dialog = new Dialog(itemView.getContext());
+        private void showDeleteConfirmDialog(final CartApi.CartItem item, final int position) {
+            final Dialog dialog = new Dialog(itemView.getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_confirm_delete);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-            // Làm tối background
-            dialog.getWindow().setDimAmount(0.7f);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().getAttributes().dimAmount = 0.6f;
+            }
 
-            MaterialButton btnConfirmDelete = dialog.findViewById(R.id.btnConfirmDelete);
-            MaterialButton btnCancelDelete = dialog.findViewById(R.id.btnCancelDelete);
+            MaterialButton btnConfirm = dialog.findViewById(R.id.btnConfirmDelete);
+            MaterialButton btnCancel = dialog.findViewById(R.id.btnCancelDelete);
 
-            btnConfirmDelete.setOnClickListener(v -> {
+            btnConfirm.setOnClickListener(v -> {
                 dialog.dismiss();
-                removeItem(position);
                 if (listener != null) {
                     listener.onItemDeleted(item, position);
                 }
-                showDeleteSuccessDialog();
             });
 
-            btnCancelDelete.setOnClickListener(v -> dialog.dismiss());
-
-            dialog.show();
-        }
-
-        private void showDeleteSuccessDialog() {
-            Dialog dialog = new Dialog(itemView.getContext());
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_delete_success);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-            // Làm tối background
-            dialog.getWindow().setDimAmount(0.7f);
-
-            ImageView btnCloseSuccess = dialog.findViewById(R.id.btnCloseSuccess);
-            btnCloseSuccess.setOnClickListener(v -> dialog.dismiss());
-
-            // Auto dismiss after 2 seconds
-            itemView.postDelayed(dialog::dismiss, 2000);
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
 
             dialog.show();
         }
