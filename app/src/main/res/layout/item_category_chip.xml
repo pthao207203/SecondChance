@@ -40,7 +40,7 @@
             android:layout_marginTop="4dp"
             android:text='@{item.name}'
             android:textColor="@color/darkerDay"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_13"
             android:maxLines="1"
             android:ellipsize="end" />
     </LinearLayout>

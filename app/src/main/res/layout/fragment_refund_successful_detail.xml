@@ -69,7 +69,7 @@
                             android:layout_marginTop="4dp"
                             android:text="Số lượng: 1"
                             android:textColor="#666666"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/text_13" />
                         <TextView
                             android:id="@+id/tvDescription"
                             android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                             android:layout_marginTop="4dp"
                             android:text="Giỏ hoa loại 1 new 99%, của hàng abc thành phố Xuân Hợp he he"
                             android:textColor="#666666"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/text_13" />
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>

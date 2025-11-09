@@ -48,7 +48,7 @@
                 android:gravity="center"
                 android:text="Cảm ơn bạn đã gửi lại hàng.  Bạn sẽ được hoàn tiền tại Ví trong vòng 24h "
                 android:textColor="@color/darkerDay"
-                android:textSize="16sp" />
+                android:textSize="@dimen/text_16" />
 
         </LinearLayout>
     </RelativeLayout>

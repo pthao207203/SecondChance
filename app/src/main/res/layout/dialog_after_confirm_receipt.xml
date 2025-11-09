@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Cảm ơn bạn đã tin tưởng mua hàng. Hãy đánh giá shop ngay nhé"
             android:textColor="@color/darkerDay"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:gravity="center"
             android:layout_marginBottom="24dp"/>
 

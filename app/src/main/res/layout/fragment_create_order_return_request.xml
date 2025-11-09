@@ -28,7 +28,7 @@
                 android:text="Sản phẩm muốn trả"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"/>
 
@@ -51,7 +51,7 @@
                 android:text="Thêm ảnh/video"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thêm ảnh/video"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/text_13"
                         android:textColor="@color/darkerDay"
                         android:gravity="center"/>
                 </LinearLayout>
@@ -109,7 +109,7 @@
                 android:text="Nguyên nhân"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -122,7 +122,7 @@
                 android:hint="Sản phẩm khác mô tả, hoàn toàn không giống..."
                 android:inputType="textMultiLine"
                 android:padding="12dp"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_13"
                 android:scrollbars="vertical"
                 android:overScrollMode="always" />
 
@@ -137,7 +137,7 @@
                     android:layout_height="70dp"
                     android:layout_marginTop="8dp"
                     android:text="Gửi yêu cầu"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_16"
                     android:textStyle="bold"
                     android:enabled="false"
                     app:backgroundTint="@color/normalDay"

@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SĐT"
-        android:textSize="14sp"
+        android:textSize="@dimen/text_13"
         android:textColor="#1C1B1F"
         android:textStyle="bold" />
 
@@ -67,7 +67,7 @@
         android:background="@drawable/bg_light_active_outline"
         android:paddingHorizontal="16dp"
         android:paddingVertical="12dp"
-        android:textSize="14sp"
+        android:textSize="@dimen/text_13"
         android:textColor="@color/darkerDay"
         android:gravity="top"
         android:inputType="textMultiLine"

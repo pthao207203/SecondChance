@@ -46,7 +46,7 @@
             android:layout_marginBottom="4dp"
             android:text="@{product.title}"
             android:textColor="@color/darkerDay"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold"/>
 
         <TextView
@@ -57,7 +57,7 @@
             android:layout_below="@id/product_title"
             android:text="@{product.description}"
             android:textColor="@color/darkerDay"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_13"
             android:textStyle="normal"/>
 
         <TextView
@@ -67,7 +67,7 @@
             android:layout_below="@id/product_description"
             android:layout_alignParentStart="true"
             android:text="@{`Số lượng: ` + product.quantity}"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_13"
             android:textStyle="normal"/>
 
         <ImageView
@@ -116,7 +116,7 @@
                 android:paddingBottom="2dp"
                 android:text="Thương lượng"
                 android:textColor="@color/darkerDay"
-                android:textSize="13sp"/>
+                android:textSize="@dimen/text_13"/>
         </com.google.android.material.card.MaterialCardView>
         <TextView
             android:layout_width="wrap_content"
@@ -130,7 +130,7 @@
             android:gravity="center_vertical"
             android:text="đ"
             android:textColor="@color/normalDay"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/price_value"
@@ -143,7 +143,7 @@
             android:gravity="center"
             android:text="@{product.price}"
             android:textColor="@color/darkerDay"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:textStyle="bold"/>
 
 

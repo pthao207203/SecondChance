@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/text_16"
-                android:text="hoàn tác"
+                android:text="Hoàn tác"
                 android:textColor="@color/normalDay"
                 android:textStyle="bold"
                 app:strokeColor="@color/normalDay"

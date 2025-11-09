@@ -44,7 +44,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Thanh toán thành công"
                 android:textColor="@color/darkerDay"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_16"
                 android:textStyle="bold"
                 android:gravity="center" />
 

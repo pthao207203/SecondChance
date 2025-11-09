@@ -47,7 +47,7 @@
                 android:layout_marginBottom="4dp"
                 android:text="@{product.title}"
                 android:textColor="@color/darkerDay"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:textStyle="bold"/>
 
             <TextView
@@ -56,9 +56,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/product_title"
                 android:layout_marginBottom="4dp"
-                android:text="@{product.description}"
+                android:text=""
                 android:textColor="@color/darkerDay"
-                android:textSize="13sp"
+                android:textSize="@dimen/text_13"
                 android:textStyle="normal"/>
 
             <TextView
@@ -68,7 +68,7 @@
                 android:layout_below="@id/product_description"
                 android:layout_alignParentStart="true"
                 android:text="@{`Số lượng: ` + product.quantity}"
-                android:textSize="13sp"
+                android:textSize="@dimen/text_13"
                 android:textStyle="normal"/>
 
             <ImageView
@@ -91,32 +91,33 @@
                 android:layout_alignTop="@id/product_quantity"
                 android:layout_alignBottom="@id/product_quantity"
                 android:gravity="center_vertical"
-                android:text="@{String.valueOf(product.starRating)}"/>
+                android:textSize="@dimen/text_13"
+                android:text="5.0"/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/price_type_card"
-                style="@style/Widget.SecondChance.Card.Number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/product_quantity"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="4dp"
-                android:backgroundTint="@color/lightDay"
-                app:cardCornerRadius="2dp"
-                app:cardElevation="0dp">
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:id="@+id/price_type_card"-->
+<!--                style="@style/Widget.SecondChance.Card.Number"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/product_quantity"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_marginTop="4dp"-->
+<!--                android:backgroundTint="@color/lightDay"-->
+<!--                app:cardCornerRadius="2dp"-->
+<!--                app:cardElevation="0dp">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingLeft="5dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="5dp"
-                    android:paddingBottom="2dp"
-                    android:text="Giá cố định"
-                    android:textColor="@color/darkerDay"
-                    android:textSize="13sp"/>
-            </com.google.android.material.card.MaterialCardView>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="center"-->
+<!--                    android:paddingLeft="5dp"-->
+<!--                    android:paddingTop="2dp"-->
+<!--                    android:paddingRight="5dp"-->
+<!--                    android:paddingBottom="2dp"-->
+<!--                    android:text="Giá cố định"-->
+<!--                    android:textColor="@color/darkerDay"-->
+<!--                    android:textSize="@dimen/text_13"/>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +131,7 @@
                 android:gravity="center_vertical"
                 android:text="đ"
                 android:textColor="@color/normalDay"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:textStyle="bold" />
 
             <TextView
@@ -144,7 +145,7 @@
                 android:gravity="center"
                 android:text="@{product.price}"
                 android:textColor="@color/darkerDay"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_16"
                 android:textStyle="bold"/>
 
         </RelativeLayout>

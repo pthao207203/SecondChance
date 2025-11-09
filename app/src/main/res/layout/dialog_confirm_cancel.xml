@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Bạn xác nhận muốn hủy đơn hàng này?"
             android:textColor="@color/darkerDay"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16"
             android:gravity="center"
             android:layout_marginBottom="24dp"/>
 

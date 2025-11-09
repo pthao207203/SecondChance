@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:text="Trang chủ"
                         android:textColor="@color/darkerDay"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/text_13" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -89,7 +89,7 @@
                         android:layout_height="wrap_content"
                         android:text="AI định giá"
                         android:textColor="@color/darkerDay"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/text_13" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:text="Thương lượng"
                         android:textColor="@color/darkerDay"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/text_13" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:text="Tôi"
                         android:textColor="@color/darkerDay"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/text_13" />
                 </LinearLayout>
 
             </LinearLayout>

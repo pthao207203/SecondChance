@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguồn sản phẩm"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_13"
                 android:textColor="#333333"
                 android:layout_marginBottom="8dp"/>
 
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Minh chứng"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_13"
                 android:textColor="#333333"
                 android:layout_marginBottom="8dp"/>
 

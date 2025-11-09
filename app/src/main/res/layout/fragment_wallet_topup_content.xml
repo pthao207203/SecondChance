@@ -33,8 +33,9 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="84dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/padding_default"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@drawable/bg_wallet_active"
@@ -59,8 +60,9 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="84dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="@dimen/padding_default"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@drawable/bg_wallet_inactive"

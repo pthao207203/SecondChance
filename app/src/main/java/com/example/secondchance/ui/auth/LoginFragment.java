@@ -3,6 +3,7 @@ package com.example.secondchance.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,8 +147,15 @@ public class LoginFragment extends Fragment {
   
   private void goToMainAndFinish() {
     if (!isAdded()) return;
-    NavController nav = NavHostFragment.findNavController(LoginFragment.this);
-    nav.setGraph(R.navigation.mobile_navigation, null);
+    NavController nav = NavHostFragment.findNavController(this);
+    Log.e("NavCheck", "graph=" + requireContext().getResources().getResourceName(nav.getGraph().getId())
+      + " startDest=" + requireContext().getResources().getResourceName(nav.getGraph().getStartDestinationId())
+      + " hasHome=" + (nav.getGraph().findNode(R.id.navigation_home) != null));
+    NavOptions opts = new NavOptions.Builder()
+      .setPopUpTo(R.id.mobile_navigation, true) // dọn sạch back stack auth
+      .build();
+    
+    nav.navigate(R.id.navigation_home, null, opts);
   }
   
   @Override

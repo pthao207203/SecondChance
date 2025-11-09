@@ -64,6 +64,6 @@
             android:layout_marginTop="4dp"
             android:text="1 mẫu, giá cố định, đổi hư hại 100%, có bảo hành, đổi trả với shop"
             android:textColor="#666666"
-            android:textSize="11sp"/>
+            android:textSize="@dimen/text_13"/>
     </LinearLayout>
 </LinearLayout>
