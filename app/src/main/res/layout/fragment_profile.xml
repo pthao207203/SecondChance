@@ -845,6 +845,7 @@
                 app:strokeWidth="1dp"
                 app:strokeColor="@color/highLight8">
                 <LinearLayout
+                    android:id="@+id/btn_order"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

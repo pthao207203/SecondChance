@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context=".ui.order.RefundOrderDetailFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#F5F5F5"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sản phẩm muốn trả"
+                    android:textColor="@color/darkerDay"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- RecyclerView cho danh sách sản phẩm -->
+                    <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvOrderItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ảnh/ video phản ánh"
+                    android:textColor="@color/darkerDay"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/imgEvidence1"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/sample_flower"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_common_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nguyên nhân"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+                    <TextView
+                        android:id="@+id/tvReason"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sản phẩm khác mô tả, hoàn toàn không giống..."
+                        android:textColor="@color/darkerDay"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_status_not_confirmed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:visibility="visible">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    android:layout_marginTop="15dp"
+                    app:cardBackgroundColor="@color/info_box_bg">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/ic_info_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/highLight5"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mã đơn"
+                            android:textStyle="bold"
+                            android:textColor="@color/darkerDay"
+                            android:layout_toEndOf="@id/ic_info_icon"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="12dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="XYZY1234RTY"
+                            android:textColor="@color/normalDay"
+                            android:textStyle="bold"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"/>
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+                <LinearLayout
+                    android:id="@+id/stepper_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:id="@+id/step1_icon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_inactive"/>
+                        <View
+                            android:id="@+id/step1_line" android:layout_width="0dp"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="@color/highLight4"/>
+                        <ImageView
+                            android:id="@+id/step2_icon" android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_inactive"/>
+
+                        <View
+                            android:id="@+id/step2_line" android:layout_width="0dp"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="@color/highLight4"/>
+
+                        <ImageView
+                            android:id="@+id/step3_icon" android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_inactive"/>
+
+                        <View
+                            android:id="@+id/step3_line" android:layout_width="0dp"
+                            android:layout_height="2dp"
+                            android:layout_weight="1"
+                            android:background="@color/highLight4"/>
+
+                        <ImageView
+                            android:id="@+id/step4_icon" android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_inactive"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <TextView
+                            android:id="@+id/step1_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Gói hàng"
+                            android:textColor="@color/highLight5"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_13"/>
+
+                        <TextView
+                            android:id="@+id/step2_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đã tới bưu cục"
+                            android:textColor="@color/highLight5"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_13"/>
+
+                        <TextView
+                            android:id="@+id/step3_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đang giao"
+                            android:textColor="@color/highLight5"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_13"/>
+
+                        <TextView
+                            android:id="@+id/step4_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Giao thành công"
+                            android:textColor="@color/highLight5"
+                            android:gravity="center"
+                            android:textSize="@dimen/text_13"/>
+                    </LinearLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTrackingStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="201dp"
+                        android:layout_marginTop="8dp"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReceiveOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:text="ĐÃ NHẬN LẠI HÀNG"
+                    app:backgroundTint="#E56D2D"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_status_confirmed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/highlight4blur"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="Yêu cầu hoàn đã được chấp nhận. Cảm ơn bạn..."
+                        android:textColor="@color/darkerDay"
+                        android:lineSpacingExtra="4dp"/>
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReturnToPostOffice"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:text="GỬI LẠI HÀNG CHO BƯU CỤC"
+                    app:backgroundTint="#E56D2D"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_status_rejected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/highlight4blur"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Yêu cầu hoàn đã bị từ chối"
+                            android:textColor="@color/darkerDay"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="8dp"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Cảm ơn bạn... tuy nhiên những lỗi này không phải..."
+                            android:textColor="@color/darkerDay"
+                            android:lineSpacingExtra="4dp"/>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnResendRequest"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Gửi lại"
+                            android:textColor="@color/orange_primary"
+                            app:strokeColor="@color/orange_primary"
+                            app:cornerRadius="8dp"
+                            android:backgroundTint="@color/grayDay" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAgree"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Đồng ý"
+                    app:backgroundTint="#E56D2D"
+                    app:cornerRadius="8dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_status_successful"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/highlight4blur"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="Bạn đã hoàn trả đơn hàng, số tiền đã thanh toán sẽ được hoàn lại ví"
+                        android:textColor="@color/darkerDay" />
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

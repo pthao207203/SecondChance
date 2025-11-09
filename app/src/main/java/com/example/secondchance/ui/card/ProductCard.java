@@ -58,6 +58,7 @@ public class ProductCard implements java.io.Serializable{
     }
     public ProductCard() {
         // Khởi tạo các giá trị mặc định để tránh lỗi
+        this.id = "";
         this.title = "";
         this.description = "";
         this.price = "";
@@ -81,8 +82,7 @@ public class ProductCard implements java.io.Serializable{
     public void setId(String id) {
         this.id = id;
     }
-    
-    // Setters
+
     public void setTimeRemaining(String timeRemaining) {
         if (productType == ProductType.AUCTION && timeRemaining != null) {
             this.timeRemaining = timeRemaining;
