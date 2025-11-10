@@ -1,65 +1,67 @@
-package com.example.secondchance.ui.checkout;
+package com.example.secondchance.ui.order;
 
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.secondchance.R;
+import com.example.secondchance.data.remote.CartApi;
 import com.example.secondchance.data.remote.OrderApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
-
+import com.example.secondchance.data.repo.CartRepository;
+import com.example.secondchance.ui.order.adapter.OrderPreviewProductAdapter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CheckoutFragment extends Fragment {
+public class OrderPreviewFragment extends Fragment {
 
     private RecyclerView productsRecyclerView;
-    private CheckoutProductsAdapter productsAdapter;
+    private OrderPreviewProductAdapter productAdapter;
     private TextView tvTotalPrice;
-    private AppCompatButton btnBuyNow;
-    
+    private Button btnBuyNow;
+
+    // Section Views
     private LinearLayout shippingMethodHeader, paymentMethodHeader, addressHeader;
     private LinearLayout selectedShippingLayout, selectedPaymentLayout, selectedAddressLayout;
     private LinearLayout shippingOptionsContainer, paymentOptionsContainer, addressOptionsContainer;
     private ImageView ivShippingToggle, ivPaymentToggle, ivAddressToggle;
-    
-    private int totalAmount = 0;
+
+    // Data
+    private OrderApi.Address selectedAddress;
+    private OrderApi.PaymentMethod selectedPaymentMethod;
+    private ArrayList<CartApi.CartItem> selectedCartItems;
+    private long shippingFee = 30000; // Hardcoded for now
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_order_preview, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_order_preview, container, false);
         initViews(view);
         setupRecyclerView();
         setupClickListeners();
-        fetchPreviewData(); 
+        fetchPreviewData();
+        return view;
     }
 
     private void initViews(View view) {
@@ -84,17 +86,16 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        productsAdapter = new CheckoutProductsAdapter(new ArrayList<>());
+        productAdapter = new OrderPreviewProductAdapter(new ArrayList<>());
         productsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        productsRecyclerView.setAdapter(productsAdapter);
+        productsRecyclerView.setAdapter(productAdapter);
     }
 
     private void setupClickListeners() {
-        btnBuyNow.setOnClickListener(v -> showPaymentSuccessDialog()); // SỬA: Gọi thẳng dialog thành công
-
         shippingMethodHeader.setOnClickListener(v -> toggleVisibility(shippingOptionsContainer, selectedShippingLayout, ivShippingToggle));
         paymentMethodHeader.setOnClickListener(v -> toggleVisibility(paymentOptionsContainer, selectedPaymentLayout, ivPaymentToggle));
         addressHeader.setOnClickListener(v -> toggleVisibility(addressOptionsContainer, selectedAddressLayout, ivAddressToggle));
+        btnBuyNow.setOnClickListener(v -> placeOrder());
     }
 
     private void toggleVisibility(View optionsContainer, View selectedLayout, ImageView toggleIcon) {
@@ -106,33 +107,42 @@ public class CheckoutFragment extends Fragment {
 
     private void fetchPreviewData() {
         OrderApi.PreviewRequestBody requestBody = new OrderApi.PreviewRequestBody();
+
         if (getArguments() != null && getArguments().getSerializable("selectedItems") != null) {
-            requestBody.items = (ArrayList<OrderApi.CartItemInfo>) getArguments().getSerializable("selectedItems");
+            selectedCartItems = (ArrayList<CartApi.CartItem>) getArguments().getSerializable("selectedItems");
         } else {
-            requestBody.items = new ArrayList<>();
+            selectedCartItems = new ArrayList<>();
         }
 
-        if (requestBody.items.isEmpty()) {
-            Toast.makeText(getContext(), "Không có sản phẩm nào để thanh toán", Toast.LENGTH_SHORT).show();
+        if (selectedCartItems.isEmpty()) {
+            Toast.makeText(getContext(), "Không có sản phẩm nào được chọn", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        requestBody.items = selectedCartItems.stream().map(cartItem -> {
+            OrderApi.CartItemInfo itemInfo = new OrderApi.CartItemInfo();
+            itemInfo.productId = cartItem.productId;
+            itemInfo.qty = cartItem.qty;
+            return itemInfo;
+        }).collect(Collectors.toCollection(ArrayList::new));
+
+
         RetrofitProvider.order().previewOrder(requestBody).enqueue(new Callback<OrderApi.OrderPreviewResponse>() {
             @Override
-            public void onResponse(@NonNull Call<OrderApi.OrderPreviewResponse> call, @NonNull Response<OrderApi.OrderPreviewResponse> response) {
+            public void onResponse(Call<OrderApi.OrderPreviewResponse> call, Response<OrderApi.OrderPreviewResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().success) {
                     OrderApi.PreviewData data = response.body().data;
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> updateUI(data));
                     }
                 } else {
-                    Toast.makeText(getContext(), "Không thể tải thông tin thanh toán", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to load preview", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<OrderApi.OrderPreviewResponse> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<OrderApi.OrderPreviewResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -144,12 +154,10 @@ public class CheckoutFragment extends Fragment {
             List<OrderApi.ProductItem> allProducts = data.items.stream()
                     .flatMap(shopItems -> shopItems.items.stream())
                     .collect(Collectors.toList());
-            productsAdapter.updateData(allProducts);
+            productAdapter.updateData(allProducts);
         }
 
-        totalAmount = (int) data.totalPrice;
-        String formattedTotal = String.format(Locale.GERMANY, "%,d", totalAmount);
-        tvTotalPrice.setText(formattedTotal);
+        tvTotalPrice.setText(String.format("%,d", data.totalPrice).replace(",", "."));
 
         updatePaymentMethods(data.paymentMethods);
         updateAddressSection(data.addresses);
@@ -164,18 +172,20 @@ public class CheckoutFragment extends Fragment {
             return;
         }
 
-        updateSelectedPaymentView(methods.get(0));
+        selectedPaymentMethod = methods.get(0);
+        updateSelectedPaymentView(selectedPaymentMethod);
 
         for (OrderApi.PaymentMethod method : methods) {
             View paymentOptionView = createPaymentOptionView(method, false);
             paymentOptionView.setOnClickListener(v -> {
+                selectedPaymentMethod = method;
                 updateSelectedPaymentView(method);
                 toggleVisibility(paymentOptionsContainer, selectedPaymentLayout, ivPaymentToggle);
             });
             paymentOptionsContainer.addView(paymentOptionView);
         }
     }
-    
+
     private View createPaymentOptionView(OrderApi.PaymentMethod method, boolean isSelected) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_checkout_payment_option, paymentOptionsContainer, false);
         TextView tvMethod = view.findViewById(R.id.tvPaymentMethod);
@@ -189,6 +199,7 @@ public class CheckoutFragment extends Fragment {
             ivIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             view.setBackgroundResource(R.drawable.bg_bottom_border_light_blue);
         }
+
         return view;
     }
 
@@ -206,12 +217,13 @@ public class CheckoutFragment extends Fragment {
             return;
         }
 
-        OrderApi.Address defaultAddress = addresses.stream().filter(a -> a.isDefault).findFirst().orElse(addresses.get(0));
-        updateSelectedAddressView(defaultAddress);
+        selectedAddress = addresses.stream().filter(a -> a.isDefault).findFirst().orElse(addresses.get(0));
+        updateSelectedAddressView(selectedAddress);
 
         for (OrderApi.Address address : addresses) {
             View addressView = createAddressOptionView(address, false);
             addressView.setOnClickListener(v -> {
+                selectedAddress = address;
                 updateSelectedAddressView(address);
                 toggleVisibility(addressOptionsContainer, selectedAddressLayout, ivAddressToggle);
             });
@@ -244,6 +256,7 @@ public class CheckoutFragment extends Fragment {
             ivMapPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             view.setBackgroundResource(R.drawable.bg_bottom_border_light_blue);
         }
+
         return view;
     }
 
@@ -273,11 +286,14 @@ public class CheckoutFragment extends Fragment {
     private View createShippingOptionView(String option, boolean isSelected) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_shipping_option, shippingOptionsContainer, false);
         TextView tvShippingName = view.findViewById(R.id.tvShippingName);
+        ImageView ivShippingIcon = view.findViewById(R.id.ivShippingIcon);
         tvShippingName.setText(option);
 
         if (isSelected) {
+            ivShippingIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
             view.setBackgroundResource(R.drawable.bg_default);
         } else {
+            ivShippingIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             view.setBackgroundResource(R.drawable.bg_bottom_border_light_blue);
         }
         return view;
@@ -288,31 +304,102 @@ public class CheckoutFragment extends Fragment {
         View selectedView = createShippingOptionView(option, true);
         selectedShippingLayout.addView(selectedView);
     }
-    
-    private void showPaymentSuccessDialog() {
-        Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_payment_success);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.7f);
-        dialog.setCancelable(false);
 
-        ImageView btnCloseSuccess = dialog.findViewById(R.id.btnCloseSuccess);
-        btnCloseSuccess.setOnClickListener(v -> {
-            dialog.dismiss();
-            Toast.makeText(requireContext(), "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-        });
+    private void placeOrder() {
+        if (selectedCartItems == null || selectedCartItems.isEmpty()) {
+            Toast.makeText(getContext(), "Không có sản phẩm để đặt hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (selectedAddress == null) {
+            Toast.makeText(getContext(), "Vui lòng chọn địa chỉ giao hàng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (selectedPaymentMethod == null) {
+            Toast.makeText(getContext(), "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        requireView().postDelayed(() -> {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-                Toast.makeText(requireContext(), "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-                requireActivity().onBackPressed();
+        OrderApi.PlaceOrderRequestBody requestBody = new OrderApi.PlaceOrderRequestBody();
+        requestBody.items = selectedCartItems.stream().map(cartItem -> {
+            OrderApi.CartItemInfo itemInfo = new OrderApi.CartItemInfo();
+            itemInfo.productId = cartItem.productId;
+            itemInfo.qty = cartItem.qty;
+            return itemInfo;
+        }).collect(Collectors.toCollection(ArrayList::new));
+
+        requestBody.paymentMethod = this.selectedPaymentMethod.code;
+        requestBody.shippingAddressId = this.selectedAddress.id;
+        requestBody.shippingFee = this.shippingFee;
+        requestBody.note = "Giao giờ hành chính, để bảo quản hộp cẩn thận";
+
+        btnBuyNow.setEnabled(false);
+        btnBuyNow.setText("ĐANG ĐẶT HÀNG...");
+
+        RetrofitProvider.order().placeOrder(requestBody).enqueue(new Callback<OrderApi.PlaceOrderResponse>() {
+            @Override
+            public void onResponse(Call<OrderApi.PlaceOrderResponse> call, Response<OrderApi.PlaceOrderResponse> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    // Lấy danh sách productId từ các sản phẩm đã đặt hàng thành công
+                    List<String> productIdsToRemove = selectedCartItems.stream()
+                            .map(item -> item.productId)
+                            .collect(Collectors.toList());
+
+                    // Xóa các sản phẩm đã đặt hàng khỏi giỏ hàng
+                    CartRepository.getInstance().removeMultipleFromCart(productIdsToRemove, new CartRepository.CartCallback() {
+                        @Override
+                        public void onSuccess(List<CartApi.CartItem> items) {
+                            Log.d("OrderPreview", "Successfully removed " + productIdsToRemove.size() + " items from cart");
+                            if (isAdded()) {
+                                getActivity().runOnUiThread(() -> showSuccessDialog());
+                            }
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            Log.e("OrderPreview", "Order successful, but failed to remove items from cart: " + error);
+                            // Ngay cả khi xóa lỗi, vẫn hiển thị dialog vì đặt hàng đã thành công
+                            if (isAdded()) {
+                                getActivity().runOnUiThread(() -> showSuccessDialog());
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(getContext(), "Đặt hàng thất bại", Toast.LENGTH_SHORT).show();
+                    btnBuyNow.setEnabled(true);
+                    btnBuyNow.setText("MUA NGAY");
+                }
             }
-        }, 3000);
 
-        dialog.show();
+            @Override
+            public void onFailure(Call<OrderApi.PlaceOrderResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                btnBuyNow.setEnabled(true);
+                btnBuyNow.setText("MUA NGAY");
+            }
+        });
     }
 
+    private void showSuccessDialog() {
+        if (!isAdded() || getContext() == null) return;
+
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_place_order_success);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        ImageView btnClose = dialog.findViewById(R.id.btnCloseSuccess);
+        btnClose.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (getView() != null)
+                Navigation.findNavController(getView()).popBackStack();
+        });
+
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }

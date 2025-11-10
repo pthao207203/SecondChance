@@ -30,7 +30,7 @@ public class PaymentMethodAdapter extends ListAdapter<PaymentMethodItem, Payment
     @Override
     public PaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_payment_method, parent, false);
+                .inflate(R.layout.item_payment_method, parent, false); // SỬA: Dùng đúng layout
         return new PaymentMethodViewHolder(view);
     }
 
