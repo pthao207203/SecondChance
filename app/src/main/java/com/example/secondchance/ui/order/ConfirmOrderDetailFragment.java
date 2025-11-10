@@ -14,15 +14,19 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.secondchance.viewmodel.SharedViewModel;
-import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
 import com.example.secondchance.data.model.OrderItem;
+import com.example.secondchance.data.repo.OrderRepository;
 import com.example.secondchance.databinding.FragmentConfirmOrderDetailBinding;
 import com.example.secondchance.ui.order.adapter.OrderItemAdapter;
 import com.example.secondchance.ui.order.dialog.ConfirmCancelDialog;
 import com.example.secondchance.ui.order.dialog.CancelSuccessDialog;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
+import java.util.Locale;
+import com.example.secondchance.dto.response.OrderDetailResponse;
+import com.google.gson.Gson;
 
 public class ConfirmOrderDetailFragment extends Fragment
         implements ConfirmCancelDialog.OnCancelConfirmationListener,
@@ -33,8 +37,8 @@ public class ConfirmOrderDetailFragment extends Fragment
     private Order.OrderType receivedOrderType;
     private OrderItemAdapter orderItemAdapter;
     private List<OrderItem> productList = new ArrayList<>();
-
     private SharedViewModel sharedViewModel;
+    private OrderRepository orderRepository;
 
     @Nullable
     @Override
@@ -61,9 +65,11 @@ public class ConfirmOrderDetailFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        orderRepository = new OrderRepository();
 
         if (receivedOrderId != null) {
-            loadOrderDetails(receivedOrderId);
+            //loadOrderDetails(receivedOrderId);
+            loadData(receivedOrderId);
         } else {
             Log.e(TAG, "Order ID is null, cannot load details.");
             Toast.makeText(getContext(), "Không thể tải chi tiết đơn hàng.", Toast.LENGTH_SHORT).show();
@@ -73,16 +79,70 @@ public class ConfirmOrderDetailFragment extends Fragment
         updateBottomSection();
     }
 
-    private void loadOrderDetails(String orderId) {
-        Log.d(TAG, "Loading dummy product list for order " + orderId);
-        productList.clear();
-        productList.add(new OrderItem(R.drawable.sample_flower, "Giỏ gỗ cắm hoa", "Mẫu A, giá cố định...", "50.000"));
-        productList.add(new OrderItem(R.drawable.nhan1, "Nhẫn Hướng Dương", "Đấu giá, New 99%...", "150.000"));
+    private void loadData(String orderId) {
+        Log.d(TAG, "Fetching details for order " + orderId);
 
-        if (orderItemAdapter != null) {
-            orderItemAdapter.notifyDataSetChanged();
-            Log.d(TAG, "Product list updated for RecyclerView");
-        }
+        orderRepository.getOrderDetails(orderId, new OrderRepository.RepoCallback<OrderDetailResponse.Data>() {
+            @Override
+
+            public void onSuccess(OrderDetailResponse.Data data) {
+                if (!isAdded()) return;
+                Gson gson = new Gson();
+                Log.d(TAG, gson.toJson(data.shipment));
+                Log.d(TAG, String.valueOf(data.shipment != null));
+
+                productList.clear();
+                if (data.order != null && data.order.orderItems != null) {
+                    for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
+                        // Chuyển từ DTO (dtoItem) sang Model (modelItem)
+                        com.example.secondchance.data.model.OrderItem modelItem = new com.example.secondchance.data.model.OrderItem();
+                        modelItem.name = dtoItem.name;
+                        modelItem.imageUrl = dtoItem.imageUrl;
+                        modelItem.price = dtoItem.price;
+                        modelItem.quantity = dtoItem.qty;
+                        productList.add(modelItem);
+                    }
+                }
+
+                if (orderItemAdapter != null) {
+                    orderItemAdapter.notifyDataSetChanged();
+                }
+
+                if (data.order != null) {
+                    binding.tvShippingFee.setText(formatVnd(data.order.orderShippingFee));
+                    binding.tvTotalAmount.setText(formatVnd(data.order.orderTotalAmount));
+
+                    String paymentMethod = "cod".equalsIgnoreCase(data.order.orderPaymentMethod) ? "Tiền mặt" : "Ví";
+                    binding.tvPaymentMethod.setText(paymentMethod);
+
+                    if (data.order.orderShippingAddress != null) {
+                        var a = data.order.orderShippingAddress;
+                        binding.tvReceiverName.setText(safe(a.name));
+                        binding.tvReceiverPhone.setText(safe(a.phone));
+                        String address = safe(a.street) + ", " + safe(a.ward) + ", " + safe(a.province);
+                        binding.tvReceiverAddress.setText(address);
+                    }
+                    
+                }
+                if (data.order != null && data.order.orderStatus == 3) {
+                    receivedOrderType = Order.OrderType.CONFIRMED_AUCTION;
+                } else if (data.shipment != null){
+                    Log.d(TAG, "Chuyen sang confirmed");
+                    receivedOrderType = Order.OrderType.CONFIRMED_FIXED;
+                } else {
+                    receivedOrderType = Order.OrderType.UNCONFIRMED;
+                }
+                
+                updateBottomSection();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -103,7 +163,6 @@ public class ConfirmOrderDetailFragment extends Fragment
             switch (receivedOrderType) {
                 case UNCONFIRMED:
                     binding.btnCancelOrderDetail.setVisibility(View.VISIBLE);
-                    // Logic hiển thị dialog HỎI
                     binding.btnCancelOrderDetail.setOnClickListener(v -> {
                         ConfirmCancelDialog dialog = new ConfirmCancelDialog(receivedOrderId, this); // 'this' là Fragment
                         dialog.show(getParentFragmentManager(), ConfirmCancelDialog.TAG);
@@ -124,8 +183,23 @@ public class ConfirmOrderDetailFragment extends Fragment
     @Override
     public void onCancelConfirmed(String orderId) {
         Log.d(TAG, "Đã xác nhận hủy đơn: " + orderId);
-        // TODO: Gọi ViewModel để thực hiện API hủy đơn
-        showSuccessDialog();
+
+        orderRepository.cancelOrder(orderId, new OrderRepository.RepoCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                if (!isAdded()) return;
+
+                showSuccessDialog();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+
+                Toast.makeText(getContext(), "Hủy đơn thất bại: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void showSuccessDialog() {
@@ -146,5 +220,14 @@ public class ConfirmOrderDetailFragment extends Fragment
         super.onDestroyView();
         binding = null;
         Log.d(TAG, "onDestroyView called");
+    }
+
+    private String formatVnd(long amount) {
+
+        return NumberFormat.getInstance(Locale.GERMAN).format(amount);
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
     }
 }

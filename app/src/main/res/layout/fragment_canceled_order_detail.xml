@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:padding="@dimen/padding_default"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +26,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- RecyclerView cho danh sách sản phẩm -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvOrderItems"
                 android:layout_width="match_parent"
@@ -68,6 +68,7 @@
                         android:textColor="@color/normalDay"
                         android:textStyle="bold" />
                     <TextView
+                        android:id="@+id/tvShippingFeeValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="50.000"
@@ -111,6 +112,7 @@
                         android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
                     <TextView
+                        android:id="@+id/tvTotalAmountValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="200.000"
@@ -139,6 +141,7 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverNameValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cá biết bay"
@@ -159,6 +162,7 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverPhoneValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0333 333 xxx"
@@ -179,6 +183,7 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverAddressValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxWidth="220dp"
@@ -219,6 +224,7 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvPaymentMethodValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tiền trong ví"
@@ -247,13 +253,13 @@
                         android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/tvShippingMethodValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vận chuyển nhanh"
                         android:textColor="@color/darkerDay" />
                 </LinearLayout>
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -273,6 +279,7 @@
                     app:cardElevation="0dp">
 
                     <TextView
+                        android:id="@+id/tvCanceledStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"

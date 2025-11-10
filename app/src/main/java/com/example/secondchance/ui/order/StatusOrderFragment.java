@@ -1,5 +1,8 @@
 package com.example.secondchance.ui.order;
 
+import com.example.secondchance.ui.order.DeliveringFragment.DeliveringOrderNavigationListener;
+import com.example.secondchance.ui.order.BoughtFragment.BoughtOrderNavigationListener;
+//import com.example.secondchance.ui.order.RefundFragment.RefundOrderNavigationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,7 +24,7 @@ import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.data.model.Order;
 import java.io.Serializable;
 
-public class StatusOrderFragment extends Fragment {
+public class StatusOrderFragment extends Fragment implements BoughtOrderNavigationListener, DeliveringOrderNavigationListener {
 
     private static final String TAG_ACTIVITY = "DBG_ORDER_FRAGMENT";
     private static final String TAG_PAGER = "DBG_ORDER_PAGER";
@@ -100,6 +102,17 @@ public class StatusOrderFragment extends Fragment {
             sharedViewModel.updateTitle("Đơn hàng");
         }
         Log.d(TAG_ACTIVITY, "Initial title updated");
+    }
+
+    @Override
+    public void navigateToBoughtDetail(String orderId, boolean isEvaluated) {
+        // Gọi hàm navigateToDetail chung, sử dụng action và truyền trạng thái đánh giá (isEvaluated)
+        navigateToDetail(orderId, R.id.action_orderFragment_to_boughtOrderDetailFragment, isEvaluated);
+    }
+
+    @Override
+    public void navigateToDeliveringDetail(String orderId, Order.DeliveryOverallStatus status) {
+        navigateToDetail(orderId, R.id.action_orderFragment_to_deliveringOrderDetailFragment, status);
     }
 
     public void navigateToDetail(String orderId, int actionId, @Nullable Serializable detailType) {

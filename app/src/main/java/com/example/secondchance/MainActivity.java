@@ -44,38 +44,52 @@ public class MainActivity extends AppCompatActivity {
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
     
-    // NavHost + NavController
+    // --- NavHost + NavController ---
     NavHostFragment navHostFragment =
       (NavHostFragment) getSupportFragmentManager()
         .findFragmentById(R.id.nav_host_fragment_activity_main);
+    if (navHostFragment == null) {
+      Log.e("MainActivity", "NavHostFragment is null!");
+      return;
+    }
     navController = navHostFragment.getNavController();
     
-    // 3.1 Chọn graph ban đầu theo trạng thái đăng nhập (giữ y như bạn muốn)
-    navController.setGraph(R.navigation.mobile_navigation);
+    // --- QUAN TRỌNG: nếu có cờ forceLogout -> set graph nav_auth (đúng UI đăng xuất) ---
+    boolean forceLogout = getIntent() != null && getIntent().getBooleanExtra("forceLogout", false);
+    if (forceLogout) {
+      // nav_auth phải có startDestination = loginFragment
+      navController.setGraph(R.navigation.nav_auth);
+      Log.d("MainActivity", "Force logout detected -> setGraph(nav_auth)");
+    } else {
+      // Giữ cách cũ của bạn: vào app bình thường
+      navController.setGraph(R.navigation.mobile_navigation);
+      Log.d("MainActivity", "Normal launch -> setGraph(mobile_navigation)");
+    }
     
-    // Gắn click sample của bạn (Home icon ở custom menu)
+    // --- Gắn click sample của bạn (Home icon ở custom menu) ---
     binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
       NavController c = navController;
       c.navigate(R.id.navigation_home);
     });
     
-    // ViewModel
+    // --- ViewModel ---
     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
     sharedViewModel.getCurrentTitle().observe(this, this::applySharedTitleIfNeeded);
     
     setupIconClickListeners();
     setupBottomMenuClickListeners();
     
-    // Lắng nghe chuyển đích để cập nhật UI khung
+    // --- Lắng nghe chuyển đích để cập nhật UI khung ---
     navController.addOnDestinationChangedListener((controller, destination, args) -> {
       Log.d("MainActivity", "Destination changed: " + destination.getId() + " label=" + destination.getLabel());
       updateUiVisibility(destination);
     });
     
-    // Cập nhật UI ngay lần đầu sau khi setGraph
+    // --- Cập nhật UI ngay lần đầu sau khi setGraph ---
     NavDestination cur = navController.getCurrentDestination();
-    if (cur != null) updateUiVisibility(cur);                     // 🔧 CHANGED
+    if (cur != null) updateUiVisibility(cur);
   }
+  
   
   private void applySharedTitleIfNeeded(String newTitle) {
     NavDestination cur = navController.getCurrentDestination();
@@ -122,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
     
     // Tab chỉ hiện khi ở Order (và đang ở main)
     boolean inOrder = destinationId == R.id.navigation_order;
-    tabsAppBar.setVisibility(inOrder && !inAuth ? View.VISIBLE : View.GONE);
+//    tabsAppBar.setVisibility(inOrder && !inAuth ? View.VISIBLE : View.GONE);
+    tabsAppBar.setVisibility(View.GONE);
     
     if (!inAuth) {
       // Header: Home thì show thanh search, còn lại back + title

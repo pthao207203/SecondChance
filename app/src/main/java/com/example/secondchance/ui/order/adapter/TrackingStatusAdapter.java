@@ -15,17 +15,17 @@ import java.util.List;
 
 public class TrackingStatusAdapter extends RecyclerView.Adapter<TrackingStatusAdapter.TrackingViewHolder> {
 
-    private Context context;
     private List<TrackingStatus> statusList;
-    public TrackingStatusAdapter(Context context, List<TrackingStatus> statusList) {
-        this.context = context;
+
+    public TrackingStatusAdapter(List<TrackingStatus> statusList) {
+
         this.statusList = statusList;
     }
 
     @NonNull
     @Override
     public TrackingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_tracking_status, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tracking_status, parent, false);
         return new TrackingViewHolder(view);
     }
 
@@ -55,15 +55,20 @@ public class TrackingStatusAdapter extends RecyclerView.Adapter<TrackingStatusAd
         void bind(TrackingStatus status) {
             tvTimestamp.setText(status.getTimestamp());
             tvStatus.setText(status.getStatusDescription());
+
+            Context context = itemView.getContext();
+
             if (status.isActive()) {
                 dotActive.setVisibility(View.VISIBLE);
                 dotInactive.setVisibility(View.GONE);
+
                 int activeColor = ContextCompat.getColor(context, R.color.highLight5);
                 tvTimestamp.setTextColor(activeColor);
                 tvStatus.setTextColor(activeColor);
             } else {
                 dotActive.setVisibility(View.GONE);
                 dotInactive.setVisibility(View.VISIBLE);
+
                 int inactiveColor = ContextCompat.getColor(context, R.color.text_secondary);
                 tvTimestamp.setTextColor(inactiveColor);
                 tvStatus.setTextColor(inactiveColor);

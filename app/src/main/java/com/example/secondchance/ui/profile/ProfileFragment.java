@@ -24,7 +24,6 @@ import com.example.secondchance.ui.auth.AuthManager;
 import com.example.secondchance.util.Prefs;
 
 public class ProfileFragment extends Fragment {
-
     private TextView tvPendingCount;
     private TextView tvShippingCount;
     private TextView tvName, tvPhone, tvAddress, tvEmail;
@@ -73,20 +72,11 @@ public class ProfileFragment extends Fragment {
         super.onResume();
         ensureLoggedInOrRedirect();
     }
-
+    
     private void ensureLoggedInOrRedirect() {
         String token = Prefs.getToken(requireContext());
         if (token == null || token.trim().isEmpty()) {
-            NavController nav = NavHostFragment.findNavController(this);
-
-            // Pop về gốc graph để không back về Profile
-            NavOptions opts = new NavOptions.Builder()
-              .setPopUpTo(nav.getGraph().getStartDestinationId(), true)
-              .setLaunchSingleTop(true)
-              .build();
-
-            // ⚠️ Điều hướng thẳng tới đích (không cần action)
-            goToAuthAndFinish();
+            com.example.secondchance.ui.auth.LogoutRouter.forceLogout(requireContext().getApplicationContext());
         }
     }
     private void goToAuthAndFinish() {
@@ -193,16 +183,9 @@ public class ProfileFragment extends Fragment {
 
         // Wallet
         view.findViewById(R.id.tvViewDetails).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_wallet));
-
-
+        
         view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
-            AuthManager.getInstance(requireContext()).clear();
-            Prefs.saveToken(requireContext(), ""); // nếu bạn dùng Prefs riêng cho token
-
-            NavController nav = NavHostFragment.findNavController(ProfileFragment.this);
-            nav.setGraph(R.navigation.nav_auth, null);
-
-            nav.navigate(R.id.loginFragment);
+            com.example.secondchance.ui.auth.LogoutRouter.forceLogout(requireContext().getApplicationContext());
         });
 
 
@@ -290,6 +273,6 @@ public class ProfileFragment extends Fragment {
 //            }
 //        }
 //    }
-}
     }
+}
 

@@ -9,10 +9,9 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface AuthApi {
-  // => POST http://localhost:3000/api/auth/login
   @POST("auth/login")
   Call<LoginEnvelope> login(@Body LoginRequest body);
-  
+
   class LoginRequest {
     @SerializedName("userPhone")
     public String userPhone;
@@ -24,15 +23,14 @@ public interface AuthApi {
       this.password = password;
     }
   }
-  
-  // Tùy JSON backend trả về, điều chỉnh lại fields cho khớp
+
   class LoginEnvelope {
     @SerializedName("success")
     public boolean success;
     @SerializedName("data")
     public Data data;
     @SerializedName("meta")
-    public Object meta; // không dùng tới
+    public Object meta;
     
     public static class Data {
       @SerializedName("user")
@@ -59,9 +57,9 @@ public interface AuthApi {
     @SerializedName("accessToken")
     public String accessToken;
     @SerializedName("tokenType")
-    public String tokenType;  // "Bearer"
+    public String tokenType;
     @SerializedName("expiresIn")
-    public long expiresIn;  // 3600
+    public long expiresIn;
   }
   
   @POST("auth/precheck")
@@ -97,21 +95,18 @@ public interface AuthApi {
       this.idToken = idToken; this.name = name; this.password = password; this.nonce = nonce;
     }
   }
-  
-  // Phần lớn backend sẽ bọc như login: { success, data:{ user, token }, meta }
-  // Nếu của bạn trả thẳng { user, token }, chỉ cần thay thế trường @SerializedName dưới cho khớp.
+
   class RegisterEnvelope {
-    @SerializedName("success") public Boolean success; // có thể null nếu backend không trả
-    @SerializedName("data")    public Data data;        // ưu tiên map qua "data"
-    @SerializedName("user")    public User user;        // phòng trường hợp trả thẳng
-    @SerializedName("token")   public String token;     // phòng trường hợp trả thẳng
+    @SerializedName("success") public Boolean success;
+    @SerializedName("data")    public Data data;
+    @SerializedName("user")    public User user;
+    @SerializedName("token")   public String token;
     @SerializedName("meta")    public Object meta;
     
     public static class Data {
       @SerializedName("user")  public User user;
       @SerializedName("token") public JsonElement token;
-      
-      /** Lấy JWT string bất kể backend trả string hay object */
+
       public String getTokenString() {
         try {
           if (token == null) return null;
@@ -123,7 +118,7 @@ public interface AuthApi {
             if (o.has("accessToken") && !o.get("accessToken").isJsonNull()) {
               return o.get("accessToken").getAsString();
             }
-            // fallback: đôi khi key tên "token"
+
             if (o.has("token") && !o.get("token").isJsonNull()) {
               return o.get("token").getAsString();
             }
@@ -132,8 +127,7 @@ public interface AuthApi {
         return null;
       }
     }
-    
-    // Helper: lấy user/token bất kể backend bọc kiểu nào
+
     public User getUser()  { return data != null ? data.user  : user; }
     public String getToken(){ return data != null ? data.getTokenString() : token; }
   }

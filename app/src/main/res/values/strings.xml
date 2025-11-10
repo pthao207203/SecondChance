@@ -18,4 +18,5 @@
     <string name="confirm">Xác nhận</string>
     <string name="Name_product">Tên sản phẩm</string>
     <string name="auctionTitle">Tiêu đề Đấu giá</string>
+    <string name="receive_order">Đã nhận hàng</string>
 </resources>

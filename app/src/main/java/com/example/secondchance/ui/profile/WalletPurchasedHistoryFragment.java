@@ -73,11 +73,11 @@ public class WalletPurchasedHistoryFragment extends Fragment {
       public void onResponse(@NonNull Call<WalletPurchasedHistoryResponse> call,
                              @NonNull Response<WalletPurchasedHistoryResponse> response) {
         if (!response.isSuccessful() || response.body() == null) {
+          Gson gson = new Gson();
+          Log.d("WalletPurchasedHistoryFragment", "featured: " + gson.toJson(response.body()));
           Toast.makeText(requireContext(), "Lỗi tải dữ liệu", Toast.LENGTH_SHORT).show();
           return;
         }
-        Gson gson = new Gson();
-        Log.d("WalletPurchasedHistoryFragment", "featured: " + gson.toJson(response.body()));
         List<WalletHistoryItem> mapped = mapToUiItems(response.body());
         adapter.setData(mapped);
       }

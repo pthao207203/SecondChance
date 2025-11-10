@@ -10,12 +10,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.secondchance.data.remote.OrderApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.FragmentCanceledOrderDetailBinding;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.OrderItem;
+import com.example.secondchance.dto.response.OrderDetailResponse;
 import com.example.secondchance.ui.order.adapter.OrderItemAdapter;
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CanceledOrderDetailFragment extends Fragment {
     private static final String TAG = "CanceledDetailFrag";
@@ -67,23 +78,108 @@ public class CanceledOrderDetailFragment extends Fragment {
         binding.rvOrderItems.setNestedScrollingEnabled(false);
         Log.d(TAG, "Product RecyclerView setup complete.");
     }
-
+    
     private void loadCanceledOrderDetails(String orderId) {
-        Log.d(TAG, "Placeholder: Load canceled order details for " + orderId);
-        // TODO: Gọi API/Database lấy thông tin chi tiết đơn hàng ĐÃ HỦY
-
-        loadDummyProductData();
-        if (productAdapter != null) {
-            productAdapter.notifyDataSetChanged();
-            Log.d(TAG, "Product list updated");
-        }
-        // TODO: Cập nhật các TextView khác (Tổng tiền, Người nhận...)
-
+        OrderApi api = RetrofitProvider.order();
+        api.getOrderDetail(orderId).enqueue(new Callback<OrderDetailResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderDetailResponse> call,
+                                   @NonNull Response<OrderDetailResponse> resp) {
+                if (!isAdded()) return;
+                
+                if (!resp.isSuccessful() || resp.body() == null) {
+                    Toast.makeText(getContext(), "HTTP " + resp.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                OrderDetailResponse body = resp.body();
+                if (!body.success || body.data == null || body.data.order == null) {
+                    Toast.makeText(getContext(), "Dữ liệu không hợp lệ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bindOrderDetailToViews(body.data);
+            }
+            
+            @Override
+            public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), t.getMessage() != null ? t.getMessage() : "Lỗi mạng", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
-    private void loadDummyProductData() {
+    
+    private void bindOrderDetailToViews(OrderDetailResponse.Data data) {
+        // 1) Bind danh sách sản phẩm vào RecyclerView
         productList.clear();
-        productList.add(new OrderItem(R.drawable.nhan1, "Sản phẩm đã hủy 1", "Mô tả...", "10.000"));
+        if (data.order.orderItems != null) {
+            for (OrderDetailResponse.OrderItem it : data.order.orderItems) {
+                // --- Mapping sang model OrderItem của app ---
+                // Điều chỉnh theo constructor/tham số của bạn.
+                // Ví dụ nếu OrderItem(imageUrl, title, priceStr, qtyStr):
+                productList.add(new OrderItem(
+                    it.productId,
+                    it.name,
+                    it.imageUrl,
+                    it.price,
+                    it.qty
+                ));
+            }
+        }
+        if (productAdapter != null) productAdapter.notifyDataSetChanged();
+        
+        // 2) Phí vận chuyển & Tổng tiền
+        binding.tvShippingFeeValue.setText(formatVnd(data.order.orderShippingFee));
+        binding.tvTotalAmountValue.setText(formatVnd(data.order.orderTotalAmount));
+        
+        // 3) Người nhận, SDT, Địa chỉ
+        if (data.order.orderShippingAddress != null) {
+            OrderDetailResponse.ShippingAddress a = data.order.orderShippingAddress;
+            binding.tvReceiverNameValue.setText(safe(a.name));
+            binding.tvReceiverPhoneValue.setText(safe(a.phone));
+            binding.tvReceiverAddressValue.setText(joinAddress(a.street, a.ward, a.province, a.country));
+        } else {
+            binding.tvReceiverNameValue.setText("");
+            binding.tvReceiverPhoneValue.setText("");
+            binding.tvReceiverAddressValue.setText("");
+        }
+        
+        // 4) Phương thức thanh toán
+        binding.tvPaymentMethodValue.setText(mapPayment(data.order.orderPaymentMethod));
+        
+        // 5) Phương thức vận chuyển
+        // JSON chi tiết chưa có field shipping method => placeholder
+        binding.tvShippingMethodValue.setText("Vận chuyển tiêu chuẩn");
+        
+        // 6) Trạng thái đơn (orderStatus = 3 theo payload bạn gửi)
+        binding.tvCanceledStatus.setText("Đơn đã bị hủy");
+    }
+    
+    // --------- Helpers ----------
+    private String formatVnd(long amount) {
+        NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return nf.format(amount);
+    }
+    
+    private String safe(String s) {
+        return s == null ? "" : s;
+    }
+    
+    private String joinAddress(String street, String ward, String province, String country) {
+        StringBuilder sb = new StringBuilder();
+        if (street != null && !street.isEmpty()) sb.append(street);
+        if (ward != null && !ward.isEmpty()) sb.append(sb.length() > 0 ? ", " : "").append(ward);
+        if (province != null && !province.isEmpty()) sb.append(sb.length() > 0 ? ", " : "").append(province);
+        if (country != null && !country.isEmpty()) sb.append(sb.length() > 0 ? ", " : "").append(country);
+        return sb.toString();
+    }
+    
+    private String mapPayment(String method) {
+        if (method == null) return "—";
+        switch (method.toLowerCase()) {
+            case "cod":    return "Thanh toán khi nhận (COD)";
+            case "wallet": return "Ví nội bộ";
+            case "bank":   return "Chuyển khoản";
+            default:       return method;
+        }
     }
 
     @Override

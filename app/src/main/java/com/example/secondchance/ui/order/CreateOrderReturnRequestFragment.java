@@ -14,11 +14,15 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.secondchance.R;
 import com.example.secondchance.databinding.FragmentCreateOrderReturnRequestBinding;
+import com.example.secondchance.dto.response.OrderDetailResponse;
+import com.example.secondchance.data.remote.OrderApi;
+import com.example.secondchance.data.repo.OrderRepository;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.ui.order.adapter.OrderProductAdapter;
-import com.example.secondchance.data.model.OrderProduct;
+import com.example.secondchance.data.model.OrderItem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CreateOrderReturnRequestFragment extends Fragment
         implements OrderProductAdapter.OnSelectionChangedListener {
@@ -28,19 +32,19 @@ public class CreateOrderReturnRequestFragment extends Fragment
     private SharedViewModel sharedViewModel;
     private String receivedOrderId;
     private OrderProductAdapter productAdapter;
-    private final List<OrderProduct> productList = new ArrayList<>();
+    private final List<OrderItem> productList = new ArrayList<>();
+
+    private OrderRepository orderRepository;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCreateOrderReturnRequestBinding.inflate(inflater, container, false);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-
         if (getArguments() != null) {
             receivedOrderId = getArguments().getString("orderId");
             Log.d(TAG, "Đang tạo yêu cầu hoàn trả cho Order ID gốc: " + receivedOrderId);
         }
-
         return binding.getRoot();
     }
 
@@ -48,34 +52,94 @@ public class CreateOrderReturnRequestFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sharedViewModel.updateTitle("Tạo yêu cầu hoàn trả");
+
+        orderRepository = new OrderRepository();
         setupProductRecyclerView();
-        // Tải dữ liệu mẫu
-        loadDummyProductData();
-        productAdapter.notifyDataSetChanged();
+
+        loadData(receivedOrderId);
 
         binding.btnSendRequest.setOnClickListener(v -> {
             String reason = binding.etReason.getText().toString().trim();
-            List<OrderProduct> selectedProducts = productAdapter.getSelectedProducts();
-
+            List<OrderItem> selectedProducts = productAdapter.getSelectedProducts();
 
             if (selectedProducts.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng chọn ít nhất một sản phẩm để hoàn trả.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             if (reason.isEmpty()) {
                 Toast.makeText(getContext(), "Vui lòng nhập chi tiết nguyên nhân hoàn trả.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Log.d(TAG, "Gửi Yêu Cầu với " + selectedProducts.size() + " sản phẩm. Lý do: " + reason);
+            sendReturnRequest(reason, selectedProducts);
+        });
+    }
 
-            // TODO: Gọi API/Repository để tạo RefundRequest
+    private void loadData(String id) {
+        if (id == null) return;
 
-            Toast.makeText(getContext(), "Đã gửi yêu cầu hoàn trả!", Toast.LENGTH_LONG).show();
-            sharedViewModel.refreshOrderLists();
-            sharedViewModel.requestTabChange(4);
-            Navigation.findNavController(v).popBackStack();
+        orderRepository.getOrderDetails(id, new OrderRepository.RepoCallback<OrderDetailResponse.Data>() {
+            @Override
+            public void onSuccess(OrderDetailResponse.Data data) {
+                if (!isAdded()) return;
+
+                productList.clear();
+                if (data.order != null && data.order.orderItems != null) {
+
+                    for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
+                        OrderItem modelItem = new OrderItem();
+                        modelItem.productId = dtoItem.productId;
+                        modelItem.name = dtoItem.name;
+                        modelItem.imageUrl = dtoItem.imageUrl;
+                        modelItem.price = dtoItem.price;
+                        modelItem.quantity = dtoItem.qty;
+                        productList.add(modelItem);
+                    }
+                }
+                productAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+
+                Toast.makeText(getContext(), "Lỗi tải danh sách sản phẩm: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void sendReturnRequest(String reason, List<OrderItem> selectedProducts) {
+
+        List<String> dummyMedia = new ArrayList<>();
+        dummyMedia.add("https://res.cloudinary.com/dgejserfb/image/upload/v1762277354/samsung-galaxy-s24-256gb-5g-thumb-600x600_tyye4v.jpg");
+
+
+        List<OrderApi.ReturnRequestItem> requestItems = new ArrayList<>();
+        for (OrderItem model : selectedProducts) {
+            requestItems.add(new OrderApi.ReturnRequestItem(model.productId, model.quantity));
+        }
+
+        OrderApi.ReturnRequestBody body = new OrderApi.ReturnRequestBody(reason, requestItems, dummyMedia);
+
+        orderRepository.createReturnRequest(receivedOrderId, body, new OrderRepository.RepoCallback<Void>() {
+            @Override
+            public void onSuccess(Void data) {
+                if (!isAdded()) return;
+
+
+                Toast.makeText(getContext(), "Đã gửi yêu cầu hoàn trả!", Toast.LENGTH_LONG).show();
+                sharedViewModel.refreshOrderLists();
+                sharedViewModel.requestTabChange(4);
+                if (getView() != null) {
+                    Navigation.findNavController(getView()).popBackStack();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+
+                Toast.makeText(getContext(), "Gửi yêu cầu thất bại: " + message, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -91,18 +155,6 @@ public class CreateOrderReturnRequestFragment extends Fragment
         Log.d(TAG, selectedCount + " item(s) selected. Button enabled: " + (selectedCount > 0));
     }
 
-    private void loadDummyProductData() {
-        productList.clear();
-
-        productList.add(new OrderProduct("P001", "Nhẫn Kim Cương Hữu Hạn",
-                "Loại 1, Hãng abc", "50.000", R.drawable.nhan1, 1));
-
-        productList.add(new OrderProduct("P002", "Vòng Tay Vàng 24K",
-                "Giỏ hoa loại 1 new 99%", "150.000", R.drawable.sample_flower, 1));
-
-        productList.add(new OrderProduct("P003", "Nhẫn Vàng Nữa",
-                "Loại 2, Test", "1.000.000", R.drawable.nhan1, 2));
-    }
 
     @Override
     public void onDestroyView() {
