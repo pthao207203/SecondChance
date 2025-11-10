@@ -2,7 +2,7 @@
 <resources>
     <style name="TIL.Hint.Large" parent="TextAppearance.Material3.BodyMedium">
         <!-- tăng size label khi COLLAPSED -->
-        <item name="android:textSize">20sp</item> <!-- thử 16–18sp -->
+        <item name="android:textSize">16sp</item> <!-- thử 16–18sp -->
     </style>
 
     <dimen name="card_corner_radius">12dp</dimen>

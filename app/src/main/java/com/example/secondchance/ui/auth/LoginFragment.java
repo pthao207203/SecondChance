@@ -147,15 +147,25 @@ public class LoginFragment extends Fragment {
   
   private void goToMainAndFinish() {
     if (!isAdded()) return;
-    NavController nav = NavHostFragment.findNavController(this);
-    Log.e("NavCheck", "graph=" + requireContext().getResources().getResourceName(nav.getGraph().getId())
-      + " startDest=" + requireContext().getResources().getResourceName(nav.getGraph().getStartDestinationId())
-      + " hasHome=" + (nav.getGraph().findNode(R.id.navigation_home) != null));
+
+// Lấy đúng NavController của NavHost ở Activity
+    NavController nav = androidx.navigation.Navigation.findNavController(
+      requireActivity(), R.id.nav_host_fragment_activity_main);
+
+// (Tuỳ chọn) Log & fallback an toàn nếu graph đang không phải mobile_navigation
+    boolean hasHome = nav.getGraph().findNode(R.id.navigation_home) != null;
+    if (!hasHome) {
+      // fallback mềm để đảm bảo “Cách 1” không gãy nếu graph chưa đc set đúng
+      nav.setGraph(R.navigation.mobile_navigation);
+    }
+
+// Dùng GLOBAL ACTION -> không phụ thuộc current destination đang ở đâu
     NavOptions opts = new NavOptions.Builder()
-      .setPopUpTo(R.id.mobile_navigation, true) // dọn sạch back stack auth
+      // XML đã có popUpToInclusive rồi, nhưng set lại ở runtime cũng ok
+      .setPopUpTo(R.id.mobile_navigation, true)
       .build();
     
-    nav.navigate(R.id.navigation_home, null, opts);
+    nav.navigate(R.id.action_global_home, null, opts);
   }
   
   @Override

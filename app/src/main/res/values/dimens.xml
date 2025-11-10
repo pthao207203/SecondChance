@@ -13,9 +13,9 @@
     <dimen name="radius_xl">16dp</dimen>
 
     <!-- text sizes -->
-    <dimen name="text_13">12sp</dimen>
-    <dimen name="text_16">15sp</dimen>
-    <dimen name="text_20">18sp</dimen>
+    <dimen name="text_13">11sp</dimen>
+    <dimen name="text_16">13sp</dimen>
+    <dimen name="text_20">16sp</dimen>
 
     <dimen name="padding_default">12dp</dimen>
     <dimen name="padding_small">8dp</dimen>

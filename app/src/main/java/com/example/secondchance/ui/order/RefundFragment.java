@@ -1,102 +1,168 @@
 package com.example.secondchance.ui.order;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.lifecycle.ViewModelProvider;
+
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 import com.example.secondchance.data.model.Order;
+import com.example.secondchance.data.model.OrderItem;
+import com.example.secondchance.data.model.OrderWrapper;
+import com.example.secondchance.data.repo.OrderRepository;
 import com.example.secondchance.databinding.FragmentRefundOrderBinding;
 import com.example.secondchance.viewmodel.SharedViewModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RefundFragment extends Fragment {
-    
+
     private FragmentRefundOrderBinding binding;
     private RefundOrdersAdapter adapter;
-    private final List<Order> dummyOrderList = new ArrayList<>();
+    private final List<OrderWrapper> orderList = new ArrayList<>();
     private SharedViewModel sharedViewModel;
+    private OrderRepository orderRepository;
+
+    private static final String TAG = "RefundFragment";
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentRefundOrderBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-    
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        orderRepository = new OrderRepository();
 
         binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
-        
-        loadDummyData();
 
-        adapter = new RefundOrdersAdapter(dummyOrderList, (orderId, refundStatus) -> {
+        adapter = new RefundOrdersAdapter(orderList, (orderId, refundStatus) -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
                 Bundle args = new Bundle();
                 args.putString("orderId", orderId);
                 if (refundStatus != null) {
-                    args.putSerializable("refundStatus", refundStatus); // enum RefundStatus
+                    args.putSerializable("refundStatus", refundStatus);
                 }
                 nav.navigate(R.id.action_orderFragment_to_refundOrderDetailFragment, args);
             } catch (Exception e) {
                 Toast.makeText(requireContext(), "Không thể mở chi tiết hoàn trả.", Toast.LENGTH_SHORT).show();
             }
         });
-        
+
         binding.rvDeliveringOrders.setAdapter(adapter);
 
+        loadData();
         observeViewModel();
     }
 
     private void observeViewModel() {
         if (sharedViewModel == null) return;
-
         sharedViewModel.getRefreshLists().observe(getViewLifecycleOwner(), shouldRefresh -> {
             if (shouldRefresh != null && shouldRefresh) {
-
-                Log.d("RefundFragment", "Nhận lệnh refresh, tải lại dữ liệu...");
-
-                loadDummyData();
-
+                Log.d(TAG, "Nhận lệnh refresh, tải lại dữ liệu...");
+                loadData();
                 sharedViewModel.clearRefreshRequest();
             }
         });
     }
-    private void loadDummyData() {
-        dummyOrderList.clear();
-        dummyOrderList.add(new Order("REFUND001", "Giỏ gỗ cắm hoa", "50.000", null, null,
-          "Đã giao 17/6/2025", "Chưa xác nhận", null, null, false,
-          Order.RefundStatus.NOT_CONFIRMED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND002", "Tranh sơn mài", "250.000", null, null,
-          "Đã giao 19/6/2025", "Đã xác nhận", null, null, false,
-          Order.RefundStatus.CONFIRMED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND003", "Bình gốm cổ", "150.000", null, null,
-          "Đã giao 18/6/2025", "Đã từ chối", null, null, false,
-          Order.RefundStatus.REJECTED, Order.DeliveryOverallStatus.DELIVERED));
-        dummyOrderList.add(new Order("REFUND004", "Nhẫn kim cương", "500.000", null, null,
-          "Đã giao 20/6/2025", "Hoàn trả thành công", null, null, false,
-          Order.RefundStatus.SUCCESSFUL, Order.DeliveryOverallStatus.DELIVERED));
-        
+
+    private void loadData() {
+
+        orderRepository.fetchOrders("4", new OrderRepository.RepoCallback<List<OrderWrapper>>() {
+            @Override
+            public void onSuccess(List<OrderWrapper> data) {
+                if (!isAdded()) return;
+
+                boolean needsFallback = data == null || data.isEmpty();
+
+                if (!needsFallback) {
+
+                    List<OrderWrapper> filtered = new ArrayList<>();
+                    for (OrderWrapper o : data) {
+                        if (o != null && o.order.getRefundStatus() != null) {
+                            filtered.add(o);
+                        }
+                    }
+                    if (!filtered.isEmpty()) {
+                        applyOrders(filtered);
+                        return;
+                    } else {
+                        needsFallback = true;
+                    }
+                }
+
+                if (needsFallback) {
+                    loadAllAndFilterRefunds();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+
+                Log.w(TAG, "fetchOrders(4) failed: " + message + " -> fallback to all");
+                loadAllAndFilterRefunds();
+            }
+        });
+    }
+
+    private void loadAllAndFilterRefunds() {
+        orderRepository.fetchOrders(null, new OrderRepository.RepoCallback<List<OrderWrapper>>() {
+            @Override
+            public void onSuccess(List<OrderWrapper> data) {
+                if (!isAdded()) return;
+
+                Map<String, OrderWrapper> byId = new HashMap<>();
+                if (data != null) {
+                    for (OrderWrapper o : data) {
+                        if (o == null) continue;
+                        if (o.order.getRefundStatus() != null) {
+
+                            byId.put(o.order.getId(), o.order);
+                        }
+                    }
+                }
+
+                applyOrders(new ArrayList<>(byId.values()));
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Lỗi tải đơn hàng hoàn trả: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void applyOrders(List<OrderWrapper> items) {
+        orderList.clear();
+        if (items != null) orderList.addAll(items);
         if (adapter != null) adapter.notifyDataSetChanged();
     }
-    
+
     @Override
     public void onDestroyView() {
         if (binding != null) binding.rvDeliveringOrders.setAdapter(null);
@@ -109,63 +175,37 @@ public class RefundFragment extends Fragment {
         void onClick(String orderId, @Nullable Order.RefundStatus refundStatus);
     }
 
-    private static class RefundOrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        
-        private final List<Order> items;
+    private static class RefundOrdersAdapter extends RecyclerView.Adapter<RefundOrdersAdapter.RefundViewHolder> {
+        private final List<OrderWrapper> items;
         private final OnOrderClickListener listener;
-        
-        private static final int VIEW_TYPE_NOT_CONFIRMED = 1;
-        private static final int VIEW_TYPE_CONFIRMED     = 2;
-        private static final int VIEW_TYPE_REJECTED      = 3;
-        private static final int VIEW_TYPE_SUCCESSFUL    = 4;
-        
-        RefundOrdersAdapter(List<Order> items, OnOrderClickListener listener) {
+
+        RefundOrdersAdapter(List<OrderWrapper> items, OnOrderClickListener listener) {
             this.items = items;
             this.listener = listener;
         }
-        
-        @Override
-        public int getItemViewType(int position) {
-            Order order = items.get(position);
-            if (order == null || order.getRefundStatus() == null) return VIEW_TYPE_NOT_CONFIRMED;
-            switch (order.getRefundStatus()) {
-                case CONFIRMED:  return VIEW_TYPE_CONFIRMED;
-                case REJECTED:   return VIEW_TYPE_REJECTED;
-                case SUCCESSFUL: return VIEW_TYPE_SUCCESSFUL;
-                case NOT_CONFIRMED:
-                default:         return VIEW_TYPE_NOT_CONFIRMED;
-            }
-        }
-        
+
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RefundViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            int layoutId;
-            switch (viewType) {
-                case VIEW_TYPE_CONFIRMED:  layoutId = R.layout.item_refund_confirmed; break;
-                case VIEW_TYPE_REJECTED:   layoutId = R.layout.item_refund_rejected; break;
-                case VIEW_TYPE_SUCCESSFUL: layoutId = R.layout.item_refund_successful; break;
-                case VIEW_TYPE_NOT_CONFIRMED:
-                default:                   layoutId = R.layout.item_refund_not_confirmed; break;
-            }
-            View v = inflater.inflate(layoutId, parent, false);
+            View v = inflater.inflate(R.layout.item_refund_order, parent, false);
             return new RefundViewHolder(v, listener);
         }
-        
+
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            ((RefundViewHolder) holder).bind(items.get(position));
+        public void onBindViewHolder(@NonNull RefundViewHolder holder, int position) {
+            holder.bind(items.get(position));
         }
-        
+
         @Override
         public int getItemCount() { return items != null ? items.size() : 0; }
 
         private static class RefundViewHolder extends RecyclerView.ViewHolder {
-            ImageView imgProduct, imgViewInvoiceArrow;
+            com.google.android.material.imageview.ShapeableImageView imgProduct;
+            ImageView imgViewInvoiceArrow;
             TextView tvTitle, tvPrice, tvSubtitleDate, tvStatusReview, tvViewInvoiceText;
             final OnOrderClickListener listener;
-            
+
             RefundViewHolder(@NonNull View itemView, OnOrderClickListener listener) {
                 super(itemView);
                 this.listener = listener;
@@ -177,15 +217,49 @@ public class RefundFragment extends Fragment {
                 tvStatusReview     = itemView.findViewById(R.id.tvStatusReview);
                 tvViewInvoiceText  = itemView.findViewById(R.id.tvViewInvoiceText);
             }
-            
-            void bind(final Order order) {
-                tvTitle.setText(order.getTitle());
-                tvPrice.setText(order.getPrice());
-                tvSubtitleDate.setText(order.getDate());
-                tvStatusReview.setText(order.getStatusText());
-                
+
+            void bind(final OrderWrapper order) {
+                tvTitle.setText(order.order.getTitle());
+                tvPrice.setText(order.order.getPrice());
+                tvSubtitleDate.setText(order.order.getDate());
+
+                Order.RefundStatus status = order.order.getRefundStatus();
+                if (status == null) status = Order.RefundStatus.NOT_CONFIRMED;
+
+                tvStatusReview.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.normalDay));
+                tvStatusReview.setTypeface(null, Typeface.BOLD);
+                tvStatusReview.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dot, 0, 0, 0);
+
+                switch (status) {
+                    case NOT_CONFIRMED:
+                        tvStatusReview.setText("Chưa xác nhận");
+                        break;
+                    case CONFIRMED:
+                        tvStatusReview.setText("Đã xác nhận");
+                        break;
+                    case REJECTED:
+                        tvStatusReview.setText("Đã từ chối");
+                        tvStatusReview.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.normalDay));
+                        break;
+                    case SUCCESSFUL:
+                        tvStatusReview.setText("Hoàn trả thành công");
+                        tvStatusReview.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.darkerDay));
+                        tvStatusReview.setTypeface(null, Typeface.NORMAL);
+                        tvStatusReview.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        break;
+                }
+
+                OrderItem firstItem = order.order.getFirstItem();
+                if (firstItem != null && firstItem.getImageUrl() != null) {
+                    Glide.with(itemView.getContext())
+                            .load(firstItem.getImageUrl())
+                            .into(imgProduct);
+                } else {
+                    imgProduct.setImageResource(R.drawable.giohoa3);
+                }
+
                 itemView.setOnClickListener(v -> {
-                    if (listener != null) listener.onClick(order.getId(), order.getRefundStatus());
+                    if (listener != null) listener.onClick(order.order.getId(), order.order.getRefundStatus());
                 });
             }
         }

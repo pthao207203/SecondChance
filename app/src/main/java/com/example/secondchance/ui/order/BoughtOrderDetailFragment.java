@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.secondchance.data.remote.MeApi;
 import com.example.secondchance.data.remote.OrderApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
@@ -26,7 +25,6 @@ import com.example.secondchance.ui.order.adapter.OrderItemAdapter;
 import com.example.secondchance.data.model.TrackingStatus;
 import com.example.secondchance.ui.order.adapter.TrackingStatusAdapter;
 import com.google.gson.Gson;
-
 import java.text.NumberFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,7 +34,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,22 +65,16 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Recycler: sản phẩm
+
         productAdapter = new OrderItemAdapter(requireContext(), productList);
         binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvOrderItems.setAdapter(productAdapter);
         binding.rvOrderItems.setNestedScrollingEnabled(false);
-        
-        // Recycler: timeline vận chuyển
-//        trackingAdapter = new TrackingStatusAdapter(trackingList);
-//        binding.rvTracking.setLayoutManager(new LinearLayoutManager(requireContext()));
-//        binding.rvTracking.setAdapter(trackingAdapter);
-        
+
         updateBottomButtons();
         
         binding.btnReturnOrder.setOnClickListener(v -> showRefundConfirmDialog());
-        
-        // Gọi API
+
         if (receivedOrderId == null || receivedOrderId.isEmpty()) {
             Toast.makeText(requireContext(), "Thiếu orderId", Toast.LENGTH_LONG).show();
             return;
@@ -113,22 +104,25 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
     
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     private void bindOrder(OrderDetailResponse.Data data) {
-        // 1) Sản phẩm
+
         productList.clear();
         if (data.order != null && data.order.orderItems != null) {
-            for (OrderDetailResponse.OrderItem it : data.order.orderItems) {
-                productList.add(new com.example.secondchance.data.model.OrderItem(
-                  it.imageUrl,                                // << URL ảnh từ backend
-                  safe(it.name),
-                  "SL: " + it.qty,
-                  formatVnd(it.price)
-                ));
+
+            for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
+
+                com.example.secondchance.data.model.OrderItem modelItem = new com.example.secondchance.data.model.OrderItem();
+
+                modelItem.name = dtoItem.name;
+                modelItem.imageUrl = dtoItem.imageUrl;
+                modelItem.price = dtoItem.price;
+                modelItem.quantity = dtoItem.qty;
+
+                productList.add(modelItem);
             }
+
         }
         productAdapter.notifyDataSetChanged();
-        
-        
-        // 2) Tổng tiền + địa chỉ + trạng thái
+
         if (data.order != null) {
             binding.tvOrderId.setText("#" + data.order.id.toUpperCase(Locale.ROOT));
             binding.tvShippingFee.setText(formatVnd(data.order.orderShippingFee));

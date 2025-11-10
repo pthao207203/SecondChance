@@ -327,6 +327,7 @@
         <argument
             android:name="isEvaluated"
             app:argType="boolean" />
+
         <action
             android:id="@+id/action_boughtOrderDetailFragment_to_createOrderReturnRequestFragment"
             app:destination="@id/navigation_create_order_return_request" />

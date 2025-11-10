@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 
+import android.util.Log;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.secondchance.R;
 import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
@@ -57,27 +61,15 @@ public class RetrofitProvider {
       }
       return chain.proceed(b.build());
     };
-
-    // 2) Nếu bị 401 → clear token (để UI tự redirect ở chỗ khác)
+    
+    // 2) Nếu 401 => logout về cùng UI đăng xuất
     Interceptor authFailure = chain -> {
       okhttp3.Response res = chain.proceed(chain.request());
       if (res.code() == 401 && appCtx != null) {
-        // Clear token
-        Prefs.saveToken(appCtx, "");
-
-        // Tránh mở nhiều activity nếu nhiều call cùng 401
         if (logoutInProgress.compareAndSet(false, true)) {
-          // Chuyển về AuthActivity trên UI thread
-          new Handler(Looper.getMainLooper()).post(() -> {
+          new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
             try {
-
-              new androidx.navigation.NavDeepLinkBuilder(appCtx)
-                .setComponentName(com.example.secondchance.MainActivity.class)   // Activity chứa NavHost
-                .setGraph(R.navigation.mobile_navigation)                           // navGraph bạn đang gắn ở layout
-                .setDestination(R.id.loginFragment)                                 // ID của loginFragment trong graph
-                // .setArguments(bundle)                                            // nếu cần truyền args
-                .createTaskStackBuilder()
-                .startActivities();
+              com.example.secondchance.ui.auth.LogoutRouter.forceLogout(appCtx);
             } finally {
               logoutInProgress.set(false);
             }
@@ -86,7 +78,7 @@ public class RetrofitProvider {
       }
       return res;
     };
-
+    
     // 3) Log request/response (đặt sau cùng để log thấy header đã chèn)
     log.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -118,12 +110,12 @@ public class RetrofitProvider {
     if (homeApi == null) homeApi = ensureRetrofit().create(HomeApi.class);
     return homeApi;
   }
-
+  
   public static MeApi me() {
     if (meApi == null) meApi = ensureRetrofit().create(MeApi.class);
     return meApi;
   }
-
+  
   public static OrderApi order() {
     if (orderApi == null) orderApi = ensureRetrofit().create(OrderApi.class);
     return orderApi;
@@ -140,24 +132,6 @@ public class RetrofitProvider {
     }
 
   public static Retrofit getRetrofit() {
-    if (retrofit == null) {
-      createRetrofit();
-    }
-    return retrofit;
-  }
-
-  private static void createRetrofit() {
-    HttpLoggingInterceptor log = new HttpLoggingInterceptor();
-    log.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-    OkHttpClient ok = new OkHttpClient.Builder()
-            .addInterceptor(log)
-            .build();
-
-    retrofit = new Retrofit.Builder()
-            .baseUrl("http://52.195.233.219:3000/api/")
-            .client(ok)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+    return ensureRetrofit();
   }
 }

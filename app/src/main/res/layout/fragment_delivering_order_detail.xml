@@ -30,7 +30,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- RecyclerView cho danh sách sản phẩm -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvOrderItems"
                 android:layout_width="match_parent"
@@ -70,9 +69,9 @@
                             android:src="@drawable/ic_people"
                             app:tint="@color/highLight5" />
                         <TextView
+                            android:id="@+id/tvReceiverName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cá Biết Bay"
                             android:textColor="@color/darkerDay"
                             android:layout_marginStart="12dp"/>
                     </LinearLayout>
@@ -89,9 +88,9 @@
                             android:src="@drawable/ic_phone"
                             app:tint="@color/highLight5" />
                         <TextView
+                            android:id="@+id/tvReceiverPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0333 333 333"
                             android:textColor="@color/darkerDay"
                             android:layout_marginStart="12dp"/>
                     </LinearLayout>
@@ -108,9 +107,9 @@
                             android:src="@drawable/ic_location"
                             app:tint="@color/highLight5" />
                         <TextView
+                            android:id="@+id/tvReceiverAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nhà số 33, đường T, huyện L, thành Phố C"
                             android:textColor="@color/darkerDay"
                             android:layout_marginStart="12dp"/>
                     </LinearLayout>
@@ -151,9 +150,9 @@
                         android:layout_marginStart="12dp"/>
 
                     <TextView
+                        android:id="@+id/tvOrderId"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="XYZY1234RTY"
                         android:textColor="@color/normalDay"
                         android:textStyle="bold"
                         android:layout_alignParentEnd="true"
@@ -168,7 +167,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="16dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -267,8 +265,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTrackingStatus"
                 android:layout_width="match_parent"
-                android:layout_height="201dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_12"
                 android:nestedScrollingEnabled="false" />
 
 
@@ -280,7 +278,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReceiveOrder"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
                     android:text="ĐÃ NHẬN HÀNG"
                     android:textSize="@dimen/text_16"
                     android:textStyle="bold"
