@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <TextView
+            android:id="@+id/tvNameChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Biểu đồ số sản phẩm đã bán theo tháng trong năm "
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/darkerDay"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Biểu đồ -->
+        <ImageView
+            android:id="@+id/imgChart"
+            android:layout_width="match_parent"
+            android:layout_height="216dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/frame_1000002470"
+            android:scaleType="fitCenter"
+            android:contentDescription="Biểu đồ doanh số"
+            app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Tiêu đề Thống kê -->
+        <TextView
+            android:id="@+id/tvTitleStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Thống kê"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay"
+            app:layout_constraintTop_toBottomOf="@id/imgChart"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Hàng 1: Số sản phẩm + Đã bán -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/row1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleStats"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Card: Số sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTotalProducts"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:strokeColor="@color/highlight4blur"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:cardElevation="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cardSold">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Số sản phẩm"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tvTotalProducts"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="256"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/arrow_up_sm"
+                        android:layout_gravity="center"
+                        android:contentDescription="Biểu đồ doanh số"
+                        app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                    <TextView
+                        android:id="@+id/tvTotalpercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5%"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/text_13"
+                        android:textColor="@color/highLight5" />
+                </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Đã bán -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSold"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highlight4blur"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cardTotalProducts"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Đã bán"
+                            android:layout_marginBottom="8dp"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/darkerDay" />
+
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/tvSoldProducts"
+                                android:layout_weight="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="26"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_16"
+                                android:textColor="@color/darkerDay" />
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:src="@drawable/arrow_down_sm"
+                                android:layout_gravity="center"
+                                android:contentDescription="Biểu đồ doanh số"
+                                app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                                app:layout_constraintEnd_toEndOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvSodPer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:text="10%"
+                                android:textColor="@color/highLight1"
+                                android:textSize="@dimen/text_13"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Hàng 2: Sản phẩm còn lại + Lợi nhuận -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/row2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/row1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Card: Sản phẩm còn lại -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRemaining"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:strokeColor="@color/highlight4blur"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cardRefund">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sản phẩm còn lại"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tvRemaningProducts"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="255"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/darkerDay" />
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/arrow_up_sm"
+                            android:layout_gravity="center"
+                            android:contentDescription="Biểu đồ doanh số"
+                            app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                            app:layout_constraintEnd_toEndOf="parent" />
+                        <TextView
+                            android:id="@+id/tvRemainingpercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5%"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/text_13"
+                            android:textColor="@color/highLight5" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Lợi nhuận -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRefund"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highlight4blur"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cardRemaining"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Trả hàng"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tvRefundProducts"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/darkerDay" />
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/arrow_up_sm"
+                            android:layout_gravity="center"
+                            android:contentDescription="Biểu đồ doanh số"
+                            app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                            app:layout_constraintEnd_toEndOf="parent" />
+                        <TextView
+                            android:id="@+id/tvRefund"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/text_13"
+                            android:textColor="@color/highLight5" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        Hàng 3-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/row3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/row2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Card: Sản phẩm còn lại -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPerMonth"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:strokeColor="@color/highlight4blur"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardElevation="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cardProfit">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Sản phẩm/tháng"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tvPerMonth"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="256"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/darkerDay" />
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/arrow_up_sm"
+                            android:layout_gravity="center"
+                            android:contentDescription="Biểu đồ doanh số"
+                            app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvPerMonthpercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:text="5%"
+                            android:textColor="@color/highLight5"
+                            android:textSize="@dimen/text_13"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Lợi nhuận -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardProfit"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:strokeColor="@color/highlight4blur"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/whiteDay"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cardPerMonth"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lợi nhuận"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="@dimen/text_16"
+                        android:textColor="@color/darkerDay" />
+
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tvProfitProducts"
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/text_16"
+                            android:textColor="@color/darkerDay" />
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/arrow_up_sm"
+                            android:layout_gravity="center"
+                            android:contentDescription="Biểu đồ doanh số"
+                            app:layout_constraintTop_toBottomOf="@id/tvNameChart"
+                            app:layout_constraintEnd_toEndOf="parent" />
+                        <TextView
+                            android:id="@+id/tvProfitpercent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:textSize="@dimen/text_13"
+                            android:textColor="@color/highLight5" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Danh mục bán chạy -->
+        <TextView
+            android:id="@+id/tvCategoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Danh mục các sản phẩm bán chạy nhất"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay"
+            app:layout_constraintTop_toBottomOf="@id/row3"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/categoryList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/tvCategoryTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Sold1"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="4dp"
+                    android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/highLight5"
+                    android:layout_marginEnd="4dp"
+                    android:text="#1"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_16"
+                    android:textColor="@color/darkerDay"
+                    android:text="Điện tử"
+                    android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Sold2"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                app:cardElevation="0dp"
+                android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/highLight5"
+                    android:layout_marginEnd="4dp"
+                    android:text="#2"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_16"
+                    android:textColor="@color/darkerDay"
+                    android:text="Nội thất"
+                    android:textStyle="normal" />
+            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Sold3"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:cardElevation="0dp"
+                android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/highLight5"
+                    android:layout_marginEnd="4dp"
+                    android:text="#1 "
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_16"
+                    android:textColor="@color/darkerDay"
+                    android:text="Quần áo"
+                    android:textStyle="normal" />
+            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Dịch vụ -->
+        <TextView
+            android:id="@+id/tvServiceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Dịch vụ"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:textColor="@color/darkerDay"
+            app:layout_constraintTop_toBottomOf="@id/categoryList"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ShopStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvServiceTitle"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <!-- 1. Tỉ lệ phản hồi -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Rep"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="8dp"
+                app:strokeColor="@color/highLight8"
+                app:cardBackgroundColor="@color/highlight7blur"
+                app:cardCornerRadius="8dp"
+                android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/chat"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỉ lệ phản hồi"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100%"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Đánh giá -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Rate"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highLight3"
+                app:cardBackgroundColor="@color/highlight3blur"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/star_border_purple500"
+
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đánh giá"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.9"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Tỉ lệ thương lượng -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Neogiation"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                android:layout_marginEnd="8dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highLight5"
+                app:cardBackgroundColor="@color/highlight4blur"
+                app:cardCornerRadius="8dp"
+                android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/arrow_reload_02"
+                    app:tint="@color/darkerDay" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỉ lệ thương lượng"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="99%"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Sản phẩm -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Post"
+                style="@style/Widget.SecondChance.Card.Number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/highLight1"
+                app:cardBackgroundColor="@color/highlight1blur"
+                app:cardCornerRadius="8dp"
+                android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/checkbox_fill"
+
+                    android:gravity="center"
+                    app:tint="@color/darkerDay" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỷ lệ đăng"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="normal" />
+            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
