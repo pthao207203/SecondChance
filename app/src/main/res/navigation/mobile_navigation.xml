@@ -73,7 +73,16 @@
         <action
             android:id="@+id/action_profile_to_rule_seller"
             app:destination="@id/navigation_rule_seller" />
+        <action
+            android:id="@+id/action_profile_to_shop_dashboard"
+            app:destination="@id/navigation_shop_dashboard" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_shop_dashboard"
+        android:name="com.example.secondchance.ui.profile.ShopDashBoardFragment"
+        android:label="Thống kê của shop"
+        tools:layout="@layout/fragment_shop_dashboard"/>
 
     <fragment
         android:id="@+id/navigation_rule_seller"

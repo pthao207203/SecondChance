@@ -264,7 +264,11 @@ public class ProfileFragment extends Fragment {
             btn_order.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_shoporderFragment)
             );
         }
-    }
+        View Dashboard_Statistics = view.findViewById(R.id.Dashboard_Statistics);
+        if (Dashboard_Statistics != null) {
+            Dashboard_Statistics.setOnClickListener(v -> navController.navigate(R.id.action_profile_to_shop_dashboard)
+            );
+        }
 
     // Hàm public để update badge từ bên ngoài (nếu cần)
 //    public void updateBadgeCounts(int pendingCount, int shippingCount) {
@@ -287,4 +291,5 @@ public class ProfileFragment extends Fragment {
 //        }
 //    }
 }
+    }
 
