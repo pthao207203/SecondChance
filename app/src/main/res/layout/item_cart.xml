@@ -5,14 +5,15 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="@dimen/radius_m"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="#EFF1F5">
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/grayDay">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp"
         android:gravity="center_vertical">
 
         <!-- Checkbox -->

@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="Ảnh sản phẩm"
                 android:textSize="@dimen/text_16"
-                android:textColor="#333333"
+                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"/>
             <!-- Thumbnail Images -->
@@ -94,7 +94,7 @@
                             android:textSize="@dimen/text_13"
                             android:gravity="center"
                             android:padding="4dp"
-                            android:textColor="#666666"
+                            android:textColor="@color/darkerDay"
                             android:layout_marginTop="4dp"/>
                     </LinearLayout>
 
@@ -106,8 +106,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên sản phẩm"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -115,7 +116,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Giỏ gỏ cắm hoa"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -124,8 +127,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loại giá"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <Spinner
@@ -134,6 +138,8 @@
                 android:layout_height="48dp"
                 android:background="@drawable/bg_light_active_outline"
                 android:padding="12dp"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Price -->
@@ -141,8 +147,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Giá"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -152,14 +159,17 @@
                 android:hint="50000"
                 android:inputType="number"
                 android:padding="12dp"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="24dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tình trạng sản phẩm"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -168,6 +178,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Chưa sử dụng"
                 android:padding="12dp"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -175,8 +187,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tình trạng mới"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -184,7 +197,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="99%"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -192,8 +207,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tình trạng hư hỏng"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -201,7 +217,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="0%"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -209,8 +227,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chính sách bảo hành"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -218,7 +237,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="3 tháng"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -226,8 +247,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chính sách đổi trả"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -235,7 +257,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Có đổi trả"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -243,8 +267,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguồn gốc sản phẩm"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -252,7 +277,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Có nguồn"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="24dp"/>
             <LinearLayout
@@ -268,7 +295,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tiếp theo"
-                    android:textColor="#F25C05"
+                    android:textColor="@color/normalDay"
                     android:textSize="@dimen/text_16"
                     android:textStyle="bold" />
 
@@ -279,7 +306,7 @@
                     android:layout_marginStart="4dp"
                     android:contentDescription="Tiếp theo"
                     android:src="@drawable/arrow_right_ske"
-                    app:tint="#F25C05" />
+                    app:tint="@color/normalDay" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
