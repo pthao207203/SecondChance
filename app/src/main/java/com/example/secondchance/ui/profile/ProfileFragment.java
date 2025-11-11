@@ -32,6 +32,8 @@ public class ProfileFragment extends Fragment {
     private SellerViewModel sellerViewModel;
 
     // Seller layouts
+    private TextView tvShop;
+
     private LinearLayout layoutChatReview;
     private LinearLayout layoutShopStatistics;
     private LinearLayout layoutProductsOrders;
@@ -71,18 +73,30 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ensureLoggedInOrRedirect();
+        String token = Prefs.getToken(requireContext());
+        if (isAdded() && token != null && !token.trim().isEmpty()) {
+            viewModel.fetchUserProfile();
+           sellerViewModel.fetchSellerProfile();
+        }
     }
-    
+
     private void ensureLoggedInOrRedirect() {
         String token = Prefs.getToken(requireContext());
         if (token == null || token.trim().isEmpty()) {
-            com.example.secondchance.ui.auth.LogoutRouter.forceLogout(requireContext().getApplicationContext());
+            NavController nav = NavHostFragment.findNavController(this);
+
+            NavOptions opts = new NavOptions.Builder()
+                    .setPopUpTo(nav.getGraph().getStartDestinationId(), true)
+                    .setLaunchSingleTop(true)
+                    .build();
+
+            goToAuthAndFinish();
         }
     }
     private void goToAuthAndFinish() {
         if (!isAdded()) return;
-        NavController nav = NavHostFragment.findNavController(this);
-        nav.setGraph(R.navigation.mobile_navigation, null);
+
+        com.example.secondchance.ui.auth.LogoutRouter.forceLogout(requireContext().getApplicationContext());
     }
 
     private void initViews(View view) {
@@ -95,7 +109,7 @@ public class ProfileFragment extends Fragment {
         ivAvatar = view.findViewById(R.id.ivAvatar);
         tvNoProduct = view.findViewById(R.id.tvNoProduct);
         btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
-
+        tvShop = view.findViewById(R.id.tvShop);
         layoutChatReview = view.findViewById(R.id.Chat_Review);
         layoutShopStatistics = view.findViewById(R.id.ShopStatistics);
         layoutProductsOrders = view.findViewById(R.id.Products_Orders);
@@ -113,9 +127,19 @@ public class ProfileFragment extends Fragment {
             layoutShopStatistics.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
             layoutProductsOrders.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
             layoutNegotiationsDashboards.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
-            layoutNameShop.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
             tvNoProduct.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
             btnBecomeSeller.setVisibility(isSellerMode ? View.GONE : View.VISIBLE);
+
+            layoutNameShop.setVisibility(isSellerMode ? View.VISIBLE : View.GONE);
+
+        });
+
+        sellerViewModel.getShopName().observe(getViewLifecycleOwner(), name -> {
+            if (name != null && !name.isEmpty()) {
+                tvShop.setText(name);
+            } else {
+                tvShop.setText("Tên shop");
+            }
         });
     }
 
@@ -136,6 +160,19 @@ public class ProfileFragment extends Fragment {
                 tvAddress.setText(defaultAddress.getAddress());
             } else {
                 tvAddress.setText("Chưa có địa chỉ mặc định");
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), "Lỗi User: " + error, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        sellerViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), "Lỗi Shop: " + error, Toast.LENGTH_LONG).show();
             }
         });
     }
