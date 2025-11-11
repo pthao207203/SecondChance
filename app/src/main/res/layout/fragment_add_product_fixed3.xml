@@ -19,8 +19,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguồn sản phẩm"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textStyle="bold"
+                android:textColor="@color/darkerDay"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -28,7 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Link"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"/>
 
@@ -36,8 +39,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Minh chứng"
-                android:textSize="@dimen/text_13"
-                android:textColor="#333333"
+                android:textSize="@dimen/text_16"
+                android:textStyle="bold"
+                android:textColor="@color/darkerDay"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
@@ -47,8 +51,10 @@
                 android:hint="Giỏ hoa trang trí (đã qua sử dụng)&#10;• Tình trạng: còn đẹp ~90%, ít trầy xước."
                 android:gravity="top|start"
                 android:padding="12dp"
+                android:textSize="@dimen/text_16"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="12dp"
+                android:textColor="@color/darkerDay"
                 android:inputType="textMultiLine"/>
 
             <!-- Proof Images -->

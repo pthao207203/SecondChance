@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/whiteDay">
 
     <!-- Payment Methods List -->
     <androidx.recyclerview.widget.RecyclerView
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp"
+        android:paddingVertical="16dp"
         android:clipToPadding="false" />
 
     <FrameLayout
@@ -31,7 +31,7 @@
             android:paddingHorizontal="8dp"
             android:text="Thêm ngân hàng mới"
             android:textAllCaps="false"
-            android:textColor="@color/normalDay" />
+            android:textColor="@color/darkerDay" />
     </FrameLayout>
 
 </LinearLayout>

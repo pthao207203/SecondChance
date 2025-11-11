@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/whiteDay">
 
     <!-- Address List -->
     <androidx.recyclerview.widget.RecyclerView
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp"
+        android:paddingVertical="16dp"
         android:clipToPadding="false" />
 
     <!-- FrameLayout to contain and align the button -->
@@ -27,7 +27,7 @@
             android:layout_gravity="end"
             android:text="Thêm địa chỉ mới"
             android:padding="8dp"
-            android:textColor="@color/normalDay"
+            android:textColor="@color/darkerDay"
             android:textAllCaps="false"
             android:drawableStart="@drawable/add_plus_circle"
             android:drawablePadding="4dp"
