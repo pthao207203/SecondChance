@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,13 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondchance.R;
 import com.example.secondchance.data.repo.CartRepository;
 import com.example.secondchance.data.remote.CartApi;
-import com.example.secondchance.ui.card.ProductCard;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,7 +139,17 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
             Toast.makeText(requireContext(), "Vui lòng chọn sản phẩm để mua", Toast.LENGTH_SHORT).show();
             return;
         }
-        // TODO: Navigate to checkout
+
+        ArrayList<CartApi.CartItem> itemsToCheckout = new ArrayList<>(selectedItems);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("selectedItems", itemsToCheckout);
+
+        try {
+            Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_checkoutFragment, bundle);
+        } catch(Exception e) {
+            Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateTotalPrice() {
@@ -156,33 +168,42 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
 
     @Override
     public void onViewDetail(CartApi.CartItem item) {
-        ProductCard productCard = new ProductCard(
-                item.productId,
-                item.getImageUrl(),
-                item.getName(),
-                item.getDescription(),
-                item.qty,
-                0, 
-                String.valueOf(item.price),
-                ProductCard.ProductType.FIXED, 
-                null, 0
-        );
-
         Bundle bundle = new Bundle();
-        bundle.putSerializable("product", productCard);
+        bundle.putString("productId", item.productId);
 
-        try {
-            Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
     }
 
     @Override
     public void onItemDeleted(CartApi.CartItem item, int position) {
+        if (!isAdded() || getContext() == null) return;
+
+        final Dialog confirmDialog = new Dialog(getContext());
+        confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        confirmDialog.setContentView(R.layout.dialog_confirm_delete);
+        if (confirmDialog.getWindow() != null) {
+            confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        Button btnConfirm = confirmDialog.findViewById(R.id.btnConfirmDelete);
+        Button btnCancel = confirmDialog.findViewById(R.id.btnCancelDelete);
+
+        btnConfirm.setOnClickListener(v -> {
+            confirmDialog.dismiss();
+            deleteItem(item);
+        });
+
+        btnCancel.setOnClickListener(v -> confirmDialog.dismiss());
+
+        confirmDialog.show();
+    }
+
+    private void deleteItem(CartApi.CartItem item) {
         if (isLoading) return;
         setLoadingState(true);
 
+        // SỬA: Dùng lại item.productId theo yêu cầu
         CartRepository.getInstance().removeFromCart(item.productId, new CartRepository.CartCallback() {
             @Override
             public void onSuccess(List<CartApi.CartItem> items) {
@@ -207,19 +228,18 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     }
 
     private void showDeleteSuccessDialog() {
-        if (!isAdded()) return;
-        final Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_delete_success);
+        if (!isAdded() || getContext() == null) return;
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.getWindow().getAttributes().dimAmount = 0.6f;
+        final Dialog successDialog = new Dialog(getContext());
+        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        successDialog.setContentView(R.layout.dialog_delete_success);
+        if (successDialog.getWindow() != null) {
+            successDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-        ImageView btnClose = dialog.findViewById(R.id.btnCloseSuccess);
-        btnClose.setOnClickListener(v -> dialog.dismiss());
+        ImageView btnClose = successDialog.findViewById(R.id.btnCloseSuccess);
+        btnClose.setOnClickListener(v -> successDialog.dismiss());
 
-        dialog.show();
+        successDialog.show();
     }
 }

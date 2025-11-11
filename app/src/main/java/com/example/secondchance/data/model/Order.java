@@ -149,13 +149,13 @@ public class Order extends OrderWrapper implements Serializable {
     }
     public DeliveryOverallStatus getDeliveryStatus() {
         OrderWrapper.ShipmentData shipment = new OrderWrapper.ShipmentData();
-      
-      return switch (shipment.currentStatus) {
-        case 2, 3 -> DeliveryOverallStatus.AT_POST_OFFICE;
-        case 4 -> DeliveryOverallStatus.DELIVERING;
-        case 5 -> DeliveryOverallStatus.DELIVERED;
-        default -> DeliveryOverallStatus.PACKAGED;
-      };
+
+        return switch (shipment.currentStatus) {
+            case 2, 3 -> DeliveryOverallStatus.AT_POST_OFFICE;
+            case 4 -> DeliveryOverallStatus.DELIVERING;
+            case 5 -> DeliveryOverallStatus.DELIVERED;
+            default -> DeliveryOverallStatus.PACKAGED;
+        };
     }
     public String getId() { return id; }
     public static class ReturnRequestData implements Serializable {

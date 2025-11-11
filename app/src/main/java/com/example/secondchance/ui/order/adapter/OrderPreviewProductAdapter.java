@@ -1,4 +1,4 @@
-package com.example.secondchance.ui.checkout;
+package com.example.secondchance.ui.order.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +13,14 @@ import com.example.secondchance.data.remote.OrderApi;
 import java.util.List;
 import java.util.Locale;
 
-public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProductsAdapter.ProductViewHolder> {
+public class OrderPreviewProductAdapter extends RecyclerView.Adapter<OrderPreviewProductAdapter.ProductViewHolder> {
 
     private final List<OrderApi.ProductItem> productList;
 
-    public CheckoutProductsAdapter(List<OrderApi.ProductItem> productList) {
+    public OrderPreviewProductAdapter(List<OrderApi.ProductItem> productList) {
         this.productList = productList;
     }
 
-    // PHƯƠNG THỨC CÒN THIẾU
     public void updateData(List<OrderApi.ProductItem> newProductList) {
         this.productList.clear();
         if (newProductList != null) {
@@ -63,7 +62,7 @@ public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProduc
             tvProductName.setText(product.name);
             tvProductDescription.setText(product.shortDescription);
             String formattedPrice = String.format(Locale.GERMANY, "%,d", product.lineTotal).replace(",", ".");
-            tvProductPrice.setText(formattedPrice);
+            tvProductPrice.setText("đ " + formattedPrice);
 
             Glide.with(itemView.getContext())
                     .load(product.imageUrl)
