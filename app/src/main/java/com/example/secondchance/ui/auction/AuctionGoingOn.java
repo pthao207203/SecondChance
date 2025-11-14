@@ -9,14 +9,24 @@ public class AuctionGoingOn {
     private int quantity;
     private String imageUrl; // hoặc int nếu dùng drawable
     private long endTimeMillis; // thời gian kết thúc (milliseconds)
-
+    private String productId;
+    
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+    
+    public String getProductId() {
+        return productId;
+    }
+    
     // Constructor
-    public AuctionGoingOn(String productName, String currentPrice, int quantity, String imageUrl, long endTimeMillis) {
+    public AuctionGoingOn(String productName, String currentPrice, int quantity, String imageUrl, long endTimeMillis, String productId) {
         this.productName = productName;
         this.currentPrice = currentPrice;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
         this.endTimeMillis = endTimeMillis;
+        this.productId = productId;
     }
 
     // Getters
