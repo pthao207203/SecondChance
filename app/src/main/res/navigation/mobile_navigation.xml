@@ -43,10 +43,10 @@
         tools:layout="@layout/fragment_negotiation" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.secondchance.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_ai_chatbot"
+        android:name="com.example.secondchance.ui.chatbot.ChatAiFragment"
+        android:label="@string/title_ai"
+        tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.secondchance.ui.profile.ProfileFragment"

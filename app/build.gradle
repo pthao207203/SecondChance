@@ -3,6 +3,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def localProps = new Properties()
+localProps.load(new FileInputStream(rootProject.file("local.properties")))
+def GEMINI_API_KEY = localProps.getProperty("GEMINI_API_KEY")
+
 android {
     namespace 'com.example.secondchance'
     compileSdk 36
@@ -24,6 +28,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "GEMINI_API_KEY", "\"${GEMINI_API_KEY}\""
     }
 
     buildTypes {
@@ -45,6 +50,7 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+        buildConfig = true
     }
 
     packagingOptions {
@@ -100,4 +106,9 @@ dependencies {
     implementation libs.google.material.typeface.v4003kotlin
     implementation libs.community.material.typeface.v70961kotlin
     implementation libs.weather.icons.typeface
+
+    // AI
+    implementation(libs.generativeai)
+    implementation libs.logging.interceptor.v4110
+    implementation libs.core
 }

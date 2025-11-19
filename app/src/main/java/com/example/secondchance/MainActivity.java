@@ -195,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
     
     binding.myCustomMenu.navigationDashboard.setOnClickListener(v -> {
       if (navController.getCurrentDestination() != null
-        && navController.getCurrentDestination().getId() != R.id.navigation_dashboard) {
-        navController.navigate(R.id.navigation_dashboard, null, navOptions);
+        && navController.getCurrentDestination().getId() != R.id.navigation_ai_chatbot) {
+        navController.navigate(R.id.navigation_ai_chatbot, null, navOptions);
       }
     });
     
