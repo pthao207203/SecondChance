@@ -973,16 +973,22 @@
         tools:layout="@layout/fragment_cart" >
         <action
             android:id="@+id/action_cartFragment_to_checkoutFragment"
-            app:destination="@id/checkoutFragment" />
+            app:destination="@id/orderPreviewFragment" />
         <action
             android:id="@+id/action_cartFragment_to_detailProductFragment"
             app:destination="@id/navigation_detail_product" />
     </fragment>
 
     <fragment
-        android:id="@+id/checkoutFragment"
-        android:name="com.example.secondchance.ui.checkout.CheckoutFragment"
+        android:id="@+id/orderPreviewFragment"
+        android:name="com.example.secondchance.ui.order.OrderPreviewFragment"
         android:label="Thanh toán"
-        tools:layout="@layout/fragment_checkout" />
+        tools:layout="@layout/fragment_order_preview" >
+        <action
+            android:id="@+id/action_orderPreviewFragment_to_homeFragment"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/mobile_navigation"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

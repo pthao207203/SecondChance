@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".ui.order.OrderPreviewFragment">
+
+    <!-- Bottom Bar -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:background="@android:color/white"
+        android:elevation="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tổng cộng:"
+            android:textColor="@color/darkerDay"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="đ"
+            android:textColor="@color/normalDay"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTotalPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:text="50000" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnBuyNow"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="MUA NGAY"
+            android:textColor="@android:color/white"
+            android:background="@drawable/btn_normalday_solid"
+            android:paddingHorizontal="32dp"/>
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomBar"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="16dp">
+
+            <!-- Products -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sản phẩm mua hàng"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/darkerDay"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_order_product"
+                android:layout_margin="16dp"
+                tools:itemCount="3"/>
+
+            <!-- Shipping Method -->
+            <LinearLayout
+                android:id="@+id/shippingMethodHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phương thức vận chuyển"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="16sp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/ivShippingToggle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/chevron_up"
+                    app:tint="@color/darkerDay" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/selectedShippingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:background="#E3F2FD"
+                android:visibility="visible">
+
+                <!-- Content for selected shipping, dynamically inflated -->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shippingOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+                 <!-- Shipping options will be inflated here -->
+            </LinearLayout>
+
+            <!-- Payment Method -->
+            <LinearLayout
+                android:id="@+id/paymentMethodHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phương thức thanh toán"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="16sp"
+                    android:layout_marginHorizontal="16dp"
+
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/ivPaymentToggle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/chevron_up"
+                    app:tint="@color/darkerDay" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/selectedPaymentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:background="#E3F2FD"
+                android:visibility="visible">
+                <!-- Content for selected payment, dynamically inflated -->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/paymentOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+                <!-- Payment options will be inflated here -->
+            </LinearLayout>
+
+            <!-- Shipping Address -->
+            <LinearLayout
+                android:id="@+id/addressHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ nhận hàng"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/ivAddressToggle"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/chevron_up"
+                    app:tint="@color/darkerDay" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/selectedAddressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:background="#E3F2FD">
+                <!-- Content for selected address, dynamically inflated -->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/addressOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone">
+                <!-- Address options will be inflated here -->
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

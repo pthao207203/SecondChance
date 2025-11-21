@@ -8,6 +8,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CartRepository {
     private static final String TAG = "CartRepository";
@@ -33,7 +34,7 @@ public class CartRepository {
     public List<CartApi.CartItem> getCachedCart() {
         return new ArrayList<>(localCartCache);
     }
-    
+
     public boolean isProductInCart(String productId) {
         if (productId == null || productId.isEmpty()) {
             return false;
@@ -81,7 +82,7 @@ public class CartRepository {
                     updateCache(serverCart);
                     callback.onSuccess(getCachedCart());
                 } else {
-                     String errorMsg = "Thêm vào giỏ hàng thất bại";
+                    String errorMsg = "Thêm vào giỏ hàng thất bại";
                     if (response.body() != null && response.body().error != null) {
                         errorMsg = response.body().error.message;
                     }
@@ -97,8 +98,8 @@ public class CartRepository {
         });
     }
 
-    public void removeFromCart(String itemId, CartCallback callback) {
-        RetrofitProvider.cart().removeFromCart(itemId).enqueue(new Callback<CartApi.CartEnvelope>() {
+    public void removeFromCart(String productId, CartCallback callback) {
+        RetrofitProvider.cart().removeFromCart(productId).enqueue(new Callback<CartApi.CartEnvelope>() {
             @Override
             public void onResponse(Call<CartApi.CartEnvelope> call, Response<CartApi.CartEnvelope> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().success) {
@@ -109,6 +110,8 @@ public class CartRepository {
                     String errorMsg = "Xóa sản phẩm thất bại";
                     if (response.body() != null && response.body().error != null) {
                         errorMsg = response.body().error.message;
+                    } else if (!response.isSuccessful()) {
+                        errorMsg = "Lỗi " + response.code() + ": Không thể xóa sản phẩm.";
                     }
                     callback.onError(errorMsg);
                 }
@@ -121,7 +124,69 @@ public class CartRepository {
             }
         });
     }
-    
+
+    /**
+     * Xóa nhiều sản phẩm khỏi giỏ hàng dựa trên danh sách productId
+     * @param productIds Danh sách productId cần xóa
+     * @param callback Callback trả về kết quả
+     */
+    public void removeMultipleFromCart(List<String> productIds, CartCallback callback) {
+        if (productIds == null || productIds.isEmpty()) {
+            callback.onSuccess(getCachedCart());
+            return;
+        }
+
+        final List<String> mutableProductIds = new ArrayList<>(productIds);
+        final List<String> errors = new ArrayList<>();
+
+        removeNextItem(mutableProductIds, errors, callback);
+    }
+
+    private void removeNextItem(List<String> productIds, List<String> errors, CartCallback callback) {
+        if (productIds.isEmpty()) {
+            if (errors.isEmpty()) {
+                fetchCart(callback);
+            } else {
+                Log.w(TAG, "Some items failed to delete: " + errors);
+                fetchCart(new CartCallback() {
+                    @Override
+                    public void onSuccess(List<CartApi.CartItem> items) {
+                        callback.onSuccess(items);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        callback.onError("Lỗi khi làm mới giỏ hàng: " + error);
+                    }
+                });
+            }
+            return;
+        }
+
+        String productId = productIds.remove(0);
+        RetrofitProvider.cart().removeFromCart(productId).enqueue(new Callback<CartApi.CartEnvelope>() {
+            @Override
+            public void onResponse(Call<CartApi.CartEnvelope> call, Response<CartApi.CartEnvelope> response) {
+                if (!response.isSuccessful() || response.body() == null || !response.body().success) {
+                    String errorMsg = "Xóa sản phẩm " + productId + " thất bại";
+                    if (response.body() != null && response.body().error != null) {
+                        errorMsg = response.body().error.message;
+                    }
+                    errors.add(errorMsg);
+                }
+                removeNextItem(productIds, errors, callback);
+            }
+
+            @Override
+            public void onFailure(Call<CartApi.CartEnvelope> call, Throwable t) {
+                Log.e(TAG, "removeFromCart error for " + productId, t);
+                errors.add("Lỗi mạng khi xóa " + productId);
+                removeNextItem(productIds, errors, callback);
+            }
+        });
+    }
+
+
     public interface CartCallback {
         void onSuccess(List<CartApi.CartItem> items);
         void onError(String error);

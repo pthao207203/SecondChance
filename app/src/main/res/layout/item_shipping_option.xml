@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/ivShippingIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_transport"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tvShippingName"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Vận chuyển nhanh"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvShippingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nhận vào ngày 17/03/2025"
+            android:textColor="@color/darkerDay" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/tvShippingSubtitle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Vận chuyển"
+            android:textColor="@color/darkerDay"
+            android:layout_marginStart="28dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="đ"
+            android:textColor="@color/normalDay"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvShippingFee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:text="50000" />
+    </LinearLayout>
+
+</LinearLayout>

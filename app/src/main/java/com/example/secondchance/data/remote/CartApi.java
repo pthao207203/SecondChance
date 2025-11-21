@@ -55,8 +55,8 @@ public interface CartApi {
 
     class CartItem implements Serializable {
         @SerializedName("_id")
-        public String id;
-        public String productId;
+        public String id; // ID của item trong giỏ hàng
+        public String productId; // ID của sản phẩm
         public int qty;
         public long price;
         public String addedAt;

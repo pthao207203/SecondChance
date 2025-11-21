@@ -20,11 +20,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:text="Mô tả"
+                android:textColor="@color/darkerDay"
                 android:textSize="@dimen/text_16"
-                android:textColor="#333333"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp"/>
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/et_description"
@@ -32,7 +32,9 @@
                 android:layout_height="150dp"
                 android:hint="Giỏ hoa trang trí (đã qua sử dụng)&#10;• Tình trạng: còn đẹp ~90%, ít trầy xước.&#10;• Chất liệu: máy tre đan thủ công.&#10;• Kích thước: nhỏ gọn, phù hợp để bàn hoặc làm quà tặng decor."
                 android:gravity="top|start"
+                android:textSize="@dimen/text_16"
                 android:padding="12dp"
+                android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="16dp"
                 android:inputType="textMultiLine" />

@@ -1,13 +1,9 @@
 package com.example.secondchance.ui.cart;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -17,7 +13,6 @@ import com.example.secondchance.R;
 import com.example.secondchance.data.remote.CartApi;
 import com.example.secondchance.data.remote.ProductApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
-import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -98,8 +93,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_cart, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cart, parent, false);
         return new CartViewHolder(view);
     }
 
@@ -172,10 +166,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             layoutViewDetail = itemView.findViewById(R.id.layoutViewDetail);
             layoutDelete = itemView.findViewById(R.id.layoutDelete);
         }
-
         void bindLoadingState() {
             tvProductName.setText("Đang tải...");
-            tvProductPrice.setText("đ0");
+            tvProductPrice.setText("0");
             tvProductDescription.setText("");
             tvProductQuantity.setText("");
             ivProductImage.setImageResource(R.color.grayLight);
@@ -189,7 +182,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             // Hiển thị tổng tiền của Item (đơn giá * số lượng)
             long totalPrice = item.getTotalPrice();
             String priceFormatted = String.format("%,d", totalPrice).replace(",", ".");
-            tvProductPrice.setText("đ" + priceFormatted);
+            tvProductPrice.setText(priceFormatted); // SỬA: Bỏ "đ" ở đây
 
             checkboxItem.setImageResource(
                     item.isSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
@@ -221,33 +214,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             });
 
             layoutDelete.setOnClickListener(v -> {
-                showDeleteConfirmDialog(item, getAdapterPosition());
-            });
-        }
-
-        private void showDeleteConfirmDialog(final CartApi.CartItem item, final int position) {
-            final Dialog dialog = new Dialog(itemView.getContext());
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_confirm_delete);
-
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.getWindow().getAttributes().dimAmount = 0.6f;
-            }
-
-            MaterialButton btnConfirm = dialog.findViewById(R.id.btnConfirmDelete);
-            MaterialButton btnCancel = dialog.findViewById(R.id.btnCancelDelete);
-
-            btnConfirm.setOnClickListener(v -> {
-                dialog.dismiss();
                 if (listener != null) {
-                    listener.onItemDeleted(item, position);
+                    int currentPosition = getAdapterPosition();
+                    if (currentPosition != RecyclerView.NO_POSITION) {
+                        listener.onItemDeleted(cartItems.get(currentPosition), currentPosition);
+                    }
                 }
             });
-
-            btnCancel.setOnClickListener(v -> dialog.dismiss());
-
-            dialog.show();
         }
     }
 }
