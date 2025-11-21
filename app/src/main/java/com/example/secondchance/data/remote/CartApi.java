@@ -2,6 +2,8 @@ package com.example.secondchance.data.remote;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
+import java.io.Serializable;
+
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -25,7 +27,6 @@ public interface CartApi {
     class AddToCartRequest {
         public String productId;
         public int qty;
-
         public AddToCartRequest(String productId, int qty) {
             this.productId = productId;
             this.qty = qty;
@@ -34,7 +35,6 @@ public interface CartApi {
 
     class UpdateCartRequest {
         public int qty;
-
         public UpdateCartRequest(int qty) {
             this.qty = qty;
         }
@@ -48,13 +48,12 @@ public interface CartApi {
         public static class Data {
             public List<CartItem> cart;
         }
-
         public static class ErrorResponse {
             public String message;
         }
     }
 
-    class CartItem {
+    class CartItem implements Serializable {
         @SerializedName("_id")
         public String id;
         public String productId;
@@ -67,12 +66,11 @@ public interface CartApi {
 
         public transient boolean isSelected = false;
 
-        public static class ProductInfo {
+        public static class ProductInfo implements Serializable {
             public String id, title, description, imageUrl;
             public List<String> images;
         }
 
-        // Helper methods
         public String getName() {
             return (product != null && product.title != null) ? product.title : "Đang tải...";
         }
@@ -87,6 +85,18 @@ public interface CartApi {
                 if (product.images != null && !product.images.isEmpty()) return product.images.get(0);
             }
             return null;
+        }
+
+        public String getProductId() {
+            return productId;
+        }
+
+        public long getPrice() {
+            return price;
+        }
+
+        public int getQty() {
+            return qty;
         }
 
         public long getTotalPrice() {

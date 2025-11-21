@@ -9,75 +9,76 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-import com.example.secondchance.data.remote.CartApi; // ✅ Thay đổi import
+import com.example.secondchance.dto.response.PreviewOrderResponse;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProductsAdapter.ProductViewHolder> {
+    private List<PreviewOrderResponse.PreviewItem> items = new ArrayList<>();
 
-    private List<CartApi.CartItem> products; // ✅ Thay đổi type
-
-    public CheckoutProductsAdapter(List<CartApi.CartItem> selectedProducts) {
-        if (selectedProducts != null) {
-            this.products = selectedProducts;
-        } else {
-            this.products = new ArrayList<>();
+    public void setItems(List<PreviewOrderResponse.ShopGroup> shopGroups) {
+        this.items.clear();
+        if (shopGroups != null) {
+            for (PreviewOrderResponse.ShopGroup group : shopGroups) {
+                if (group.items != null) {
+                    this.items.addAll(group.items);
+                }
+            }
         }
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_checkout_product, parent, false);
+                .inflate(R.layout.item_cart, parent, false);
         return new ProductViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        CartApi.CartItem product = products.get(position);
-        holder.bind(product);
+        PreviewOrderResponse.PreviewItem item = items.get(position);
+        holder.bind(item);
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return items.size();
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        private ImageView ivProductImage;
-        private TextView tvProductName, tvProductPrice, tvProductDescription;
+        private ImageView ivProductImage, checkboxItem;
+        private TextView tvProductName, tvProductPrice, tvProductQuantity;
+        private View layoutDelete;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProductImage = itemView.findViewById(R.id.ivProductImage);
             tvProductName = itemView.findViewById(R.id.tvProductName);
             tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
-            tvProductDescription = itemView.findViewById(R.id.tvProductDescription);
+            tvProductQuantity = itemView.findViewById(R.id.tvProductQuantity);
+            checkboxItem = itemView.findViewById(R.id.checkboxItem);
+            layoutDelete = itemView.findViewById(R.id.layoutDelete);
+
+            if (layoutDelete != null) layoutDelete.setVisibility(View.GONE);
+            if (checkboxItem != null) checkboxItem.setVisibility(View.GONE);
         }
 
-        public void bind(CartApi.CartItem product) {
-            tvProductName.setText(product.getName());
+        public void bind(PreviewOrderResponse.PreviewItem item) {
+            tvProductName.setText(item.name);
 
-            // Format price với dấu chấm
-            String priceFormatted = String.format("%,d", product.getTotalPrice()).replace(",", ".");
-            tvProductPrice.setText("₫ " + priceFormatted);
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            tvProductPrice.setText(formatter.format(item.price));
 
-            tvProductDescription.setText(product.getDescription());
+            tvProductQuantity.setText("Số lượng: " + item.qty);
 
-            // ✅ Load image với Glide
-            String imageUrl = product.getImageUrl();
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+            if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
                 Glide.with(itemView.getContext())
-                        .load(imageUrl)
-                        .placeholder(R.color.grayLight)
-                        .error(R.color.grayLight)
-                        .centerCrop()
+                        .load(item.imageUrl)
                         .into(ivProductImage);
-            } else {
-                ivProductImage.setBackgroundColor(itemView.getContext()
-                        .getResources().getColor(R.color.grayLight, null));
             }
         }
     }

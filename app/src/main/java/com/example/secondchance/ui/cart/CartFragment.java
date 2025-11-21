@@ -65,6 +65,7 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     }
 
     private void setupRecyclerView() {
+        // Truyền 'this' (CartFragment) làm listener cho Adapter
         adapter = new CartAdapter(this);
         recyclerViewCart.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewCart.setAdapter(adapter);
@@ -114,10 +115,15 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
         } else {
             layoutSelectAll.setVisibility(View.VISIBLE);
         }
-        updateTotalPrice();
+
+        // Cập nhật trạng thái nút Select All
+        boolean allSelected = items.size() > 0 && adapter.areAllItemsSelected();
         checkboxSelectAll.setImageResource(
-                adapter.areAllItemsSelected() ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+                allSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
         );
+
+        // Cập nhật tổng tiền ban đầu (nếu có item đã được chọn từ trước)
+        onTotalChange(adapter.calculateTotal());
     }
 
     private void setLoadingState(boolean loading) {
@@ -128,30 +134,51 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     private void toggleSelectAll() {
         boolean shouldSelectAll = !adapter.areAllItemsSelected();
         adapter.selectAll(shouldSelectAll);
-        updateUIState(adapter.getItems());
+
+        checkboxSelectAll.setImageResource(
+                shouldSelectAll ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+        );
     }
 
     private void handleBuyNow() {
-        List<CartApi.CartItem> selectedItems = adapter.getSelectedItems();
+        ArrayList<CartApi.CartItem> selectedItems = (ArrayList<CartApi.CartItem>) adapter.getSelectedItems();
+
         if (selectedItems.isEmpty()) {
             Toast.makeText(requireContext(), "Vui lòng chọn sản phẩm để mua", Toast.LENGTH_SHORT).show();
             return;
         }
-        // TODO: Navigate to checkout
+
+        // Đóng gói dữ liệu vào Bundle
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("selectedItems", selectedItems);
+
+        // Chuyển hướng sang CheckoutFragment
+        try {
+            // Đảm bảo ID action này có trong nav_graph
+            Navigation.findNavController(requireView()).navigate(R.id.navigation_checkout, bundle);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void updateTotalPrice() {
-        long totalPrice = 0;
-        for (CartApi.CartItem item : adapter.getSelectedItems()) {
-            totalPrice += item.getTotalPrice();
-        }
-        String formattedPrice = String.format("%,d", totalPrice).replace(",", ".");
-        tvTotalPrice.setText(formattedPrice);
-    }
+    // ==================================================================
+    // 🔥 IMPLEMENT CÁC HÀM CỦA INTERFACE OnCartItemListener
+    // ==================================================================
 
     @Override
     public void onItemChecked(CartApi.CartItem item, boolean isChecked) {
-        updateUIState(adapter.getItems());
+        // Khi một item thay đổi trạng thái check, cập nhật UI Select All
+        boolean allSelected = adapter.getItemCount() > 0 && adapter.areAllItemsSelected();
+        checkboxSelectAll.setImageResource(
+                allSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+        );
+    }
+
+    @Override
+    public void onTotalChange(long total) {
+        // Cập nhật TextView tổng tiền
+        String formattedPrice = String.format("%,d", total).replace(",", ".");
+        tvTotalPrice.setText(formattedPrice);
     }
 
     @Override
@@ -162,9 +189,9 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
                 item.getName(),
                 item.getDescription(),
                 item.qty,
-                0, 
+                0,
                 String.valueOf(item.price),
-                ProductCard.ProductType.FIXED, 
+                ProductCard.ProductType.FIXED,
                 null, 0
         );
 

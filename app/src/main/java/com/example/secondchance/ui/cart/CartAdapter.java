@@ -34,6 +34,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         void onItemChecked(CartApi.CartItem item, boolean isChecked);
         void onViewDetail(CartApi.CartItem item);
         void onItemDeleted(CartApi.CartItem item, int position);
+        void onTotalChange(long total); // 🔥 Thêm hàm này để báo ra ngoài
     }
 
     public CartAdapter(OnCartItemListener listener) {
@@ -47,10 +48,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             this.cartItems.addAll(newItems);
         }
         notifyDataSetChanged();
+        // Tính lại tiền khi load xong
+        if (listener != null) listener.onTotalChange(calculateTotal());
     }
 
-    public List<CartApi.CartItem> getSelectedItems() {
-        List<CartApi.CartItem> selectedItems = new ArrayList<>();
+    // 🔥 Hàm lấy danh sách chọn để gửi sang Checkout (Quan trọng)
+    public ArrayList<CartApi.CartItem> getSelectedItems() {
+        ArrayList<CartApi.CartItem> selectedItems = new ArrayList<>();
         for (CartApi.CartItem item : cartItems) {
             if (item.isSelected) {
                 selectedItems.add(item);
@@ -59,11 +63,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         return selectedItems;
     }
 
+    // 🔥 Hàm tính tổng tiền
+    public long calculateTotal() {
+        long total = 0;
+        for (CartApi.CartItem item : cartItems) {
+            if (item.isSelected) {
+                // Lưu ý: getPrice() trả về đơn giá, nhân với qty
+                total += (item.getPrice() * item.qty);
+            }
+        }
+        return total;
+    }
+
     public void selectAll(boolean select) {
         for (CartApi.CartItem item : cartItems) {
             item.isSelected = select;
         }
         notifyDataSetChanged();
+        if (listener != null) listener.onTotalChange(calculateTotal());
     }
 
     public boolean areAllItemsSelected() {
@@ -108,7 +125,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             public void onResponse(Call<ProductApi.ProductEnvelope> call, Response<ProductApi.ProductEnvelope> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().success && response.body().data != null) {
                     ProductApi.Product product = response.body().data;
-                    
+
                     if (item.product == null) {
                         item.product = new CartApi.CartItem.ProductInfo();
                     }
@@ -169,6 +186,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             tvProductDescription.setText(item.getDescription());
             tvProductQuantity.setText("Số lượng: " + item.qty);
 
+            // Hiển thị tổng tiền của Item (đơn giá * số lượng)
             long totalPrice = item.getTotalPrice();
             String priceFormatted = String.format("%,d", totalPrice).replace(",", ".");
             tvProductPrice.setText("đ" + priceFormatted);
@@ -191,6 +209,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 );
                 if (listener != null) {
                     listener.onItemChecked(item, item.isSelected);
+                    // 🔥 Cập nhật tổng tiền khi check
+                    listener.onTotalChange(calculateTotal());
                 }
             });
 

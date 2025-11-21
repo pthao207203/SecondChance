@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/whiteDay">
 
-    <!-- Scrollable Content -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -16,38 +16,43 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
-            <!-- Sản phẩm mua hàng -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="@dimen/space_16"
+                android:paddingHorizontal="12dp"
                 android:text="Sản phẩm mua hàng"
                 android:textColor="@color/darkerDay"
                 android:textSize="@dimen/text_16"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Product Items với ViewPager2 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-
+                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="10dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/whiteDay"
+                    android:background="@color/grayDay"
                     android:padding="12dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/viewPagerProducts"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvProducts"
                         android:layout_width="match_parent"
-                        android:layout_height="120dp" />
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_cart" />
 
-                    <!-- Indicator -->
                     <LinearLayout
                         android:id="@+id/indicatorLayout"
                         android:layout_width="wrap_content"
@@ -58,7 +63,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Phương thức vận chuyển -->
             <LinearLayout
                 android:id="@+id/btnShippingMethod"
                 android:layout_width="match_parent"
@@ -68,7 +72,6 @@
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -85,11 +88,11 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Xem thêm"
                         android:src="@drawable/chevron_down"
-                        app:tint="@color/darkerDay"
-                        android:contentDescription="Xem thêm" />
+                        app:tint="@color/darkerDay" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -125,9 +128,10 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvDeliveryDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nhận vào ngày 17/03/2025"
+                            android:text="Đang tính toán..."
                             android:textColor="@color/darkerDay"
                             android:textSize="@dimen/text_16" />
                     </LinearLayout>
@@ -151,7 +155,6 @@
                             android:layout_height="1dp"
                             android:layout_weight="1" />
 
-                        <!-- TextView for 'đ' symbol -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -160,12 +163,11 @@
                             android:textSize="@dimen/text_13"
                             android:textStyle="bold" />
 
-                        <!-- TextView for the price amount -->
                         <TextView
                             android:id="@+id/tvTrasnportFee"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="150.000"
+                            android:text="0"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/text_13"
                             android:textStyle="bold" />
@@ -173,7 +175,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Phương thức thanh toán -->
             <LinearLayout
                 android:id="@+id/btnPaymentMethod"
                 android:layout_width="match_parent"
@@ -200,11 +201,19 @@
                         android:textSize="@dimen/text_13"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thay đổi"
+                        android:textColor="@color/highLight5"
+                        android:textSize="@dimen/text_13"
+                        android:layout_marginEnd="4dp"/>
+
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/chevron_down"
-                        android:contentDescription="Xem thêm" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dp"
+                        android:contentDescription="Xem thêm"
+                        android:src="@drawable/chevron_down" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -222,14 +231,15 @@
                         android:gravity="center_vertical">
 
                         <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
+                            android:id="@+id/ivPaymentIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:src="@drawable/ic_credit_card"
-                            android:layout_marginEnd="8dp"
-                            app:tint="@color/highLight5"
+                            android:layout_marginEnd="12dp"
                             android:contentDescription="Thanh toán" />
 
                         <TextView
+                            android:id="@+id/tvPaymentMethodName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Thanh toán khi nhận hàng"
@@ -239,17 +249,18 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvPaymentDesc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chủ ý điện thoại của shipper và điền đúng địa chỉ nhận hàng."
+                        android:text="Thanh toán bằng tiền mặt khi nhận hàng."
                         android:textColor="#666666"
                         android:textSize="@dimen/text_13"
-                        android:layout_marginStart="23dp"
+                        android:layout_marginStart="36dp"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
+
             </LinearLayout>
 
-            <!-- Địa chỉ nhận hàng -->
             <LinearLayout
                 android:id="@+id/btnShippingAddress"
                 android:layout_width="match_parent"
@@ -260,7 +271,6 @@
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -364,16 +374,13 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Section -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/whiteDay"
         android:elevation="8dp">
-
-        <!-- Orange top border -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -386,7 +393,6 @@
             android:padding="16dp"
             android:gravity="center_vertical">
 
-            <!-- Total price section -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -410,12 +416,11 @@
                     android:textSize="@dimen/text_20"
                     android:textStyle="bold" />
 
-                <!-- TextView for the price amount -->
                 <TextView
                     android:id="@+id/tvTotalPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="150.000"
+                    android:text="0"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/text_20"
                     android:textStyle="bold" />

@@ -120,6 +120,40 @@
         <action
             android:id="@+id/action_detail_product_to_negotiation"
             app:destination="@id/navigation_negotiation" />
+        <action
+            android:id="@+id/action_detail_product_to_checkout"
+            app:destination="@id/navigation_checkout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_cart"
+        android:name="com.example.secondchance.ui.cart.CartFragment"
+        android:label="Giỏ hàng"
+        tools:layout="@layout/fragment_cart">
+
+        <action
+            android:id="@+id/action_cart_to_checkout"
+            app:destination="@id/navigation_checkout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_checkout"
+        android:name="com.example.secondchance.ui.checkout.CheckoutFragment"
+        android:label="Thanh toán"
+        tools:layout="@layout/fragment_checkout">
+
+        <argument
+            android:name="productId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+        android:name="quantity"
+        app:argType="integer"
+        android:defaultValue="1" />
+        <argument
+            android:name="selectedItems"
+            app:argType="java.io.Serializable"
+            app:nullable="true" />
     </fragment>
 
     <fragment

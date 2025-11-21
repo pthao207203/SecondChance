@@ -1,10 +1,12 @@
 package com.example.secondchance.ui.checkout;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,330 +15,312 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.secondchance.R;
-import com.example.secondchance.data.remote.CartApi; // ✅ Thay đổi import
+import com.example.secondchance.data.remote.CartApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.databinding.FragmentCheckoutBinding;
+import com.example.secondchance.dto.request.PaymentRequest;
+import com.example.secondchance.dto.request.PreviewOrderRequest;
+import com.example.secondchance.dto.response.PaymentResponse;
+import com.example.secondchance.dto.response.PreviewOrderResponse;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CheckoutFragment extends Fragment {
 
-    private ViewPager2 viewPagerProducts;
-    private LinearLayout indicatorLayout;
-    private TextView tvTotalPrice;
-    private View btnBuyNow;
-    private View btnShippingMethod, btnPaymentMethod, btnShippingAddress;
-    private CheckoutProductsAdapter productsAdapter;
-    private List<CartApi.CartItem> selectedProducts = new ArrayList<>(); // ✅ Thay đổi type
-    private int shippingFee = 15000;
-    private int totalAmount = 0;
+    private FragmentCheckoutBinding binding;
 
-    private BottomSheetDialog qrPaymentDialog;
-    private CountDownTimer countDownTimer;
-    private long remainingTime = 900000; // 15 phút
+    private List<CartApi.CartItem> checkoutItems = new ArrayList<>();
+
+    private long serverShippingFee = 0;
+    private long serverGrandTotal = 0;
+
+    private enum PaymentMethod { COD, WALLET, ZALOPAY }
+    private PaymentMethod currentPaymentMethod = PaymentMethod.COD;
+
+    private CheckoutProductsAdapter productsAdapter;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_checkout, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentCheckoutBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // ✅ Nhận dữ liệu từ CartFragment
-        if (getArguments() != null && getArguments().containsKey("selectedItems")) {
-            // Note: Bạn cần convert ArrayList<CartApi.CartItem> thành serializable
-            // hoặc dùng Parcelable
-            ArrayList<CartApi.CartItem> items = (ArrayList<CartApi.CartItem>)
-                    getArguments().getSerializable("selectedItems");
-            if (items != null) {
-                selectedProducts = items;
+        setupRecyclerView();
+        updatePaymentUI();
+        calculateDeliveryDate();
+
+        handleArguments();
+
+        loadOrderPreview();
+
+        binding.btnPaymentMethod.setOnClickListener(v -> showPaymentMethodDialog());
+        binding.btnBuyNow.setOnClickListener(v -> handleBuyNow());
+    }
+
+    private void setupRecyclerView() {
+        productsAdapter = new CheckoutProductsAdapter();
+
+        binding.rvProducts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        binding.rvProducts.setHasFixedSize(true);
+
+        binding.rvProducts.setAdapter(productsAdapter);
+    }
+
+    private void calculateDeliveryDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 5);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        // binding.tvDeliveryDate.setText("Nhận vào ngày " + sdf.format(calendar.getTime()));
+        // (Nhớ thêm ID tvDeliveryDate vào XML nếu muốn hiện)
+    }
+
+    private void handleArguments() {
+        if (getArguments() == null) return;
+
+        if (getArguments().containsKey("selectedItems")) {
+            ArrayList<CartApi.CartItem> items = (ArrayList<CartApi.CartItem>) getArguments().getSerializable("selectedItems");
+            if (items != null) checkoutItems.addAll(items);
+        } else if (getArguments().containsKey("productId")) {
+            String pId = getArguments().getString("productId");
+            int qty = getArguments().getInt("quantity", 1);
+            // Tạo item giả lập cho trường hợp mua ngay
+            CartApi.CartItem item = new CartApi.CartItem();
+            item.productId = pId;
+            item.qty = qty;
+            checkoutItems.add(item);
+        }
+    }
+
+    private void loadOrderPreview() {
+        binding.tvDeliveryDate.setText("Đang tính toán...");
+        binding.btnBuyNow.setEnabled(false);
+        binding.btnBuyNow.setAlpha(0.5f);
+
+        PreviewOrderRequest request = new PreviewOrderRequest();
+        List<PreviewOrderRequest.Item> items = new ArrayList<>();
+
+        for (CartApi.CartItem item : checkoutItems) {
+            String pId = (item.productId != null) ? item.productId :
+                    (item.product != null ? item.product.id : null);
+
+            if (pId != null) {
+                items.add(new PreviewOrderRequest.Item(pId, item.qty));
             }
         }
 
-        initViews(view);
-        setupViewPager();
-        setupClickListeners();
-        updateTotalPrice();
-    }
+        android.util.Log.d("CHECKOUT", "Sending items to preview: " + items.size());
 
-    private void initViews(View view) {
-        viewPagerProducts = view.findViewById(R.id.viewPagerProducts);
-        indicatorLayout = view.findViewById(R.id.indicatorLayout);
-        tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
-        btnBuyNow = view.findViewById(R.id.btnBuyNow);
-        btnShippingMethod = view.findViewById(R.id.btnShippingMethod);
-        btnPaymentMethod = view.findViewById(R.id.btnPaymentMethod);
-        btnShippingAddress = view.findViewById(R.id.btnShippingAddress);
-    }
+        request.setItems(items);
 
-    private void setupViewPager() {
-        productsAdapter = new CheckoutProductsAdapter(selectedProducts);
-        viewPagerProducts.setAdapter(productsAdapter);
-
-        setupIndicators(selectedProducts.size());
-
-        viewPagerProducts.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        RetrofitProvider.order().previewOrder(request).enqueue(new Callback<PreviewOrderResponse>() {
             @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                updateIndicators(position);
+            public void onResponse(Call<PreviewOrderResponse> call, Response<PreviewOrderResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().success) {
+                        PreviewOrderResponse.Data data = response.body().getData();
+
+                        serverShippingFee = data.getShippingFee();
+                        serverGrandTotal = data.getGrandTotal();
+
+                        // Cập nhật UI
+                        DecimalFormat formatter = new DecimalFormat("#,###");
+                        binding.tvTrasnportFee.setText(formatter.format(serverShippingFee));
+                        binding.tvTotalPrice.setText(formatter.format(serverGrandTotal));
+
+                        // Cập nhật trạng thái vận chuyển
+                        binding.tvDeliveryDate.setText("Đã tính xong");
+
+                        // Update list adapter
+                        if(productsAdapter != null) {
+                            productsAdapter.setItems(data.getItems());
+                        }
+
+                        // Mở khóa nút mua
+                        binding.btnBuyNow.setEnabled(true);
+                        binding.btnBuyNow.setAlpha(1.0f);
+                    } else {
+                        Toast.makeText(getContext(), "Lỗi: Không thể tính tiền đơn hàng", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    android.util.Log.e("CHECKOUT", "Preview Failed: " + response.code());
+                    try {
+                        String errorBody = response.errorBody().string();
+                        android.util.Log.e("CHECKOUT", "Error Body: " + errorBody);
+                        Toast.makeText(getContext(), "Lỗi tính tiền: " + response.message(), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) { e.printStackTrace(); }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PreviewOrderResponse> call, Throwable t) {
+                android.util.Log.e("CHECKOUT", "Network Error: " + t.getMessage());
+                Toast.makeText(getContext(), "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+                binding.tvDeliveryDate.setText("Lỗi mạng");
             }
         });
     }
 
-    private void setupIndicators(int count) {
-        indicatorLayout.removeAllViews();
+    private void showPaymentMethodDialog() {
+        final BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(40, 40, 40, 40);
+        layout.setBackgroundColor(Color.WHITE);
 
-        if (count <= 1) {
-            indicatorLayout.setVisibility(View.GONE);
+        TextView title = new TextView(requireContext());
+        title.setText("Chọn phương thức thanh toán");
+        title.setTextSize(18);
+        title.setPadding(0, 0, 0, 30);
+        title.setTextColor(Color.BLACK);
+        layout.addView(title);
+
+        layout.addView(createPaymentOptionView(dialog, "Thanh toán khi nhận hàng", R.drawable.ic_credit_card, PaymentMethod.COD));
+        layout.addView(createPaymentOptionView(dialog, "Ví của tôi", R.drawable.ic_profile1, PaymentMethod.WALLET));
+        layout.addView(createPaymentOptionView(dialog, "Thanh toán qua ZaloPay", R.drawable.ic_transport, PaymentMethod.ZALOPAY));
+
+        dialog.setContentView(layout);
+        dialog.show();
+    }
+
+    private View createPaymentOptionView(BottomSheetDialog dialog, String name, int iconRes, PaymentMethod method) {
+        LinearLayout ll = new LinearLayout(requireContext());
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setPadding(0, 30, 0, 30);
+        ll.setGravity(Gravity.CENTER_VERTICAL);
+        ll.setClickable(true);
+
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(iconRes);
+        icon.setLayoutParams(new LinearLayout.LayoutParams(60, 60));
+
+        TextView tv = new TextView(requireContext());
+        tv.setText(name);
+        tv.setTextSize(16);
+        tv.setPadding(30, 0, 0, 0);
+        tv.setTextColor(Color.BLACK);
+
+        ll.addView(icon);
+        ll.addView(tv);
+
+        ll.setOnClickListener(v -> {
+            currentPaymentMethod = method;
+            updatePaymentUI();
+            dialog.dismiss();
+        });
+        return ll;
+    }
+
+    private void updatePaymentUI() {
+        switch (currentPaymentMethod) {
+            case COD:
+                binding.tvPaymentMethodName.setText("Thanh toán khi nhận hàng");
+                binding.tvPaymentDesc.setText("Thanh toán bằng tiền mặt khi nhận hàng.");
+                binding.ivPaymentIcon.setImageResource(R.drawable.ic_credit_card);
+                break;
+            case WALLET:
+                binding.tvPaymentMethodName.setText("Ví của tôi");
+                binding.tvPaymentDesc.setText("Sử dụng số dư trong ví ứng dụng.");
+                binding.ivPaymentIcon.setImageResource(R.drawable.ic_profile1);
+                break;
+            case ZALOPAY:
+                binding.tvPaymentMethodName.setText("ZaloPay");
+                binding.tvPaymentDesc.setText("Thanh toán an toàn qua ứng dụng ZaloPay.");
+                binding.ivPaymentIcon.setImageResource(R.drawable.ic_transport);
+                break;
+        }
+    }
+
+    private void handleBuyNow() {
+        if (checkoutItems.isEmpty()) {
+            Toast.makeText(getContext(), "Không có sản phẩm", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        indicatorLayout.setVisibility(View.VISIBLE);
-
-        View[] indicators = new View[count];
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(8, 0, 8, 0);
-
-        for (int i = 0; i < count; i++) {
-            indicators[i] = new View(requireContext());
-            indicators[i].setLayoutParams(params);
-            indicators[i].setBackgroundResource(R.drawable.indicator_inactive);
-            indicatorLayout.addView(indicators[i]);
-        }
-
-        if (count > 0) {
-            indicators[0].setBackgroundResource(R.drawable.indicator_active);
+        if (currentPaymentMethod == PaymentMethod.ZALOPAY) {
+            createZaloPayOrder();
+        } else {
+            Toast.makeText(requireContext(), "Tính năng đang phát triển...", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updateIndicators(int position) {
-        int childCount = indicatorLayout.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View indicator = indicatorLayout.getChildAt(i);
-            if (i == position) {
-                indicator.setBackgroundResource(R.drawable.indicator_active);
-            } else {
-                indicator.setBackgroundResource(R.drawable.indicator_inactive);
-            }
-        }
-    }
+    private void createZaloPayOrder() {
+        binding.btnBuyNow.setEnabled(false);
+        binding.btnBuyNow.setText("Đang tạo đơn...");
 
-    private void setupClickListeners() {
-        btnBuyNow.setOnClickListener(v -> {
-            remainingTime = 900000;
-            showQRPaymentDialog();
-        });
-
-        btnShippingMethod.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Chọn phương thức vận chuyển", Toast.LENGTH_SHORT).show()
-        );
-
-        btnPaymentMethod.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Chọn phương thức thanh toán", Toast.LENGTH_SHORT).show()
-        );
-
-        btnShippingAddress.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Chỉnh sửa địa chỉ nhận hàng", Toast.LENGTH_SHORT).show()
-        );
-    }
-
-    private void updateTotalPrice() {
-        totalAmount = shippingFee;
-
-        for (CartApi.CartItem item : selectedProducts) {
-            totalAmount += item.getTotalPrice(); // ✅ Thay đổi method call
+        List<PaymentRequest.Item> requestItems = new ArrayList<>();
+        for (CartApi.CartItem item : checkoutItems) {
+            String pId = (item.productId != null) ? item.productId :
+                    (item.product != null ? item.product.id : null);
+            if(pId != null) requestItems.add(new PaymentRequest.Item(pId, item.qty));
         }
 
-        String formatted = String.format("%,d", totalAmount).replace(",", ".");
-        tvTotalPrice.setText("₫ " + formatted);
-    }
+        PaymentRequest.ShippingAddress address = new PaymentRequest.ShippingAddress();
+        address.setFullName("Khách Hàng");
+        address.setPhone("0909123456");
+        address.setAddress("TP.HCM");
 
-    private void showQRPaymentDialog() {
-        qrPaymentDialog = new BottomSheetDialog(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_qr_payment, null);
-        qrPaymentDialog.setContentView(dialogView);
-        qrPaymentDialog.setCancelable(false);
+        PaymentRequest request = new PaymentRequest();
+        request.setItems(requestItems);
+        request.setShippingAddress(address);
 
-        ImageView btnClose = dialogView.findViewById(R.id.btnClose);
-        TextView tvCountdown = dialogView.findViewById(R.id.tvCountdown);
-        TextView tvAmount = dialogView.findViewById(R.id.tvAmount);
-        View btnConfirmPayment = dialogView.findViewById(R.id.btnConfirmPayment);
+        request.setShippingFee(serverShippingFee);
 
-        String formatted = String.format("%,d", totalAmount).replace(",", ".");
-        tvAmount.setText("₫ " + formatted);
-
-        startCountdown(tvCountdown);
-
-        btnClose.setOnClickListener(v -> {
-            stopCountdown();
-            qrPaymentDialog.dismiss();
-            showCancelPaymentDialog();
-        });
-
-        btnConfirmPayment.setOnClickListener(v -> {
-            stopCountdown();
-            qrPaymentDialog.dismiss();
-            showPaymentSuccessDialog();
-        });
-
-        qrPaymentDialog.setOnDismissListener(dialog -> stopCountdown());
-
-        qrPaymentDialog.show();
-    }
-
-    private void startCountdown(TextView tvCountdown) {
-        countDownTimer = new CountDownTimer(remainingTime, 1000) {
+        RetrofitProvider.payment().createZaloPayUrl(request).enqueue(new Callback<PaymentResponse>() {
             @Override
-            public void onTick(long millisUntilFinished) {
-                remainingTime = millisUntilFinished;
-                long minutes = (millisUntilFinished / 1000) / 60;
-                long seconds = (millisUntilFinished / 1000) % 60;
+            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
+                binding.btnBuyNow.setEnabled(true);
+                binding.btnBuyNow.setText("MUA NGAY");
 
-                String timeString = String.format(Locale.getDefault(),
-                        "%02d phút %02d giây", minutes, seconds);
-                tvCountdown.setText(timeString);
-            }
-
-            @Override
-            public void onFinish() {
-                if (qrPaymentDialog != null && qrPaymentDialog.isShowing()) {
-                    qrPaymentDialog.dismiss();
-                    showPaymentTimeoutDialog();
+                if (response.isSuccessful() && response.body() != null) {
+                    String payUrl = response.body().getPayUrl();
+                    if (payUrl != null && !payUrl.isEmpty()) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(payUrl));
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getContext(), "Lỗi: Link thanh toán rỗng", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Tạo đơn thất bại: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
-        };
-        countDownTimer.start();
-    }
 
-    private void stopCountdown() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
-    }
-
-    private void showCancelPaymentDialog() {
-        Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_cancel_payment);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.7f);
-        dialog.setCancelable(false);
-
-        MaterialButton btnConfirmCancel = dialog.findViewById(R.id.btnConfirmCancel);
-        MaterialButton btnAbortCancel = dialog.findViewById(R.id.btnAbortCancel);
-
-        btnConfirmCancel.setOnClickListener(v -> {
-            dialog.dismiss();
-            remainingTime = 900000;
-            showCancelSuccessDialog();
-        });
-
-        btnAbortCancel.setOnClickListener(v -> {
-            dialog.dismiss();
-            showQRPaymentDialog();
-        });
-
-        dialog.show();
-    }
-
-    private void showCancelSuccessDialog() {
-        Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_cancel_success);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.7f);
-
-        ImageView btnCloseSuccess = dialog.findViewById(R.id.btnCloseSuccess);
-        btnCloseSuccess.setOnClickListener(v -> {
-            dialog.dismiss();
-            Toast.makeText(requireContext(), "Đã hủy đơn hàng", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-        });
-
-        requireView().postDelayed(() -> {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-                Toast.makeText(requireContext(), "Đã hủy đơn hàng", Toast.LENGTH_SHORT).show();
-                requireActivity().onBackPressed();
+            @Override
+            public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                binding.btnBuyNow.setEnabled(true);
+                binding.btnBuyNow.setText("MUA NGAY");
+                Toast.makeText(getContext(), "Lỗi kết nối", Toast.LENGTH_SHORT).show();
             }
-        }, 2000);
-
-        dialog.show();
-    }
-
-    private void showPaymentTimeoutDialog() {
-        Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_payment_timeout);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.7f);
-        dialog.setCancelable(false);
-
-        MaterialButton btnGoHome = dialog.findViewById(R.id.btnGoHome);
-        MaterialButton btnRetry = dialog.findViewById(R.id.btnRetry);
-
-        btnGoHome.setOnClickListener(v -> {
-            dialog.dismiss();
-            Toast.makeText(requireContext(), "Đã hết thời gian thanh toán", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
         });
-
-        btnRetry.setOnClickListener(v -> {
-            dialog.dismiss();
-            remainingTime = 900000;
-            showQRPaymentDialog();
-        });
-
-        dialog.show();
-    }
-
-    private void showPaymentSuccessDialog() {
-        Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_payment_success);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setDimAmount(0.7f);
-        dialog.setCancelable(false);
-
-        ImageView btnCloseSuccess = dialog.findViewById(R.id.btnCloseSuccess);
-        btnCloseSuccess.setOnClickListener(v -> {
-            dialog.dismiss();
-            Toast.makeText(requireContext(), "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
-        });
-
-        requireView().postDelayed(() -> {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-                Toast.makeText(requireContext(), "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-                requireActivity().onBackPressed();
-            }
-        }, 3000);
-
-        dialog.show();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stopCountdown();
-        if (qrPaymentDialog != null && qrPaymentDialog.isShowing()) {
-            qrPaymentDialog.dismiss();
-        }
+        binding = null;
     }
 }

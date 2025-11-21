@@ -66,6 +66,7 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
     implementation libs.play.services.analytics.impl
+    implementation fileTree(dir: 'F:\\zalopay', include: ['*.aar', '*.jar'], exclude: [])
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
@@ -100,4 +101,9 @@ dependencies {
     implementation libs.google.material.typeface.v4003kotlin
     implementation libs.community.material.typeface.v70961kotlin
     implementation libs.weather.icons.typeface
+
+    // zalopay
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
+
 }
