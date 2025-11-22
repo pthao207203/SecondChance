@@ -17,31 +17,31 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MeApi {
-  @GET("me/wallet/history")
+  @GET("/api/me/wallet/history")
   Call<WalletHistoryResponse> getHistory(
     @Query("start") String startIsoUtc,
     @Query("end") String endIsoUtc
   );
 
-  @GET("me/wallet/history")
+  @GET("/api/me/wallet/history")
   Call<WalletHistoryResponse> getHistoryAll();
   
-  @GET("me/wallet/purchases")
+  @GET("/api/me/wallet/purchases")
   Call<WalletPurchasedHistoryResponse> getPurchasedHistory();
   
-  @GET("me/wallet/received")
+  @GET("/api/me/wallet/received")
   Call<WalletReceivedHistoryResponse> getReceivedHistory();
 
-  @GET("me/profile")
+  @GET("/api/me/profile")
   Call<UserProfileResponse> getUserProfile();
 
-  @GET("me")
+  @GET("/api/me")
   Call<ShopProfileResponse> getShopProfile();
 
-  @GET("sellers/{sellerId}/rates")
+  @GET("/api/sellers/{sellerId}/rates")
   Call<GetShopCommentsResponse> getShopComments(@Path("sellerId") String sellerId);
 
-  @POST("me/become-seller")
+  @POST("/api/me/become-seller")
   Call<ShopProfileResponse> registerAsSeller(@Body BecomeSellerRequest request);
 
   // === RESPONSE ENVELOPE ===

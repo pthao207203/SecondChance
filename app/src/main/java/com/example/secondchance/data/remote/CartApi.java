@@ -7,16 +7,16 @@ import retrofit2.http.*;
 
 public interface CartApi {
 
-    @GET("me/cart")
+    @GET("/api/me/cart")
     Call<CartEnvelope> getCart();
 
-    @POST("me/cart")
+    @POST("/api/me/cart")
     Call<CartEnvelope> addToCart(@Body AddToCartRequest request);
 
-    @DELETE("me/cart/{itemId}")
+    @DELETE("/api/me/cart/{itemId}")
     Call<CartEnvelope> removeFromCart(@Path("itemId") String itemId);
 
-    @PUT("me/cart/{itemId}")
+    @PUT("/api/me/cart/{itemId}")
     Call<CartEnvelope> updateCartItem(
             @Path("itemId") String itemId,
             @Body UpdateCartRequest request

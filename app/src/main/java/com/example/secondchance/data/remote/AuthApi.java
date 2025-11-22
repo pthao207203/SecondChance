@@ -9,7 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface AuthApi {
-  @POST("auth/login")
+  @POST("/api/auth/login")
   Call<LoginEnvelope> login(@Body LoginRequest body);
 
   class LoginRequest {
@@ -62,7 +62,7 @@ public interface AuthApi {
     public long expiresIn;
   }
   
-  @POST("auth/precheck")
+  @POST("/api/auth/precheck")
   Call<PrecheckEnvelope> precheck(@Body PrecheckRequest body);
   
   class PrecheckRequest {
@@ -83,7 +83,7 @@ public interface AuthApi {
   }
   
   // ====== REGISTER (mới) ======
-  @POST("auth/register")
+  @POST("/api/auth/register")
   Call<RegisterEnvelope> register(@Body RegisterRequest body);
   
   class RegisterRequest {
