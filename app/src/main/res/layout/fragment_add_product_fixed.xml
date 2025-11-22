@@ -163,6 +163,57 @@
                 android:textColor="@color/darkerDay"
                 android:background="@drawable/bg_light_active_outline"
                 android:layout_marginBottom="24dp"/>
+            <!-- Thương hiệu -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thương hiệu"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinner_brand"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_light_active_outline"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:spinnerMode="dropdown"
+                android:dropDownWidth="match_parent"
+                android:popupBackground="@drawable/bg_brand_dropdown" />
+
+            <!-- Danh mục (chọn nhiều) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Danh mục"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layout_category_picker"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_light_active_outline"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tv_selected_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Chọn danh mục"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_16" />
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -171,17 +222,13 @@
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
-
-            <EditText
-                android:id="@+id/et_condition_used"
+            <Spinner
+                android:id="@+id/spinner_condition_used"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Chưa sử dụng"
-                android:padding="12dp"
-                android:textSize="@dimen/text_16"
-                android:textColor="@color/darkerDay"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_light_active_outline"
-                android:layout_marginBottom="16dp"/>
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -252,16 +299,13 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
-            <EditText
-                android:id="@+id/et_return_policy"
+            <Spinner
+                android:id="@+id/spinner_return_policy"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Có đổi trả"
-                android:textSize="@dimen/text_16"
-                android:padding="12dp"
-                android:textColor="@color/darkerDay"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_light_active_outline"
-                android:layout_marginBottom="16dp"/>
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -271,17 +315,14 @@
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
-
-            <EditText
-                android:id="@+id/et_source"
+            <!-- Spinner chọn boolean: sản phẩm có nguồn gốc rõ ràng hay không -->
+            <Spinner
+                android:id="@+id/spinner_has_origin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Có nguồn"
-                android:textSize="@dimen/text_16"
-                android:padding="12dp"
-                android:textColor="@color/darkerDay"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_light_active_outline"
-                android:layout_marginBottom="24dp"/>
+                android:padding="12dp"
+                android:layout_marginBottom="8dp" />
             <LinearLayout
                 android:id="@+id/btn_next1"
                 android:layout_width="wrap_content"

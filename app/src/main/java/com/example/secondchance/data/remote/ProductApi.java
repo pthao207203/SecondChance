@@ -1,17 +1,38 @@
 // data/remote/ProductApi.java
 package com.example.secondchance.data.remote;
 
+import com.example.secondchance.dto.request.ProductCreateRequest;
+import com.example.secondchance.dto.response.AuctionListResponse;
+import com.example.secondchance.dto.response.BasicResponse;
+import com.example.secondchance.dto.response.ProductMetaResponse;
 import com.google.gson.annotations.SerializedName;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 import java.util.List;
 
 public interface ProductApi {
 
-    @GET("products/{id}")
+    @GET("/api/products/{id}")
     Call<ProductEnvelope> getProductById(@Path("id") String productId);
+    
+    @GET("/api/products/auctions")
+    Call<AuctionListResponse> getAuctions(
+      @Query("page") Integer page,
+      @Query("pageSize") Integer pageSize
+    );
+    
+    @POST("/admin/products")
+    Call<BasicResponse> createProduct(
+      @Body ProductCreateRequest body
+    );
+    
+    @GET("/admin/products/meta")
+    Call<ProductMetaResponse> getProductMeta();
 
     class ProductEnvelope {
         @SerializedName("success")

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/whiteDay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <!-- Icon (có thể dùng icon upload / đồng hồ / logo app, tạm dùng ic_question_mark hoặc icon bạn có) -->
+<!--        <ImageView-->
+<!--            android:id="@+id/imgLoadingIcon"-->
+<!--            android:layout_width="56dp"-->
+<!--            android:layout_height="56dp"-->
+<!--            android:src="@drawable/ic_loading"-->
+<!--            app:tint="@color/normalDay"-->
+<!--            android:layout_marginBottom="16dp"/>-->
+
+        <!-- Text chính -->
+        <TextView
+            android:id="@+id/tvLoadingTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đang xử lý..."
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+        <!-- Thanh loading -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Text phụ -->
+        <TextView
+            android:id="@+id/tvLoadingSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vui lòng đợi trong giây lát"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_13"
+            android:gravity="center"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

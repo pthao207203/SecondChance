@@ -16,26 +16,26 @@ import retrofit2.http.Query;
 public interface OrderApi {
 
     // --- Các API đã có ---
-    @GET("orders")
+    @GET("/api/orders")
     Call<OrderListEnvelope> getOrdersByStatus(@Query("status") String status);
 
-    @POST("orders/{id}/cancel")
+    @POST("/api/orders/{id}/cancel")
     Call<BasicResponse> cancelOrder(@Path("id") String orderId);
 
-    @POST("orders/{id}/return")
+    @POST("/api/orders/{id}/return")
     Call<BaseEnvelope> createReturnRequest(@Path("id") String orderId, @Body ReturnRequestBody body);
 
     @POST("/api/orders/{id}/confirm-delivery")
     Call<BasicResponse> confirmDelivery(@Path("id") String orderId);
 
-    @POST("orders/preview")
+    @POST("/api/orders/preview")
     Call<OrderPreviewResponse> previewOrder(@Body PreviewRequestBody body);
 
-    @GET("orders/{id}")
+    @GET("/api/orders/{id}")
     Call<OrderDetailResponse> getOrderDetail(@Path("id") String orderId);
 
     // --- API mới để đặt hàng ---
-    @POST("orders/place")
+    @POST("/api/orders/place")
     Call<PlaceOrderResponse> placeOrder(@Body PlaceOrderRequestBody body);
 
 

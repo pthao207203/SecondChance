@@ -31,6 +31,7 @@ public class RetrofitProvider {
   private static volatile OrderApi  orderApi;
   private static volatile CartApi cartApi;
   private static volatile ProductApi productApi;
+  private static volatile CloudinaryApi cloudinaryApi;
   private static Context appCtx;
   private static final AtomicBoolean logoutInProgress = new AtomicBoolean(false);
 
@@ -121,16 +122,21 @@ public class RetrofitProvider {
     return orderApi;
   }
 
-    public static CartApi cart() {
-        if (cartApi == null) cartApi = ensureRetrofit().create(CartApi.class);
-        return cartApi;
-    }
+  public static CartApi cart() {
+      if (cartApi == null) cartApi = ensureRetrofit().create(CartApi.class);
+      return cartApi;
+  }
 
-    public static ProductApi product() {
-        if (productApi == null) productApi = ensureRetrofit().create(ProductApi.class);
-        return productApi;
-    }
-
+  public static ProductApi product() {
+      if (productApi == null) productApi = ensureRetrofit().create(ProductApi.class);
+      return productApi;
+  }
+  public static CloudinaryApi cloudinary() {
+    if (cloudinaryApi == null) cloudinaryApi = ensureRetrofit().create(CloudinaryApi.class);
+    return cloudinaryApi;
+  }
+  
+  
   public static Retrofit getRetrofit() {
     return ensureRetrofit();
   }
