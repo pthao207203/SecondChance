@@ -945,6 +945,39 @@
             app:destination="@id/navigation_detail_product" />
     </fragment>
 
+    <action android:id="@+id/action_global_to_messageFragment"
+        app:destination="@id/messageFragment" />
+
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.example.secondchance.ui.message.MessageFragment"
+        android:label="Tin nhắn" >
+
+<!--        <action-->
+<!--            android:id="@+id/action_messageFragment_to_navigation_detail_message"-->
+<!--            app:destination="@id/navigation_detail_message" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detail_message"
+        android:name="com.example.secondchance.ui.message.MessageDetailFragment"
+        android:label="Chi tiết tin nhắn" >
+
+        <!-- NHẬN DỮ LIỆU TỪ DANH SÁCH -->
+        <argument
+            android:name="senderName"
+            app:argType="string" />
+        <argument
+            android:name="senderAvatar"
+            app:argType="string" />
+        <argument
+            android:name="senderId"
+            app:argType="string"
+            android:defaultValue="" />
+
+    </fragment>
+
+
     <fragment
         android:id="@+id/orderPreviewFragment"
         android:name="com.example.secondchance.ui.order.OrderPreviewFragment"
