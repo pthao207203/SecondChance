@@ -1,20 +1,15 @@
 package com.example.secondchance.data.remote;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Handler;
 import android.os.Looper;
 
-import android.util.Log;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.example.secondchance.R;
-import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
+import com.example.secondchance.ui.auth.LogoutRouter;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import android.os.Handler;
+
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -27,8 +22,8 @@ public class RetrofitProvider {
   private static volatile Retrofit retrofit;
   private static volatile AuthApi authApi;
   private static volatile HomeApi homeApi;
-  private static volatile MeApi  meApi;
-  private static volatile OrderApi  orderApi;
+  private static volatile MeApi meApi;
+  private static volatile OrderApi orderApi;
   private static volatile CartApi cartApi;
   private static volatile ProductApi productApi;
   private static volatile CloudinaryApi cloudinaryApi;
@@ -43,7 +38,6 @@ public class RetrofitProvider {
     if (retrofit != null) return retrofit;
 
     // 1) Gắn Authorization (trừ endpoint /api/auth)
-
     HttpLoggingInterceptor log = new HttpLoggingInterceptor();
     log.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -68,9 +62,9 @@ public class RetrofitProvider {
       okhttp3.Response res = chain.proceed(chain.request());
       if (res.code() == 401 && appCtx != null) {
         if (logoutInProgress.compareAndSet(false, true)) {
-          new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+          new Handler(Looper.getMainLooper()).post(() -> {
             try {
-              com.example.secondchance.ui.auth.LogoutRouter.forceLogout(appCtx);
+              LogoutRouter.forceLogout(appCtx);
             } finally {
               logoutInProgress.set(false);
             }
@@ -94,7 +88,7 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-      .baseUrl("http://52.195.233.219:3000/api/")
+      .baseUrl("http://nt118.hius.io.vn/api/")
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
@@ -135,8 +129,8 @@ public class RetrofitProvider {
     if (cloudinaryApi == null) cloudinaryApi = ensureRetrofit().create(CloudinaryApi.class);
     return cloudinaryApi;
   }
-  
-  
+
+
   public static Retrofit getRetrofit() {
     return ensureRetrofit();
   }

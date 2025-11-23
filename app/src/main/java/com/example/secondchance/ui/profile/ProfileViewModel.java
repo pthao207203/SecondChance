@@ -28,6 +28,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<List<PaymentMethodItem>> paymentMethodListLiveData = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Uri> avatarUriLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> nameLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> shopNameLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> phoneLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> emailLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();

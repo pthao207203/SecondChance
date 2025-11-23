@@ -4,7 +4,8 @@
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     app:cardCornerRadius="16dp"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    app:cardBackgroundColor="@color/whiteDay">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                 android:textColor="@color/darkerDay"
                 app:backgroundTint="@color/grayDay"
                 app:strokeWidth="0dp"
-                app:cornerRadius="10dp" />
+                app:cornerRadius="@dimen/radius_m" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelDelete"
@@ -57,7 +58,7 @@
                 android:textColor="@color/normalDay"
                 android:textStyle="bold"
                 app:strokeColor="@color/normalDay"
-                app:cornerRadius="10dp" />
+                app:cornerRadius="@dimen/radius_m" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
