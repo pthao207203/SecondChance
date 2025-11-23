@@ -76,5 +76,6 @@ public interface HomeApi {
     @SerializedName("endsInSec")      public long endsInSec;
     @SerializedName("currentPrice")   public long currentPrice;
     @SerializedName("currency")       public String currency;
+    @SerializedName("productPriceType")       public int priceType;
   }
 }

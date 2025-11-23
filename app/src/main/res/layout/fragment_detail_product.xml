@@ -786,7 +786,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
-                                        android:padding="12dp"
+                                        android:paddingTop="12dp"
+                                        android:paddingBottom="12dp"
                                         android:text="Minh Chứng"
                                         android:textColor="@color/darkerDay"
                                         android:textSize="@dimen/text_13"
@@ -963,6 +964,16 @@
                         />
                 </LinearLayout>
 
+
+                <TextView
+                    android:id="@+id/tv_no_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Không có đánh giá nào"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
                 <!-- Card đánh giá -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/customerReviewCard"
@@ -1124,11 +1135,14 @@
                 android:textSize="@dimen/text_20"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold" />
-            <FrameLayout
-                android:id="@+id/recoContainer"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/cardListFragmentContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints"/>
+                android:tag="CardListHost"
+                android:name="com.example.secondchance.ui.card.CardListFragment"
+                tools:layout="@layout/fragment_recycler_card" />
+
 
         </LinearLayout>
 

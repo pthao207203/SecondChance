@@ -12,7 +12,14 @@
         app:destination="@id/navigation_home"
         app:popUpTo="@id/mobile_navigation"
         app:popUpToInclusive="true" />
-
+    <action
+        android:id="@+id/action_global_detail_product"
+        app:destination="@id/navigation_detail_product"
+        app:launchSingleTop="true"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.secondchance.ui.home.HomeFragment"
@@ -24,6 +31,9 @@
         <action
             android:id="@+id/action_home_navigation_detail_product"
             app:destination="@id/navigation_detail_product" />
+        <action
+            android:id="@+id/action_home_to_auction"
+            app:destination="@id/navigation_auction" />
     </fragment>
 
     <fragment
@@ -42,16 +52,6 @@
         android:name="com.example.secondchance.ui.profile.ProfileFragment"
         android:label="Hồ sơ"
         tools:layout="@layout/fragment_profile">
-
-        <action
-            android:id="@+id/action_home_navigation_detail_product"
-            app:destination="@id/navigation_detail_product" />
-        <action
-            android:id="@+id/action_home_to_auction"
-            app:destination="@id/navigation_auction" />
-        <action
-            android:id="@+id/action_homeFragment_to_negotiationFragment"
-            app:destination="@id/navigation_negotiation" />
         <action
             android:id="@+id/action_profile_to_settings"
             app:destination="@id/settingFragment" />

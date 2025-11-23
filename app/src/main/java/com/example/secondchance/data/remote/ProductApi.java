@@ -1,8 +1,8 @@
 // data/remote/ProductApi.java
 package com.example.secondchance.data.remote;
 
-import com.example.secondchance.dto.request.ProductCreateRequest;
 import com.example.secondchance.dto.response.AuctionListResponse;
+import com.example.secondchance.dto.request.ProductCreateRequest;
 import com.example.secondchance.dto.response.BasicResponse;
 import com.example.secondchance.dto.response.ProductMetaResponse;
 import com.google.gson.annotations.SerializedName;

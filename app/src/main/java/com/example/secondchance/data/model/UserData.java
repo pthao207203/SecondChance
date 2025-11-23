@@ -6,7 +6,9 @@ public class UserData {
 
     @SerializedName("name")
     private String name;
-
+    
+    @SerializedName("shopName")
+    private String shopName;
     @SerializedName("mail")
     private String mail;
 
