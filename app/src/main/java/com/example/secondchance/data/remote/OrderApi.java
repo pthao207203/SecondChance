@@ -1,11 +1,16 @@
 package com.example.secondchance.data.remote;
 
+import com.example.secondchance.data.model.OrderWrapper;
+import com.example.secondchance.dto.request.PaymentRequest;
+import com.example.secondchance.dto.request.PreviewOrderRequest;
 import com.example.secondchance.dto.response.BasicResponse;
 import com.example.secondchance.dto.response.OrderDetailResponse;
+import com.example.secondchance.dto.response.PreviewOrderResponse;
 import com.google.gson.annotations.SerializedName;
-
+import com.example.secondchance.data.model.Order;
+import com.example.secondchance.data.model.OrderItem;
+import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -15,31 +20,34 @@ import retrofit2.http.Query;
 
 public interface OrderApi {
 
-    // --- Các API đã có ---
-    @GET("/api/orders")
+    @GET("orders")
     Call<OrderListEnvelope> getOrdersByStatus(@Query("status") String status);
 
-    @POST("/api/orders/{id}/cancel")
+    @GET("orders/{id}")
+    Call<OrderDetailResponse> getOrderDetail(@Path("id") String orderId);
+
+    @POST("orders/{id}/cancel")
     Call<BasicResponse> cancelOrder(@Path("id") String orderId);
 
-    @POST("/api/orders/{id}/return")
-    Call<BaseEnvelope> createReturnRequest(@Path("id") String orderId, @Body ReturnRequestBody body);
-
+    @POST("orders/{id}/return")
+    Call<BaseEnvelope> createReturnRequest(
+            @Path("id") String orderId,
+            @Body ReturnRequestBody body
+    );
     @POST("/api/orders/{id}/confirm-delivery")
     Call<BasicResponse> confirmDelivery(@Path("id") String orderId);
 
-    @POST("/api/orders/preview")
+    @POST("orders/preview")
     Call<OrderPreviewResponse> previewOrder(@Body PreviewRequestBody body);
 
-    @GET("/api/orders/{id}")
-    Call<OrderDetailResponse> getOrderDetail(@Path("id") String orderId);
+    @POST("orders/preview")
+    Call<PreviewOrderResponse> previewOrder(@Body PreviewOrderRequest request);
 
-    // --- API mới để đặt hàng ---
-    @POST("/api/orders/place")
+    @POST("orders/place")
     Call<PlaceOrderResponse> placeOrder(@Body PlaceOrderRequestBody body);
 
-
-    // --- Các lớp cho API mới ---
+    @POST("orders/place")
+    Call<BasicResponse> placeOrder(@Body PaymentRequest request);
 
     class PlaceOrderRequestBody {
         @SerializedName("items")
@@ -126,13 +134,21 @@ public interface OrderApi {
         @SerializedName("description") public String description;
         @SerializedName("items") public List<ReturnRequestItem> items;
         @SerializedName("media") public List<String> media;
-        public ReturnRequestBody(String desc, List<ReturnRequestItem> items, List<String> mediaUrls) { this.description = desc; this.items = items; this.media = mediaUrls; }
+        public ReturnRequestBody(String desc, List<ReturnRequestItem> items, List<String> mediaUrls) {
+            this.description = desc;
+            this.items = items;
+            this.media = mediaUrls;
+        }
     }
 
     class ReturnRequestItem {
         @SerializedName("productId") public String productId;
-        @SerializedName("qty") public int quantity;
-        public ReturnRequestItem(String id, int qty) { this.productId = id; this.quantity = qty; }
+        @SerializedName("qty")       public int quantity;
+
+        public ReturnRequestItem(String id, int qty) {
+            this.productId = id;
+            this.quantity = qty;
+        }
     }
 
     class OrderListEnvelope {
@@ -142,10 +158,10 @@ public interface OrderApi {
     }
 
     class OrderListData {
-        @SerializedName("page") public int page;
-        @SerializedName("limit") public int limit;
-        @SerializedName("total") public int total;
-        @SerializedName("orders") public List<com.example.secondchance.data.model.OrderWrapper> orders;
+        @SerializedName("page")   public int page;
+        @SerializedName("limit")  public int limit;
+        @SerializedName("total")  public int total;
+        @SerializedName("orders") public List<OrderWrapper> orders;
     }
 
     class BaseEnvelope {

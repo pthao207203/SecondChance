@@ -9,23 +9,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-import com.example.secondchance.data.remote.OrderApi;
+import com.example.secondchance.dto.response.PreviewOrderResponse;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProductsAdapter.ProductViewHolder> {
+    private List<PreviewOrderResponse.PreviewItem> items = new ArrayList<>();
 
-    private final List<OrderApi.ProductItem> productList;
-
-    public CheckoutProductsAdapter(List<OrderApi.ProductItem> productList) {
-        this.productList = productList;
-    }
-
-    // PHƯƠNG THỨC CÒN THIẾU
-    public void updateData(List<OrderApi.ProductItem> newProductList) {
-        this.productList.clear();
-        if (newProductList != null) {
-            this.productList.addAll(newProductList);
+    public void setItems(List<PreviewOrderResponse.ShopGroup> shopGroups) {
+        this.items.clear();
+        if (shopGroups != null) {
+            for (PreviewOrderResponse.ShopGroup group : shopGroups) {
+                if (group.items != null) {
+                    this.items.addAll(group.items);
+                }
+            }
         }
         notifyDataSetChanged();
     }
@@ -33,42 +33,53 @@ public class CheckoutProductsAdapter extends RecyclerView.Adapter<CheckoutProduc
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_product, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_cart, parent, false);
         return new ProductViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        holder.bind(productList.get(position));
+        PreviewOrderResponse.PreviewItem item = items.get(position);
+        holder.bind(item);
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return items.size();
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivProductImage;
-        TextView tvProductName, tvProductDescription, tvProductPrice;
+        private ImageView ivProductImage, checkboxItem;
+        private TextView tvProductName, tvProductPrice, tvProductQuantity;
+        private View layoutDelete;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProductImage = itemView.findViewById(R.id.ivProductImage);
             tvProductName = itemView.findViewById(R.id.tvProductName);
-            tvProductDescription = itemView.findViewById(R.id.tvProductDescription);
             tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
+            tvProductQuantity = itemView.findViewById(R.id.tvProductQuantity);
+            checkboxItem = itemView.findViewById(R.id.checkboxItem);
+            layoutDelete = itemView.findViewById(R.id.layoutDelete);
+
+            if (layoutDelete != null) layoutDelete.setVisibility(View.GONE);
+            if (checkboxItem != null) checkboxItem.setVisibility(View.GONE);
         }
 
-        void bind(OrderApi.ProductItem product) {
-            tvProductName.setText(product.name);
-            tvProductDescription.setText(product.shortDescription);
-            String formattedPrice = String.format(Locale.GERMANY, "%,d", product.lineTotal).replace(",", ".");
-            tvProductPrice.setText(formattedPrice);
+        public void bind(PreviewOrderResponse.PreviewItem item) {
+            tvProductName.setText(item.name);
 
-            Glide.with(itemView.getContext())
-                    .load(product.imageUrl)
-                    .placeholder(R.color.grayLight)
-                    .into(ivProductImage);
+            DecimalFormat formatter = new DecimalFormat("#,###");
+            tvProductPrice.setText(formatter.format(item.price));
+
+            tvProductQuantity.setText("Số lượng: " + item.qty);
+
+            if (item.imageUrl != null && !item.imageUrl.isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(item.imageUrl)
+                        .into(ivProductImage);
+            }
         }
     }
 }

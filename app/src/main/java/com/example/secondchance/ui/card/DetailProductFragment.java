@@ -482,8 +482,15 @@ public class DetailProductFragment extends Fragment {
                 bundle.putString("productId", p.id);
                 Navigation.findNavController(v).navigate(R.id.navigation_rule_auction, bundle);
             } else {
-                // TODO: Chuyển sang trang mua ngay
-                Toast.makeText(requireContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("productId", p.id);
+                bundle.putInt("quantity", 1);
+                try {
+                    Navigation.findNavController(v).navigate(R.id.navigation_checkout, bundle);
+                } catch (IllegalArgumentException e) {
+                    Log.e("NavError", "Chưa tìm thấy ID navigation_checkout trong nav graph");
+                    Toast.makeText(requireContext(), "Lỗi điều hướng: Chưa cấu hình NavGraph", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

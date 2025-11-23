@@ -8,7 +8,6 @@ import com.example.secondchance.ui.comment.Comment;
 import com.example.secondchance.data.model.UserProfileResponse;
 import java.util.List;
 import com.example.secondchance.data.model.dto.BecomeSellerRequest;
-import com.example.secondchance.data.model.ShopProfileResponse;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.Call;

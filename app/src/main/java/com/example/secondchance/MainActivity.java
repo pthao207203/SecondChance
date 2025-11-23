@@ -43,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     Log.d("MainActivityDebug", "MainActivity onCreate called");
-    
-    // --- NavHost + NavController ---
+
     NavHostFragment navHostFragment =
       (NavHostFragment) getSupportFragmentManager()
         .findFragmentById(R.id.nav_host_fragment_activity_main);
@@ -53,44 +52,37 @@ public class MainActivity extends AppCompatActivity {
       return;
     }
     navController = navHostFragment.getNavController();
-    
-    // --- QUAN TRỌNG: nếu có cờ forceLogout -> set graph nav_auth (đúng UI đăng xuất) ---
+
     boolean forceLogout = getIntent() != null && getIntent().getBooleanExtra("forceLogout", false);
     if (forceLogout) {
-      // nav_auth phải có startDestination = loginFragment
       navController.setGraph(R.navigation.nav_auth);
       Log.d("MainActivity", "Force logout detected -> setGraph(nav_auth)");
     } else {
-      // Giữ cách cũ của bạn: vào app bình thường
+
       navController.setGraph(R.navigation.mobile_navigation);
       Log.d("MainActivity", "Normal launch -> setGraph(mobile_navigation)");
     }
-    
-    // --- Gắn click sample của bạn (Home icon ở custom menu) ---
+
     binding.myCustomMenu.navigationHome.setOnClickListener(v -> {
       NavController c = navController;
       c.navigate(R.id.navigation_home);
     });
-    
-    // --- ViewModel ---
+
     sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
     sharedViewModel.getCurrentTitle().observe(this, this::applySharedTitleIfNeeded);
     
     setupIconClickListeners();
     setupBottomMenuClickListeners();
-    
-    // --- Lắng nghe chuyển đích để cập nhật UI khung ---
+
     navController.addOnDestinationChangedListener((controller, destination, args) -> {
       Log.d("MainActivity", "Destination changed: " + destination.getId() + " label=" + destination.getLabel());
       updateUiVisibility(destination);
     });
-    
-    // --- Cập nhật UI ngay lần đầu sau khi setGraph ---
+
     NavDestination cur = navController.getCurrentDestination();
     if (cur != null) updateUiVisibility(cur);
   }
-  
-  
+
   private void applySharedTitleIfNeeded(String newTitle) {
     NavDestination cur = navController.getCurrentDestination();
     if (cur == null) return;
@@ -105,8 +97,7 @@ public class MainActivity extends AppCompatActivity {
       }
     }
   }
-  
-  // GIAO DIỆN header (ẩn/hiện)
+
   private void updateUiVisibility(NavDestination destination) {
     if (binding == null || destination == null) return;
     
@@ -119,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
     View searchContainer = binding.headerMain.searchContainer;
     View iconBack = binding.headerMain.iconBack;
     TextView tvTitle = binding.headerMain.tvHeaderTitle;
-    
-    // 🔧 CHANGED: xác định đang ở graph nào bằng ID của graph hiện tại
+
     View authWave = binding.authWave;
     
     boolean inAuth = false;
@@ -140,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
     tabsAppBar.setVisibility(View.GONE);
     
     if (!inAuth) {
-      // Header: Home thì show thanh search, còn lại back + title
       boolean isHome = destinationId == R.id.navigation_home;
       searchContainer.setVisibility(isHome ? View.VISIBLE : View.GONE);
       iconBack.setVisibility(isHome ? View.GONE : View.VISIBLE);
@@ -169,16 +158,14 @@ public class MainActivity extends AppCompatActivity {
       }
     });
   }
-  
-  // sự kiện click cho 3 icon trên header
+
   private void setupIconClickListeners() {
     binding.headerMain.iconCart.setOnClickListener(v -> openCartScreen());
     binding.headerMain.iconChat.setOnClickListener(v -> openChatScreen());
     binding.headerMain.iconNotify.setOnClickListener(v -> openNotificationScreen());
     binding.headerMain.iconSearch.setOnClickListener(v -> Toast.makeText(this, "Tìm kiếm...", Toast.LENGTH_SHORT).show());
   }
-  
-  // sự kiện click cho menu dưới
+
   private void setupBottomMenuClickListeners() {
     NavOptions navOptions = new NavOptions.Builder()
       .setLaunchSingleTop(true)
@@ -214,8 +201,7 @@ public class MainActivity extends AppCompatActivity {
       }
     });
   }
-  
-  // --- Các hàm xử lý chung khi click icon ---
+
   private void openCartScreen() {
     if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.cartFragment) {
         navController.navigate(R.id.action_global_to_cartFragment);
@@ -227,5 +213,4 @@ public class MainActivity extends AppCompatActivity {
   private void openNotificationScreen() {
     Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
   }
-  
 }

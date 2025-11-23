@@ -19,4 +19,6 @@
     <string name="Name_product">Tên sản phẩm</string>
     <string name="auctionTitle">Tiêu đề Đấu giá</string>
     <string name="receive_order">Đã nhận hàng</string>
+    <string name="title_checkout">Checkout</string>
+
 </resources>
