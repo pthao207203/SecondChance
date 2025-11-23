@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDetailFixedFragment extends BaseProductDetailFragment {
-
-    private LinearLayout btnEdit, btnDelete, btnAddToCart;
+    
+    private View btnEdit, btnDelete, btnAddToCart;
 
     @Override
     protected String getProductType() {
@@ -50,11 +51,6 @@ public class ProductDetailFixedFragment extends BaseProductDetailFragment {
             btnEdit.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("productId", productId);
-                bundle.putString("productName", productName);
-                bundle.putFloat("price", price);
-                bundle.putInt("quantity", quantity);
-                bundle.putStringArrayList("imageUrls", new ArrayList<>(imageUrls));
-                bundle.putString("productType", "fixed");
 
                 Navigation.findNavController(v)
                         .navigate(R.id.action_detailFixed_to_editFixed, bundle);

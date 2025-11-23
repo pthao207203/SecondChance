@@ -5,87 +5,184 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
 import com.example.secondchance.R;
-import com.example.secondchance.data.product.SampleProductData;
+// ❌ bỏ SampleProductData
+// import com.example.secondchance.data.product.SampleProductData;
+import com.example.secondchance.data.remote.ProductApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.dto.response.AdminProductDetailResponse;
 import com.example.secondchance.ui.product.Product;
+
 import java.util.ArrayList;
 
-public class EditProductFragment extends BaseAddProductFragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class EditProductFragment extends BaseAddProductFragment {
+    
     private String productId;
     private Product currentProduct;
-
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        // This is MANDATORY. The previous code was incorrect.
         super.onCreate(savedInstanceState);
-
+        
         if (getArguments() != null) {
             productId = getArguments().getString("productId");
-            // This is the crucial part: Get the type from the arguments bundle FIRST.
-            // This will be the originalStatus ("auction") when restoring.
-            productType = getArguments().getString("productType");
-
-            currentProduct = SampleProductData.getProductById(productId);
-
-            // The productType is already set by the super.onCreate() call.
-            // We just need to load the images.
-            if (currentProduct != null) {
-                selectedImages.clear(); // Clear any previous images
-                ArrayList<String> imageUrls = new ArrayList<>(currentProduct.getImageUrls());
-                for (String url : imageUrls) {
-                    selectedImages.add(Uri.parse(url));
-                }
-            }
+            productType = getArguments().getString("productType"); // fixed / negotiable / auction
         }
     }
-
+    
     @Override
-    protected void initStep1Views(View view) {
-        super.initStep1Views(view);
-        // Populate the fields with the existing product data
-        if (currentProduct != null) {
-            etProductName.setText(currentProduct.getName());
-            etPrice.setText(String.valueOf((int) currentProduct.getPrice()));
-            if (!selectedImages.isEmpty()) {
-                updateThumbnails();
-                updateImageSlider();
-            }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Sau khi view + step views đã init → gọi API
+        Log.d("EditProductFragment", "productId = " + productId);
+        if (productId != null) {
+            fetchProductFromBackend();
         }
-        // CRITICAL: Disable the spinner in edit/restore mode to prevent type changes.
+    }
+    
+    /**
+     * Gọi API /admin/products/{id} để lấy dữ liệu sản phẩm
+     */
+    private void fetchProductFromBackend() {
+        ProductApi api = RetrofitProvider.product();
+        Call<AdminProductDetailResponse> call = api.getAdminProductById(productId);
+        
+        call.enqueue(new Callback<AdminProductDetailResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AdminProductDetailResponse> call,
+                                   @NonNull Response<AdminProductDetailResponse> response) {
+                if (!isAdded()) return;
+                
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    AdminProductDetailResponse.AdminProduct data = response.body().data;
+                    if (data == null) {
+                        Toast.makeText(getContext(), "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    // Map từ AdminProduct → Product model local
+                    currentProduct = new Product();
+                    currentProduct.setId(data.id);
+                    currentProduct.setName(data.name);
+                    currentProduct.setDescription(data.description);
+                    currentProduct.setPrice(data.price);
+                    currentProduct.setQuantity(data.quantity);
+                    currentProduct.setPostedDate(data.createdAt);
+                    currentProduct.setType(productType != null ? productType : "fixed");
+                    
+                    // Ảnh
+                    currentProduct.setImageUrls(
+                      data.media != null ? new ArrayList<>(data.media) : new ArrayList<>()
+                    );
+                    
+                    // selectedImages để hiển thị slider / thumbnail
+                    selectedImages.clear();
+                    if (currentProduct.getImageUrls() != null) {
+                        for (String url : currentProduct.getImageUrls()) {
+                            selectedImages.add(Uri.parse(url));
+                        }
+                    }
+                    
+                    // Đổ dữ liệu vào UI
+                    applyCurrentProductToViews();
+                    
+                } else {
+                    Toast.makeText(getContext(),
+                      "Lỗi load sản phẩm: " + response.code(),
+                      Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(@NonNull Call<AdminProductDetailResponse> call,
+                                  @NonNull Throwable t) {
+                if (!isAdded()) return;
+                Log.e("EditProductFragment", "fetchProductFromBackend error", t);
+                Toast.makeText(getContext(),
+                  "Lỗi kết nối: " + t.getMessage(),
+                  Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    /**
+     * Sau khi currentProduct đã có dữ liệu, đổ vào các view step 1–3
+     */
+    private void applyCurrentProductToViews() {
+        if (currentProduct == null) return;
+        
+        // Step 1: tên, giá, ảnh
+        if (etProductName != null) {
+            etProductName.setText(currentProduct.getName());
+        }
+        if (etPrice != null) {
+            etPrice.setText(String.valueOf((int) currentProduct.getPrice()));
+        }
+        if (!selectedImages.isEmpty()) {
+            updateThumbnails();
+            updateImageSlider();
+        }
+        
+        // Step 2: mô tả
+        if (etDescription != null) {
+            etDescription.setText(currentProduct.getDescription());
+        }
+        
+        // Step 3: hiện tại backend chưa có source/proof/otherInfo → giữ trống
+        if (etSourceLink != null) {
+            etSourceLink.setText(currentProduct.getSource()); // thường sẽ là null
+        }
+        if (etProof != null) {
+            etProof.setText(currentProduct.getProof());
+        }
+        
+        
+        // Khóa spinner loại sản phẩm để không đổi type khi edit
         if (spinnerType != null) {
             spinnerType.setEnabled(false);
             spinnerType.setClickable(false);
         }
     }
-
+    
+    // --- Các hàm override cũ, rút gọn lại ---
+    
+    @Override
+    protected void initStep1Views(View view) {
+        super.initStep1Views(view);
+        // Không đổ data ở đây nữa, chờ API rồi applyCurrentProductToViews()
+        if (spinnerType != null) {
+            spinnerType.setEnabled(false);
+            spinnerType.setClickable(false);
+        }
+    }
+    
     @Override
     protected void initStep2Views(View view) {
         super.initStep2Views(view);
-        if (currentProduct != null && etDescription != null) {
-            etDescription.setText(currentProduct.getDescription());
-        }
+        // Dữ liệu được set trong applyCurrentProductToViews()
     }
-
+    
     @Override
     protected void initStep3Views(View view) {
         super.initStep3Views(view);
-        if (currentProduct != null) {
-            if (etSourceLink != null) {
-                etSourceLink.setText(currentProduct.getSource());
-            }
-            if (etProof != null) {
-                etProof.setText(currentProduct.getProof());
-            }
-        }
+        // Dữ liệu được set trong applyCurrentProductToViews()
     }
-
+    
     @Override
     protected void showPreview() {
         Product product = collectProductData();
-
+        
         Bundle bundle = new Bundle();
         bundle.putString("productId", product.getId());
         bundle.putString("productName", product.getName());
@@ -96,16 +193,15 @@ public class EditProductFragment extends BaseAddProductFragment {
         bundle.putString("proof", product.getProof());
         bundle.putString("otherInfo", product.getOtherInfo());
         bundle.putLong("endTime", product.getEndTime());
-
+        
         ArrayList<String> imageUrls = new ArrayList<>();
         for (Uri uri : selectedImages) {
             imageUrls.add(uri.toString());
         }
         bundle.putStringArrayList("imageUrls", imageUrls);
-        // Pass the correct, immutable productType
         bundle.putString("productType", this.productType);
         bundle.putBoolean("isEditMode", true);
-
+        
         try {
             Navigation.findNavController(requireView()).navigate(getPreviewNavigationAction(), bundle);
         } catch (Exception e) {
@@ -113,24 +209,24 @@ public class EditProductFragment extends BaseAddProductFragment {
             Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
+    
     @Override
     protected Product collectProductData() {
         Product product = super.collectProductData();
         product.setId(this.productId);
         return product;
     }
-
+    
     @Override
     protected String getDefaultProductType() {
         return productType != null ? productType : "fixed";
     }
-
+    
     @Override
     protected int getSuccessNavigationAction() {
         return -1; // Not used in edit mode
     }
-
+    
     @Override
     protected int getPreviewNavigationAction() {
         if (productType == null) return -1;

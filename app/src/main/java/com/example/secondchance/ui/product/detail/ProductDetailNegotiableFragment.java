@@ -44,11 +44,6 @@ public class ProductDetailNegotiableFragment extends BaseProductDetailFragment {
             btnEdit.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("productId", productId);
-                bundle.putString("productName", productName);
-                bundle.putFloat("price", price);
-                bundle.putInt("quantity", quantity);
-                bundle.putStringArrayList("imageUrls", new ArrayList<>(imageUrls));
-                bundle.putString("productType", "negotiable");
 
                 Navigation.findNavController(v)
                         .navigate(R.id.action_detailNegotiable_to_editNegotiable, bundle);

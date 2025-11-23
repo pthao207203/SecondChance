@@ -95,7 +95,7 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-      .baseUrl("https://nt118.hius.io.vn/api/")
+      .baseUrl("http://10.0.2.2:3000")
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
