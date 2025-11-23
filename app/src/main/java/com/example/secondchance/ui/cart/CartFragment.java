@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,14 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.secondchance.R;
 import com.example.secondchance.data.repo.CartRepository;
 import com.example.secondchance.data.remote.CartApi;
-import java.io.Serializable;
+import com.example.secondchance.ui.card.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +65,7 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     }
 
     private void setupRecyclerView() {
+        // Truyền 'this' (CartFragment) làm listener cho Adapter
         adapter = new CartAdapter(this);
         recyclerViewCart.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewCart.setAdapter(adapter);
@@ -116,10 +115,15 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
         } else {
             layoutSelectAll.setVisibility(View.VISIBLE);
         }
-        updateTotalPrice();
+
+        // Cập nhật trạng thái nút Select All
+        boolean allSelected = items.size() > 0 && adapter.areAllItemsSelected();
         checkboxSelectAll.setImageResource(
-                adapter.areAllItemsSelected() ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+                allSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
         );
+
+        // Cập nhật tổng tiền ban đầu (nếu có item đã được chọn từ trước)
+        onTotalChange(adapter.calculateTotal());
     }
 
     private void setLoadingState(boolean loading) {
@@ -130,80 +134,82 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     private void toggleSelectAll() {
         boolean shouldSelectAll = !adapter.areAllItemsSelected();
         adapter.selectAll(shouldSelectAll);
-        updateUIState(adapter.getItems());
+
+        checkboxSelectAll.setImageResource(
+                shouldSelectAll ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+        );
     }
 
     private void handleBuyNow() {
-        List<CartApi.CartItem> selectedItems = adapter.getSelectedItems();
+        ArrayList<CartApi.CartItem> selectedItems = (ArrayList<CartApi.CartItem>) adapter.getSelectedItems();
+
         if (selectedItems.isEmpty()) {
             Toast.makeText(requireContext(), "Vui lòng chọn sản phẩm để mua", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ArrayList<CartApi.CartItem> itemsToCheckout = new ArrayList<>(selectedItems);
-
+        // Đóng gói dữ liệu vào Bundle
         Bundle bundle = new Bundle();
-        bundle.putSerializable("selectedItems", itemsToCheckout);
+        bundle.putSerializable("selectedItems", selectedItems);
 
+        // Chuyển hướng sang CheckoutFragment
         try {
-            Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_checkoutFragment, bundle);
-        } catch(Exception e) {
+            // Đảm bảo ID action này có trong nav_graph
+            Navigation.findNavController(requireView()).navigate(R.id.navigation_checkout, bundle);
+        } catch (Exception e) {
             Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updateTotalPrice() {
-        long totalPrice = 0;
-        for (CartApi.CartItem item : adapter.getSelectedItems()) {
-            totalPrice += item.getTotalPrice();
-        }
-        String formattedPrice = String.format("%,d", totalPrice).replace(",", ".");
+    // ==================================================================
+    // 🔥 IMPLEMENT CÁC HÀM CỦA INTERFACE OnCartItemListener
+    // ==================================================================
+
+    @Override
+    public void onItemChecked(CartApi.CartItem item, boolean isChecked) {
+        // Khi một item thay đổi trạng thái check, cập nhật UI Select All
+        boolean allSelected = adapter.getItemCount() > 0 && adapter.areAllItemsSelected();
+        checkboxSelectAll.setImageResource(
+                allSelected ? R.drawable.ic_checkbox_checked : R.drawable.ic_checkbox_unchecked
+        );
+    }
+
+    @Override
+    public void onTotalChange(long total) {
+        // Cập nhật TextView tổng tiền
+        String formattedPrice = String.format("%,d", total).replace(",", ".");
         tvTotalPrice.setText(formattedPrice);
     }
 
     @Override
-    public void onItemChecked(CartApi.CartItem item, boolean isChecked) {
-        updateUIState(adapter.getItems());
-    }
-
-    @Override
     public void onViewDetail(CartApi.CartItem item) {
-        Bundle bundle = new Bundle();
-        bundle.putString("productId", item.productId);
+        ProductCard productCard = new ProductCard(
+                item.productId,
+                item.getImageUrl(),
+                item.getName(),
+                item.getDescription(),
+                item.qty,
+                0,
+                String.valueOf(item.price),
+                ProductCard.ProductType.FIXED,
+                null, 0
+        );
 
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("product", productCard);
+
+        try {
+            Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void onItemDeleted(CartApi.CartItem item, int position) {
-        if (!isAdded() || getContext() == null) return;
-
-        final Dialog confirmDialog = new Dialog(getContext());
-        confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        confirmDialog.setContentView(R.layout.dialog_confirm_delete);
-        if (confirmDialog.getWindow() != null) {
-            confirmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
-        Button btnConfirm = confirmDialog.findViewById(R.id.btnConfirmDelete);
-        Button btnCancel = confirmDialog.findViewById(R.id.btnCancelDelete);
-
-        btnConfirm.setOnClickListener(v -> {
-            confirmDialog.dismiss();
-            deleteItem(item);
-        });
-
-        btnCancel.setOnClickListener(v -> confirmDialog.dismiss());
-
-        confirmDialog.show();
-    }
-
-    private void deleteItem(CartApi.CartItem item) {
         if (isLoading) return;
         setLoadingState(true);
 
-        // SỬA: Dùng lại item.productId theo yêu cầu
         CartRepository.getInstance().removeFromCart(item.productId, new CartRepository.CartCallback() {
             @Override
             public void onSuccess(List<CartApi.CartItem> items) {
@@ -228,18 +234,19 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
     }
 
     private void showDeleteSuccessDialog() {
-        if (!isAdded() || getContext() == null) return;
+        if (!isAdded()) return;
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_delete_success);
 
-        final Dialog successDialog = new Dialog(getContext());
-        successDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        successDialog.setContentView(R.layout.dialog_delete_success);
-        if (successDialog.getWindow() != null) {
-            successDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().dimAmount = 0.6f;
         }
 
-        ImageView btnClose = successDialog.findViewById(R.id.btnCloseSuccess);
-        btnClose.setOnClickListener(v -> successDialog.dismiss());
+        ImageView btnClose = dialog.findViewById(R.id.btnCloseSuccess);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
 
-        successDialog.show();
+        dialog.show();
     }
 }

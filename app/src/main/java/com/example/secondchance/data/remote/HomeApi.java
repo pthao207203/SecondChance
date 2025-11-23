@@ -17,15 +17,15 @@ import retrofit2.http.Query;
 public interface HomeApi {
   
   // GET /api/products/home
-  @GET("products/home")
+  @GET("/api/products/home")
   Call<HomeEnvelope> getHome();
   
   // GET /api/products/{id}
-  @GET("products/{id}")
+  @GET("/api/products/{id}")
   Call<ProductDetailResponse> getProductDetail(@Path("id") String productId);
   
   // GET /api/products/{id}
-  @GET("products/auctions/{id}")
+  @GET("/api/products/auctions/{id}")
   Call<AuctionListUserResponse> getProductAuctionUser(@Path("id") String productId);
   
   @POST("/api/products/auctions/{id}/bid")

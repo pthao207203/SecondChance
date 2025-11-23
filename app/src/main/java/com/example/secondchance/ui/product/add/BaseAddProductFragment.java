@@ -1,10 +1,12 @@
 package com.example.secondchance.ui.product.add;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +21,22 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.secondchance.R;
 import com.example.secondchance.data.product.SampleProductData;
+import com.example.secondchance.data.remote.ProductApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.dto.request.ProductCreateRequest;
+import com.example.secondchance.dto.response.BasicResponse;
+import com.example.secondchance.dto.response.ProductMetaResponse;
 import com.example.secondchance.ui.product.Product;
 import com.example.secondchance.ui.product.adapter.ImageSliderAdapter;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public abstract class BaseAddProductFragment extends Fragment {
 
@@ -54,7 +66,26 @@ public abstract class BaseAddProductFragment extends Fragment {
     protected ImageSliderAdapter imageSliderAdapter;
 
     protected String productType;
-
+    protected TextView tvCategory, tvBrand;
+    
+    // lưu ID đã chọn
+    protected ArrayList<String> selectedCategoryIds = new ArrayList<>();
+    protected String selectedBrandId;
+    protected Spinner spinnerBrand;
+    protected LinearLayout layoutCategoryPicker;
+    protected TextView tvSelectedCategories;
+    
+    // data meta
+    protected List<ProductMetaResponse.Brand> brandOptions = new ArrayList<>();
+    protected List<ProductMetaResponse.Category> categoryOptions = new ArrayList<>();
+    protected Spinner spinnerHasOrigin;
+    protected Spinner spinnerReturnPolicy;
+    protected Spinner spinnerConditionUsed;
+    protected boolean hasOrigin = false;
+    protected boolean hasReturnPolicy = false;
+    protected boolean hasConditionUsed = false;
+    protected ProductApi productApi;
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,18 +168,186 @@ public abstract class BaseAddProductFragment extends Fragment {
         btnAddImage = view.findViewById(R.id.btn_add_image);
         etProductName = view.findViewById(R.id.et_product_name);
         etPrice = view.findViewById(R.id.et_price);
-        etConditionUsed = view.findViewById(R.id.et_condition_used);
         etConditionNew = view.findViewById(R.id.et_condition_new);
         etConditionDamage = view.findViewById(R.id.et_condition_damage);
         etWarranty = view.findViewById(R.id.et_warranty);
-        etReturnPolicy = view.findViewById(R.id.et_return_policy);
-        etSource = view.findViewById(R.id.et_source);
+        spinnerHasOrigin = view.findViewById(R.id.spinner_has_origin);
+        spinnerReturnPolicy = view.findViewById(R.id.spinner_return_policy);
+        spinnerConditionUsed = view.findViewById(R.id.spinner_condition_used);
+
+        ArrayAdapter<String> boolAdapter = new ArrayAdapter<>(
+          requireContext(),
+          android.R.layout.simple_spinner_dropdown_item,
+          new String[]{"Có", "Không"}
+        );
+        spinnerHasOrigin.setAdapter(boolAdapter);
+        spinnerReturnPolicy.setAdapter(boolAdapter);
+        
+        ArrayAdapter<String> boolAdapterCondition = new ArrayAdapter<>(
+          requireContext(),
+          android.R.layout.simple_spinner_dropdown_item,
+          new String[]{"Đã sử dụng", "Chưa sử dụng"}
+        );
+        spinnerConditionUsed.setAdapter(boolAdapterCondition);
+        
+        spinnerHasOrigin.setSelection(1);
+        spinnerReturnPolicy.setSelection(1);
+        spinnerConditionUsed.setSelection(0);
+        
         spinnerType = view.findViewById(R.id.spinner_type);
         btnNext1 = view.findViewById(R.id.btn_next1);
+        
+        spinnerBrand = view.findViewById(R.id.spinner_brand);
+        layoutCategoryPicker = view.findViewById(R.id.layout_category_picker);
+        tvSelectedCategories = view.findViewById(R.id.tv_selected_categories);
 
         setupSpinner();
+        
+        productApi = RetrofitProvider.product();
+        fetchMetaAndInitUi();
     }
-
+    private void fetchMetaAndInitUi() {
+        productApi.getProductMeta().enqueue(new Callback<ProductMetaResponse>() {
+            @Override
+            public void onResponse(Call<ProductMetaResponse> call,
+                                   Response<ProductMetaResponse> response) {
+                if (!isAdded()) return;
+                
+                if (!response.isSuccessful() || response.body() == null || !response.body().success) {
+                    Toast.makeText(getContext(), "Không tải được dữ liệu meta", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Gson gson = new Gson();
+                Log.d("ProductMetaResponse", gson.toJson(response.body()));
+                
+                ProductMetaResponse.Data data = response.body().data;
+                if (data == null) return;
+                
+                // brand
+                brandOptions.clear();
+                if (data.brands != null) {
+                    brandOptions.addAll(data.brands);
+                }
+                
+                // category – nếu muốn chỉ cho chọn category con thì lọc parentId != null
+                categoryOptions.clear();
+                if (data.categories != null) {
+                    for (ProductMetaResponse.Category c : data.categories) {
+                        if (c.parentId != null) {  // chỉ lấy category con
+                            categoryOptions.add(c);
+                        }
+                    }
+                }
+                
+                setupBrandSpinnerFromMeta();
+                setupCategoryPickerFromMeta();
+            }
+            
+            @Override
+            public void onFailure(Call<ProductMetaResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Lỗi kết nối meta", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void setupBrandSpinnerFromMeta() {
+        if (brandOptions.isEmpty() || spinnerBrand == null) return;
+        
+        BrandSpinnerAdapter adapter = new BrandSpinnerAdapter(
+          requireContext(),
+          brandOptions
+        );
+        spinnerBrand.setAdapter(adapter);
+        
+        spinnerBrand.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                ProductMetaResponse.Brand b = brandOptions.get(position);
+                selectedBrandId = b.id;
+            }
+            
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedBrandId = null;
+            }
+        });
+        
+        // default: chọn dòng đầu
+        spinnerBrand.setSelection(0);
+        selectedBrandId = brandOptions.get(0).id;
+    }
+    
+    
+    private void setupCategoryPickerFromMeta() {
+        layoutCategoryPicker.setOnClickListener(v -> showCategoryMultiSelectDialog());
+    }
+    
+    private void showCategoryMultiSelectDialog() {
+        if (categoryOptions.isEmpty()) return;
+        
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_category_picker);
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            
+            // cho dialog rộng ~90% màn hình, không bị tụm như hình
+            android.view.WindowManager.LayoutParams lp =
+              new android.view.WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9f);
+            lp.height = android.view.WindowManager.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(lp);
+        }
+        
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        tvTitle.setText("Chọn danh mục");
+        
+        androidx.recyclerview.widget.RecyclerView rv =
+          dialog.findViewById(R.id.rvCategories);
+        rv.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(requireContext()));
+        
+        // adapter nhận list category & list id đã chọn
+        CategoryPickerAdapter adapter =
+          new CategoryPickerAdapter(categoryOptions, selectedCategoryIds);
+        rv.setAdapter(adapter);
+        
+        com.google.android.material.button.MaterialButton btnCancel =
+          dialog.findViewById(R.id.btnCancel);
+        com.google.android.material.button.MaterialButton btnConfirm =
+          dialog.findViewById(R.id.btnConfirm);
+        
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        
+        btnConfirm.setOnClickListener(v -> {
+            selectedCategoryIds.clear();
+            selectedCategoryIds.addAll(adapter.getSelectedIds());
+            updateCategorySummary();   // cập nhật text "Danh mục" ở màn hình chính
+            dialog.dismiss();
+        });
+        
+        dialog.show();
+    }
+    
+    
+    private void updateCategorySummary() {
+        if (selectedCategoryIds.isEmpty()) {
+            tvSelectedCategories.setText("Chọn danh mục");
+            return;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (ProductMetaResponse.Category c : categoryOptions) {
+            if (selectedCategoryIds.contains(c.id)) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(c.name);
+            }
+        }
+        tvSelectedCategories.setText(sb.toString());
+    }
+    
     protected void initStep2Views(View view) {
         etDescription = view.findViewById(R.id.et_description);
         btnBack2 = view.findViewById(R.id.btn_back2);
@@ -325,10 +524,10 @@ public abstract class BaseAddProductFragment extends Fragment {
         }
         return true;
     }
-
+    
     protected void showPreview() {
         Product product = collectProductData();
-
+        
         Bundle bundle = new Bundle();
         bundle.putString("productId", "preview");
         bundle.putString("productName", product.getName());
@@ -339,7 +538,8 @@ public abstract class BaseAddProductFragment extends Fragment {
         bundle.putString("proof", product.getProof());
         bundle.putString("otherInfo", product.getOtherInfo());
         bundle.putLong("endTime", product.getEndTime());
-
+        
+        // --- Ảnh ---
         ArrayList<String> imageUrls = new ArrayList<>();
         for (Uri uri : selectedImages) {
             imageUrls.add(uri.toString());
@@ -347,11 +547,34 @@ public abstract class BaseAddProductFragment extends Fragment {
         bundle.putStringArrayList("imageUrls", imageUrls);
         bundle.putString("productType", productType);
         bundle.putBoolean("isPreview", true);
-
+        
+        // --- Brand & Category đã chọn ---
+        bundle.putString("brandId", selectedBrandId);
+        bundle.putStringArrayList(
+          "categoryIds",
+          new ArrayList<>(selectedCategoryIds)
+        );
+        
+        // --- TEXT THÔ cho Preview build request ---
+        bundle.putString("raw_price", etPrice.getText().toString().trim());
+        
+        bundle.putString("raw_newPercent",
+          etConditionNew.getText().toString().trim());
+        bundle.putString("raw_damagePercent",
+          etConditionDamage.getText().toString().trim());
+        bundle.putString("raw_warranty",
+          etWarranty.getText().toString().trim());
+        bundle.putBoolean("hasOrigin", hasOrigin);
+        bundle.putBoolean("hasReturnPolicy", hasReturnPolicy);
+        bundle.putBoolean("hasConditionUsed", hasConditionUsed);
+        bundle.putString("raw_originUrl",
+          etSourceLink.getText().toString().trim());
+        
         Navigation.findNavController(requireView())
-                .navigate(getPreviewNavigationAction(), bundle);
+          .navigate(getPreviewNavigationAction(), bundle);
     }
-
+    
+    
     protected Product collectProductData() {
         Product product = new Product();
         product.setName(etProductName.getText().toString().trim());
@@ -385,14 +608,8 @@ public abstract class BaseAddProductFragment extends Fragment {
             default: return "";
         }
     }
-
-    public void publishProduct() {
-        Product product = collectProductData();
-        SampleProductData.addProduct(product);
-        Toast.makeText(getContext(), "Đang lưu sản phẩm...", Toast.LENGTH_SHORT).show();
-        showSuccessDialog();
-    }
-
+    
+    
     protected void showSuccessDialog() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_post_success);

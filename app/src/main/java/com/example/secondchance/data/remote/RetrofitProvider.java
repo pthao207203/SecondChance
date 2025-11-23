@@ -31,17 +31,21 @@ public class RetrofitProvider {
   private static volatile OrderApi  orderApi;
   private static volatile CartApi cartApi;
   private static volatile ProductApi productApi;
+  private static volatile CloudinaryApi cloudinaryApi;
   private static Context appCtx;
   private static final AtomicBoolean logoutInProgress = new AtomicBoolean(false);
+  private static volatile PaymentApi paymentApi;
 
+  public static PaymentApi payment() {
+    if (paymentApi == null) paymentApi = ensureRetrofit().create(PaymentApi.class);
+    return paymentApi;
+  }
   public static void init(Context applicationContext) {
     appCtx = applicationContext.getApplicationContext();
   }
 
   private static Retrofit ensureRetrofit() {
     if (retrofit != null) return retrofit;
-
-    // 1) Gắn Authorization (trừ endpoint /api/auth)
 
     HttpLoggingInterceptor log = new HttpLoggingInterceptor();
     log.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -54,15 +58,14 @@ public class RetrofitProvider {
 
       Request.Builder b = orig.newBuilder();
       if (!isAuthEndpoint && orig.header("Authorization") == null && appCtx != null) {
-        String token = Prefs.getToken(appCtx); // đã dạng "Bearer xxxxx"
+        String token = Prefs.getToken(appCtx);
         if (token != null && !token.isEmpty()) {
           b.addHeader("Authorization", token);
         }
       }
       return chain.proceed(b.build());
     };
-    
-    // 2) Nếu 401 => logout về cùng UI đăng xuất
+
     Interceptor authFailure = chain -> {
       okhttp3.Response res = chain.proceed(chain.request());
       if (res.code() == 401 && appCtx != null) {
@@ -78,8 +81,7 @@ public class RetrofitProvider {
       }
       return res;
     };
-    
-    // 3) Log request/response (đặt sau cùng để log thấy header đã chèn)
+
     log.setLevel(HttpLoggingInterceptor.Level.BODY);
 
     OkHttpClient ok = new OkHttpClient.Builder()
@@ -93,7 +95,7 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-      .baseUrl("http://52.195.233.219:3000/api/")
+      .baseUrl("https://nt118.hius.io.vn/api/")
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
@@ -121,16 +123,21 @@ public class RetrofitProvider {
     return orderApi;
   }
 
-    public static CartApi cart() {
-        if (cartApi == null) cartApi = ensureRetrofit().create(CartApi.class);
-        return cartApi;
-    }
+  public static CartApi cart() {
+      if (cartApi == null) cartApi = ensureRetrofit().create(CartApi.class);
+      return cartApi;
+  }
 
-    public static ProductApi product() {
-        if (productApi == null) productApi = ensureRetrofit().create(ProductApi.class);
-        return productApi;
-    }
-
+  public static ProductApi product() {
+      if (productApi == null) productApi = ensureRetrofit().create(ProductApi.class);
+      return productApi;
+  }
+  public static CloudinaryApi cloudinary() {
+    if (cloudinaryApi == null) cloudinaryApi = ensureRetrofit().create(CloudinaryApi.class);
+    return cloudinaryApi;
+  }
+  
+  
   public static Retrofit getRetrofit() {
     return ensureRetrofit();
   }
