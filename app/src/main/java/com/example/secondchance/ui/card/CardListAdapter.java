@@ -40,6 +40,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
             return R.layout.item_product_fixedcard; // Fallback
         }
         ProductCard product = products.get(position);
+        Log.d("CardAdapter", "productType: " + product.getProductType());
         if (product.getProductType() == ProductCard.ProductType.FIXED) {
             Log.d("CardAdapter", "Position " + position + ": FIXED");
             return R.layout.item_product_fixedcard;

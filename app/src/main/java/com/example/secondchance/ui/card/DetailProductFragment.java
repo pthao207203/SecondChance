@@ -374,7 +374,7 @@ public class DetailProductFragment extends Fragment {
         }
 
         // Source
-        if (p.hasOrigin) {
+        if (p.hasOrigin != null && p.hasOrigin) {
             addMutedText(binding.contentSource, safe(p.originLink.description));
         } else {
             addMutedText(binding.contentSource, "Chưa có nguồn gốc xác minh.");
@@ -407,49 +407,56 @@ public class DetailProductFragment extends Fragment {
             binding.sellerInfoContainer.setVisibility(View.VISIBLE);
             binding.customerReviewCard.setVisibility(View.VISIBLE);
             
-            // 2) Avatar shop
-            Glide.with(this)
-              .load(p.seller.firstComment.byUser.avatar)
-              .placeholder(R.drawable.avatar1)
-              .error(R.drawable.avatar1)
-              .into(binding.ivCustomerAvatar);
-            
-            // 3) Tên hiển thị: ưu tiên seller.shopName, fallback byUser.name
-            String displayName = p.seller.firstComment.byUser.name;
-            binding.tvCustomerName.setText(!TextUtils.isEmpty(displayName) ? displayName : "Người mua");
-            
-            // 4) Ngày comment (nếu có createdAt trong firstComment)
-            String dateText = "";
-            if (p.seller.firstComment != null && !TextUtils.isEmpty(p.seller.firstComment.createdAt)) {
-                dateText = formatDateVN(p.seller.firstComment.createdAt);
-            } else if (!TextUtils.isEmpty(p.createdAt)) {
-                dateText = formatDateVN(p.createdAt);
-            }
-            binding.tvCommentDate.setText(!TextUtils.isEmpty(dateText) ? dateText : "");
-            
-            // 5) Subtitle tuỳ chọn (có thể dùng conditionNote)
+            // 2) Comment
+            if (p.seller.firstComment != null ) {
+                String userAvatar = p.seller.firstComment.byUser.avatar;
+                Glide.with(this)
+                  .load(userAvatar)
+                  .placeholder(R.drawable.avatar1)
+                  .error(R.drawable.avatar1)
+                  .into(binding.ivCustomerAvatar);
+                
+                // 3) Tên hiển thị: ưu tiên seller.shopName, fallback byUser.name
+                String displayName = p.seller.firstComment.byUser.name;
+                binding.tvCustomerName.setText(!TextUtils.isEmpty(displayName) ? displayName : "Người mua");
+                
+                // 4) Ngày comment (nếu có createdAt trong firstComment)
+                String dateText = "";
+                if (p.seller.firstComment != null && !TextUtils.isEmpty(p.seller.firstComment.createdAt)) {
+                    dateText = formatDateVN(p.seller.firstComment.createdAt);
+                } else if (!TextUtils.isEmpty(p.createdAt)) {
+                    dateText = formatDateVN(p.createdAt);
+                }
+                binding.tvCommentDate.setText(!TextUtils.isEmpty(dateText) ? dateText : "");
+                
+                // 5) Subtitle tuỳ chọn (có thể dùng conditionNote)
 //            binding.tvCustomerSubtitle.setText(safe(p.conditionNote));
-            
-            // 6) Rating
-            double rating = 0.0;
-            if (p.seller.firstComment != null) {
-                // Nếu BE trả rate dạng 1..5 thì dùng trực tiếp; nếu 0..50 (×10) thì chia 10.0
-                rating = p.seller.firstComment.rate;
-                if (rating > 5) rating = rating / 10.0;
-            }
-            binding.tvCustomerRating.setText(rating > 0 ? String.format(java.util.Locale.US, "%.1f", rating) : "—");
-            
-            // 7) Nội dung review
-            String reviewText = (p.seller.firstComment != null) ? p.seller.firstComment.description : null;
-            binding.tvReviewText.setText(!TextUtils.isEmpty(reviewText) ? reviewText : "Chưa có nhận xét.");
-            
-            // 8) Thumbnails: clear cũ rồi thêm mới
-            binding.llReviewThumbs.removeAllViews();
-            if (p.seller.firstComment != null && p.seller.firstComment.media != null && !p.seller.firstComment.media.isEmpty()) {
-                addThumbRow(binding.llReviewThumbs, p.seller.firstComment.media);
+                
+                // 6) Rating
+                double rating = 0.0;
+                if (p.seller.firstComment != null) {
+                    // Nếu BE trả rate dạng 1..5 thì dùng trực tiếp; nếu 0..50 (×10) thì chia 10.0
+                    rating = p.seller.firstComment.rate;
+                    if (rating > 5) rating = rating / 10.0;
+                }
+                binding.tvCustomerRating.setText(rating > 0 ? String.format(java.util.Locale.US, "%.1f", rating) : "—");
+                
+                // 7) Nội dung review
+                String reviewText = (p.seller.firstComment != null) ? p.seller.firstComment.description : null;
+                binding.tvReviewText.setText(!TextUtils.isEmpty(reviewText) ? reviewText : "Chưa có nhận xét.");
+                
+                // 8) Thumbnails: clear cũ rồi thêm mới
+                binding.llReviewThumbs.removeAllViews();
+                if (p.seller.firstComment != null && p.seller.firstComment.media != null && !p.seller.firstComment.media.isEmpty()) {
+                    addThumbRow(binding.llReviewThumbs, p.seller.firstComment.media);
+                }
+            } else {
+                binding.customerReviewCard.setVisibility(View.GONE);
+                binding.tvNoReview.setVisibility(View.VISIBLE);
             }
         } else {
             binding.customerReviewCard.setVisibility(View.GONE);
+            binding.tvNoReview.setVisibility(View.VISIBLE);
         }
         
         // Ảnh slider từ BE

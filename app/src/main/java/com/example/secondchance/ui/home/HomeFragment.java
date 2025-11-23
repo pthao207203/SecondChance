@@ -140,6 +140,9 @@ public class  HomeFragment extends Fragment {
         ArrayList<ProductCard> cards = mapSuggestionsToCards(
           data != null && data.suggestions != null ? data.suggestions.items : null
         );
+        Gson gson = new Gson();
+        Log.d("HomeFragment", "suggestions: " + gson.toJson(cards));
+        
         // Gắn vào container: nếu chưa có fragment con -> tạo bằng newInstance
         Fragment existing = getChildFragmentManager().findFragmentById(R.id.cardListFragmentContainer);
         if (existing == null) {
@@ -167,18 +170,10 @@ public class  HomeFragment extends Fragment {
     if (items == null) return out;
     
     for (HomeApi.SuggestionItem it : items) {
-      ProductCard.ProductType type;
-      if (it.endsInSec > 0) {
-        type = ProductCard.ProductType.AUCTION;
-      } else {
-        String label = it.conditionLabel != null ? it.conditionLabel.toLowerCase(Locale.ROOT) : "";
-        if (label.contains("negotiation") || label.contains("offer") || label.contains("deal")
-          || label.contains("bargain") || label.contains("thương lượng")) {
-          type = ProductCard.ProductType.NEGOTIATION;
-        } else {
-          type = ProductCard.ProductType.FIXED;
-        }
-      }
+      Log.d("HomeFragment", "suggestion: " + it.priceType);
+      
+      ProductCard.ProductType type = it.priceType == 3 ? ProductCard.ProductType.AUCTION :
+        it.priceType==2?ProductCard.ProductType.NEGOTIATION:ProductCard.ProductType.FIXED;
       
       ProductCard pc = new ProductCard();
       pc.setId(it.id);

@@ -32,155 +32,161 @@
                 android:gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:paddingVertical="8dp"
+                    tools:listitem="@layout/item_category_chip" />
+<!--                &lt;!&ndash; Icon 1 &ndash;&gt;-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                <!-- Icon 1 -->
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__1_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__1_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                &lt;!&ndash; Icon 2 &ndash;&gt;-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                <!-- Icon 2 -->
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__2_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__2_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__3_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__3_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__4_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__4_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__5_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__5_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__6_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__6_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__7_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    style="@style/Widget.SecondChance.Card.Number"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:backgroundTint="@color/lighterDay"-->
+<!--                    app:cardCornerRadius="999dp"-->
+<!--                    app:cardElevation="0dp"-->
+<!--                    app:strokeWidth="0dp">-->
 
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__7_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/lighterDay"
-                    app:cardCornerRadius="999dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/vector__8_"
-                        android:contentDescription="abc" />
-                </com.google.android.material.card.MaterialCardView>
+<!--                    <ImageView-->
+<!--                        android:layout_width="15dp"-->
+<!--                        android:layout_height="15dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/vector__8_"-->
+<!--                        android:contentDescription="abc" />-->
+<!--                </com.google.android.material.card.MaterialCardView>-->
 
             </LinearLayout>
             <View

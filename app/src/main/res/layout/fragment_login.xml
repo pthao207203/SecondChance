@@ -89,12 +89,64 @@
         app:contentPaddingEnd="@dimen/space_24"
         android:textSize="@dimen/text_20"/>
 
+    <LinearLayout
+        android:id="@+id/dividerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnLogin"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/space_12"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#E0E0E0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Hoặc"
+            android:textSize="@dimen/text_16"
+            android:textColor="#757575"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#E0E0E0"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGoogleLogin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_below="@id/dividerLayout"
+        android:layout_marginTop="@dimen/space_12"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Tiếp tục với Google"
+        app:icon="@drawable/ic_google"
+        app:iconGravity="textStart"
+        android:textColor="@color/darkerDay"
+        app:strokeColor="#DADCE0"
+        android:textSize="@dimen/text_20"
+        app:iconPadding="12dp"/>
+
+
     <TextView
         android:id="@+id/tvSignup"
         style="@style/Text.SecondChance.Link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnLogin"
+        android:layout_below="@id/btnGoogleLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/space_20"
         android:text="@string/redirect_register"

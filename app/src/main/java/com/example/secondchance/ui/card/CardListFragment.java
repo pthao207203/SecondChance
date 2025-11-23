@@ -76,14 +76,13 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
                 //noinspection unchecked
                 passed = (ArrayList<ProductCard>) s;
             }
-            Log.d("CardFragment", "✅ Using passed data: " + (passed != null ? passed.size() : 0));
         }
         
         if (passed != null && !passed.isEmpty()) {
-            Log.d("CardFragment", "✅ Using passed data: " + passed.size());
+//            Log.d("CardFragment", "✅ Using passed data: " + passed.size());
             viewModel.setProducts(passed);
         } else {
-            Log.d("CardFragment", "ℹ️ No passed data -> fallback to API");
+//            Log.d("CardFragment", "ℹ️ No passed data -> fallback to API");
             loadFromApi(); // GIỮ HÀNH VI CŨ KHI KHÔNG TRUYỀN GÌ
         }
         
@@ -91,7 +90,7 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
     }
     
     private void setupRecyclerView() {
-        Log.d("CardFragment", "⚙️ Setting up RecyclerView");
+//        Log.d("CardFragment", "⚙️ Setting up RecyclerView");
         StaggeredGridLayoutManager layoutManager =
           new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         binding.recyclerView.setLayoutManager(layoutManager);
@@ -131,22 +130,27 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
         if (items == null) return out;
         
         for (HomeApi.SuggestionItem it : items) {
-            ProductCard.ProductType type = decideType(it);
             
             ProductCard pc = new ProductCard();
             pc.setId(resolveId(it));
             pc.setTitle(it.title);
             pc.setDescription(it.conditionLabel != null ? it.conditionLabel : "");
             pc.setQuantity(it.quantity);
-            pc.setProductType(type);
             pc.setImageUrl(it.imageUrl);
+            pc.setProductType(it.priceType == 3? ProductCard.ProductType.AUCTION : it.priceType == 2? ProductCard.ProductType.NEGOTIATION : ProductCard.ProductType.FIXED);
             
             String priceText = it.currentPrice > 0 ? formatVnd(it.currentPrice) : "0";
             pc.setPrice(priceText);
             
-            if (type == ProductCard.ProductType.AUCTION) {
+            if (pc.getProductType() == ProductCard.ProductType.AUCTION) {
                 pc.setTimeRemaining(formatEndsIn(Math.max(0, it.endsInSec)));
             }
+            Gson gson = new Gson();
+            String json = gson.toJson(pc);
+            Log.d(
+              "CardFragment",
+              "✅ Mapped product: " + it
+            );
             out.add(pc);
         }
         return out;
@@ -204,13 +208,13 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
     }
     
     private void observeData() {
-        Log.d("CardFragment", "👀 Starting to observe ViewModel data");
+//        Log.d("CardFragment", "👀 Starting to observe ViewModel data");
         viewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            Log.d("CardFragment", "🔄 OBSERVED PRODUCTS: " + (products != null ? products.size() : 0));
+//            Log.d("CardFragment", "🔄 OBSERVED PRODUCTS: " + (products != null ? products.size() : 0));
             if (products != null) {
                 adapter.updateData(products);
             } else {
-                Log.e("CardFragment", "❌ Products is NULL!");
+//                Log.e("CardFragment", "❌ Products is NULL!");
             }
         });
     }
@@ -231,10 +235,10 @@ public class CardListFragment extends Fragment implements CardListAdapter.OnItem
         } else {
             // Fallback để không vỡ flow nếu item thiếu id (data cũ)
             bundle.putSerializable("product", product);
-            Log.w("CardFragment", "Product missing id -> fallback to pass full product");
+//            Log.w("CardFragment", "Product missing id -> fallback to pass full product");
         }
         NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_home_navigation_detail_product, bundle);
+        navController.navigate(R.id.action_global_detail_product, bundle);
     }
     
     @Override

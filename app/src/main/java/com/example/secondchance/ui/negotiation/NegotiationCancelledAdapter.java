@@ -53,6 +53,9 @@ public class NegotiationCancelledAdapter extends RecyclerView.Adapter<Negotiatio
             holder.btnNegotiationAgain.setBackgroundColor(
                     holder.itemView.getResources().getColor(R.color.grayDay)
             );
+            holder.btnNegotiationAgain.setTextColor(
+                    holder.itemView.getResources().getColor(R.color.darkerDay)
+            );
         } else {
             // Trường hợp 1: Bị shop từ chối
             holder.headerShop.setVisibility(View.VISIBLE);

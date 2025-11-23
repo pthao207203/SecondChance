@@ -139,13 +139,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/whiteDay">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="12dp"
+                android:background="@color/whiteDay">
 
                 <TextView
                     android:id="@+id/tvDefaultAddress"
@@ -189,13 +191,15 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/whiteDay">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="12dp"
+                android:background="@color/whiteDay">
 
                 <TextView
                     android:id="@+id/tvDefaultBank"
@@ -219,6 +223,6 @@
         android:background="@drawable/btn_normalday_solid"
         android:text="CẬP NHẬT"
         android:textColor="@color/whiteDay"
-        android:textSize="@dimen/text_20"
+        android:textSize="@dimen/text_16"
         android:textStyle="bold" />
 </RelativeLayout>

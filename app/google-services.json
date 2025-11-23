@@ -12,7 +12,20 @@
           "package_name": "com.example.secondchance"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "415494746009-tde33slk2ooldvj4db7c6gs5tq1o8t41.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.secondchance",
+            "certificate_hash": "80516f8840d07ad275bc9293532efd1f53a14a4e"
+          }
+        },
+        {
+          "client_id": "415494746009-gqefttglrkdkg2nopb93kornoeq28sut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDduf7_NA6EyxPiMvg5aaZ2jjD354l6Gyc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415494746009-gqefttglrkdkg2nopb93kornoeq28sut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

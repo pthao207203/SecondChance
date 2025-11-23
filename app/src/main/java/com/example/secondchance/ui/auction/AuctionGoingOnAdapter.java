@@ -3,6 +3,7 @@ package com.example.secondchance.ui.auction;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,35 +77,10 @@ public class AuctionGoingOnAdapter extends RecyclerView.Adapter<AuctionGoingOnAd
                     .into(binding.auctionImage);
 
             binding.getRoot().setOnClickListener(v -> {
-                // 1. Tạo đối tượng ProductCard (Code này của bạn đã đúng)
-                ProductCard productToPass = new ProductCard();
-                productToPass.setTitle(auction.getProductName());
-                productToPass.setPrice(auction.getCurrentPrice());
-                productToPass.setQuantity(auction.getQuantity());
-                productToPass.setProductType(ProductCard.ProductType.AUCTION);
-                // productToPass.setImageRes(...); // (Nếu bạn cần)
-
-                // === 2. THÊM PHẦN TÍNH TOÁN VÀ SET THỜI GIAN ===
-                long millisLeft = auction.getEndTimeMillis() - System.currentTimeMillis();
-                String timeString;
-                if (millisLeft > 0) {
-                    long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(millisLeft);
-                    long minutes = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(millisLeft) % 60;
-                    long seconds = java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(millisLeft) % 60;
-
-                    // Tạo chuỗi, ví dụ: "02:39:12"
-                    timeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-                } else {
-                    timeString = "00:00:00"; // Hoặc "Đã kết thúc"
-                }
-
-                productToPass.setTimeRemaining(timeString); // <-- Gán chuỗi thời gian
-
-                // 3. Tạo Bundle (Đã đúng)
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("product", productToPass);
+                Log.d("AuctionGoingOnAdapter", "bind: " + auction.getProductId());
+                bundle.putSerializable("productId", auction.getProductId());
 
-                // 4. Điều hướng (Đã đúng)
                 Navigation.findNavController(v).navigate(
                         R.id.action_auction_to_detail_product,
                         bundle

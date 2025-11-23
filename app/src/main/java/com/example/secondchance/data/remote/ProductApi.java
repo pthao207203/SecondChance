@@ -19,18 +19,18 @@ public interface ProductApi {
 
     @GET("/api/products/{id}")
     Call<ProductEnvelope> getProductById(@Path("id") String productId);
-    
+
     @GET("/api/products/auctions")
     Call<AuctionListResponse> getAuctions(
       @Query("page") Integer page,
       @Query("pageSize") Integer pageSize
     );
-    
+
     @POST("/admin/products")
     Call<BasicResponse> createProduct(
       @Body ProductCreateRequest body
     );
-    
+
     @GET("/admin/products/meta")
     Call<ProductMetaResponse> getProductMeta();
 

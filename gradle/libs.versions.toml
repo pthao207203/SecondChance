@@ -36,6 +36,7 @@ retrofit = "2.11.0"
 squareupLoggingInterceptor = "5.3.1"
 weatherIconsTypeface = "2.0.10.8-kotlin"
 playServicesAnalyticsImpl = "18.2.0"
+playServicesAuth = "20.7.0"
 
 [libraries]
 android-gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidGifDrawable" }
@@ -76,6 +77,7 @@ preference = { module = "androidx.preference:preference", version.ref = "prefere
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 weather-icons-typeface = { module = "com.mikepenz:weather-icons-typeface", version.ref = "weatherIconsTypeface" }
 play-services-analytics-impl = { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

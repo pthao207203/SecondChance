@@ -25,7 +25,29 @@ public class ProductCard implements java.io.Serializable{
      * Enum định nghĩa các loại sản phẩm.
      */
     public enum ProductType {
-        FIXED, AUCTION, NEGOTIATION
+        FIXED("Giá cố định"),
+        AUCTION("Đấu giá"),
+        NEGOTIATION("Thương lượng");
+
+        private final String displayName;
+
+        ProductType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return displayName;
+        }
+
+        public static ProductType fromString(String text) {
+            for (ProductType b : ProductType.values()) {
+                if (b.displayName.equalsIgnoreCase(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 
     /**

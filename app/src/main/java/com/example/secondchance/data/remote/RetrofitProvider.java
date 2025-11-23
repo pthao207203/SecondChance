@@ -1,20 +1,15 @@
 package com.example.secondchance.data.remote;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Handler;
 import android.os.Looper;
 
-import android.util.Log;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.example.secondchance.R;
-import com.example.secondchance.ui.auth.LoginFragment;
 import com.example.secondchance.util.Prefs;
+import com.example.secondchance.ui.auth.LogoutRouter;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import android.os.Handler;
+
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -27,8 +22,8 @@ public class RetrofitProvider {
   private static volatile Retrofit retrofit;
   private static volatile AuthApi authApi;
   private static volatile HomeApi homeApi;
-  private static volatile MeApi  meApi;
-  private static volatile OrderApi  orderApi;
+  private static volatile MeApi meApi;
+  private static volatile OrderApi orderApi;
   private static volatile CartApi cartApi;
   private static volatile ProductApi productApi;
   private static volatile CloudinaryApi cloudinaryApi;
@@ -70,9 +65,9 @@ public class RetrofitProvider {
       okhttp3.Response res = chain.proceed(chain.request());
       if (res.code() == 401 && appCtx != null) {
         if (logoutInProgress.compareAndSet(false, true)) {
-          new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+          new Handler(Looper.getMainLooper()).post(() -> {
             try {
-              com.example.secondchance.ui.auth.LogoutRouter.forceLogout(appCtx);
+              LogoutRouter.forceLogout(appCtx);
             } finally {
               logoutInProgress.set(false);
             }
