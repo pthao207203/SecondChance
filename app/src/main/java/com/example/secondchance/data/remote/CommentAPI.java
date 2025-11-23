@@ -15,8 +15,7 @@ import java.util.List;
  */
 public interface CommentAPI {
 
-    // => GET http://10.0.2.2:3000/api/users/{id}/comments
-    @GET("users/{id}/comments")
+    @GET("/api/users/{id}/comments")
     Call<GetCommentsEnvelope> getSellerComments(@Path("id") String sellerId);
 
     class GetCommentsEnvelope {
