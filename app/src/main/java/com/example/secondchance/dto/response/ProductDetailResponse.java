@@ -8,60 +8,57 @@ import java.util.List;
 public class ProductDetailResponse {
   public boolean success;
   public Data data;
-  
+  public Data getData() {
+    return data;
+  }
+
   public static class Data {
     @SerializedName("id")            public String id;
     @SerializedName("name")          public String name;
     @SerializedName("description")   public String description;
-    
-    // Danh sách URL ảnh
+
     @SerializedName("media")         public List<String> media;
-    
-    // Giá: dùng long để đủ dải VND
+
     @SerializedName("price")         public long price;
     public int priceType;
     public String auctionEndsAt;
     @SerializedName("currency")      public String currency;
     @SerializedName("quantity")      public int quantity;
-    
-    // Tình trạng BE trả "active"
+
     @SerializedName("condition")     public String condition;
-    
-    // Khóa ngoại
+
     @SerializedName("sellerId")      public String sellerId;
     @SerializedName("categoryId")    public String categoryId;
     @SerializedName("brandId")       public String brandId;
-    
-    // ISO8601
+
     @SerializedName("createdAt")     public String createdAt;
-    
-    // Thuộc tính phụ
-    @SerializedName("usageTimeMonths") public Integer usageTimeMonths; // có thể null
-    @SerializedName("reviewCount")     public Integer reviewCount;     // có thể null
+
+    @SerializedName("usageTimeMonths") public Integer usageTimeMonths;
+    @SerializedName("reviewCount")     public Integer reviewCount;
     @SerializedName("conditionNote")   public String conditionNote;
     @SerializedName("newPercent")      public Integer newPercent;
     @SerializedName("damagePercent")   public Integer damagePercent;
     @SerializedName("warrantyMonths")  public Integer warrantyMonths;
-    
-    // Ảnh đại diện nhanh
+
     @SerializedName("thumbnail")     public String thumbnail;
-    
-    // Thông tin người bán (đã embed)
+
     @SerializedName("seller")        public Seller seller;
     @SerializedName("hasOrigin")
-    public Boolean hasOrigin; // true/false, có thể null nếu BE không trả
-    
+    public Boolean hasOrigin;
+
     @SerializedName("originLink")
-    public OriginLink originLink; // có thể null
-    
-    // Nên có constructor mặc định để tránh NPE
+    public OriginLink originLink;
+
     public void ensureDefaults() {
       if (media == null) media = new ArrayList<>();
       if (hasOrigin == null) hasOrigin = false;
-      // originLink có thể để null — tùy UI xử lý
+
+    }
+    public long getPrice() {
+      return price;
     }
   }
-  
+
   public static class Seller {
     public String id;
     @SerializedName("userAvatar")

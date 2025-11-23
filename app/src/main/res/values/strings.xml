@@ -21,4 +21,6 @@
     <string name="receive_order">Đã nhận hàng</string>
     <string name="server_client_id">415494746009-gqefttglrkdkg2nopb93kornoeq28sut.apps.googleusercontent.com</string>
     <string name="default_web_client_id">415494746009-gqefttglrkdkg2nopb93kornoeq28sut.apps.googleusercontent.com</string>
+    <string name="title_checkout">Checkout</string>
+
 </resources>
