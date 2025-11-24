@@ -194,7 +194,7 @@ public class OrderPreviewFragment extends Fragment {
 
         if (isSelected) {
             ivIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
-            view.setBackgroundResource(R.drawable.bg_default);
+            view.setBackgroundResource(R.drawable.bg_normal);
         } else {
             ivIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             view.setBackgroundResource(R.drawable.bg_bottom_border_light_blue);
@@ -249,7 +249,7 @@ public class OrderPreviewFragment extends Fragment {
             ivProfile.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
             ivPhone.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
             ivMapPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
-            view.setBackgroundResource(R.drawable.bg_default);
+            view.setBackgroundResource(R.drawable.bg_normal);
         } else {
             ivProfile.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             ivPhone.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
@@ -291,7 +291,7 @@ public class OrderPreviewFragment extends Fragment {
 
         if (isSelected) {
             ivShippingIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.highLight5));
-            view.setBackgroundResource(R.drawable.bg_default);
+            view.setBackgroundResource(R.drawable.bg_normal);
         } else {
             ivShippingIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.darkerDay));
             view.setBackgroundResource(R.drawable.bg_bottom_border_light_blue);

@@ -44,17 +44,34 @@
             android:textColor="@color/darkerDay"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etBankName"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_light_active_outline"
-            android:paddingHorizontal="16dp"
-            android:textSize="@dimen/text_16"
-            android:textColor="@color/darkerDay"
-            android:inputType="text" />
+            android:layout_marginBottom="16dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/etBankName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_light_active_outline"
+                android:paddingHorizontal="16dp"
+                android:textSize="@dimen/text_16"
+                android:textColor="@color/darkerDay"
+                android:inputType="text"
+                android:completionThreshold="1"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_down"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                app:tint="@color/normalDay"
+                android:importantForAccessibility="no" />
+
+        </RelativeLayout>
 
         <!-- Account Number Field -->
         <TextView
