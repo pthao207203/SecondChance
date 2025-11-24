@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:gravity="end"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imgUserSent"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/bg_image_user"
+        android:clipToOutline="true"/>
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_marginStart="40dp"
+        android:text="Nội dung tin nhắn"
+        android:padding="12dp"
+        android:background="@drawable/bg_message_user"
+        android:textColor="#4A2C19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

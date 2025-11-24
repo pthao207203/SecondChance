@@ -44,7 +44,7 @@
                 android:text="Xác nhận"
                 android:textColor="@color/darkerDay"
                 app:backgroundTint="@color/grayDay"
-                app:cornerRadius="20dp"
+                app:cornerRadius="@dimen/radius_m"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 android:layout_marginEnd="8dp"
@@ -60,7 +60,7 @@
                 android:text="Giữ đơn"
                 android:textColor="@color/normalDay"
                 app:strokeColor="@color/normalDay"
-                app:cornerRadius="20dp"
+                app:cornerRadius="@dimen/radius_m"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 android:layout_marginStart="8dp"/>
