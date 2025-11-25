@@ -1,10 +1,12 @@
 package com.example.secondchance.ui.shoporder;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView; // <-- Thêm import này
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -14,23 +16,38 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.bumptech.glide.Glide;
+import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.R;
+
+import com.example.secondchance.data.model.OrderWrapper;
+import com.example.secondchance.data.model.OrderItem;
+import com.example.secondchance.data.repo.OrderRepository;
+
 import com.example.secondchance.data.model.ShopOrder;
 import com.example.secondchance.data.model.ShopOrderProduct;
 import com.example.secondchance.databinding.FragmentShopDeliveringBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveringShopFragment extends Fragment {
 
+    private static final String TAG = "DeliveringShopFrag";
     private FragmentShopDeliveringBinding binding;
     private DeliveringShopAdapter adapter;
     private final List<ShopOrder> shopOrderList = new ArrayList<>();
+    private SharedViewModel sharedViewModel;
+    private OrderRepository orderRepository;
+    private String currentShopId = null;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentShopDeliveringBinding.inflate(inflater, container, false);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         return binding.getRoot();
     }
 
@@ -38,9 +55,15 @@ public class DeliveringShopFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
+        orderRepository = new OrderRepository();
 
-        loadDummyData(); // Sẽ tải 2 loại đơn hàng
+        currentShopId = sharedViewModel.getCurrentShopId();
+        if (currentShopId == null || currentShopId.isEmpty()) {
+            Toast.makeText(requireContext(), "Không tìm thấy ID Shop. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        binding.rvDeliveringOrders.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new DeliveringShopAdapter(shopOrderList, (orderId, deliveryStatus) -> {
             try {
@@ -52,11 +75,126 @@ public class DeliveringShopFragment extends Fragment {
                 }
                 nav.navigate(R.id.action_shopOrderFragment_to_deliveringShopOrderDetailFragment, args);
             } catch (Exception e) {
-                Toast.makeText(requireContext(), "Không thể mở chi tiết đơn giao của shop.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Navigation error", e);
+                Toast.makeText(requireContext(), "Không thể mở chi tiết đơn hàng.", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.rvDeliveringOrders.setAdapter(adapter);
+
+        loadData();
+
+        sharedViewModel.getRefreshLists().observe(getViewLifecycleOwner(), shouldRefresh -> {
+            if (shouldRefresh != null && shouldRefresh) {
+                loadData();
+                sharedViewModel.clearRefreshRequest();
+            }
+        });
+    }
+
+    private void loadData() {
+        if (currentShopId == null || currentShopId.isEmpty()) return;
+
+        orderRepository.fetchOrdersForShop(currentShopId, "1", new OrderRepository.RepoCallback<List<OrderWrapper>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onSuccess(List<OrderWrapper> data) {
+                if (!isAdded()) return;
+
+                shopOrderList.clear();
+                if (data != null) {
+                    for (OrderWrapper wrapper : data) {
+
+                        if (wrapper.order != null) {
+                            ShopOrder shopOrder = convertToShopOrder(wrapper);
+                            shopOrderList.add(shopOrder);
+                        }
+                    }
+                }
+
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+
+                if (shopOrderList.isEmpty()) {
+                    Log.d(TAG, "Danh sách đơn hàng trống");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Lỗi tải đơn hàng: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private ShopOrder convertToShopOrder(OrderWrapper wrapper) {
+        com.example.secondchance.data.model.Order.DeliveryOverallStatus apiStatus = wrapper.order.getDeliveryStatus();
+        ShopOrder.DeliveryOverallStatus status = mapToShopStatus(apiStatus);
+
+        String statusText;
+        String description;
+
+        switch (status) {
+            case PACKAGED:
+                statusText = "Bạn chưa giao đơn hàng cho bưu cục";
+                description = "Đã xác nhận, đang đóng gói";
+                break;
+            case AT_POST_OFFICE:
+                statusText = "Đã đến bưu cục";
+                description = "Đơn hàng đang ở bưu cục";
+                break;
+            case DELIVERING:
+                statusText = "Đang giao hàng";
+                description = "Shipper đang giao tới khách";
+                break;
+            case DELIVERED:
+                statusText = "Giao hàng thành công";
+                description = "Khách đã nhận được hàng";
+                break;
+            default:
+                statusText = wrapper.order.getStatusText();
+                description = "Đang xử lý";
+        }
+
+        List<ShopOrderProduct> products = new ArrayList<>();
+        OrderItem firstItem = wrapper.order.getFirstItem();
+
+        if (firstItem != null) {
+            products.add(new ShopOrderProduct(
+                    "ID",
+                    firstItem.getName(),
+                    "Mã đơn: " + wrapper.order.getId().substring(0, Math.min(8, wrapper.order.getId().length())),
+                    wrapper.order.getPrice(),
+                    0,
+                    firstItem.getQuantity(),
+                    firstItem.getImageUrl()
+            ));
+        }
+
+        return new ShopOrder(
+                wrapper.order.getId(),
+                products,
+                wrapper.order.getPrice(),
+                wrapper.order.getDate(),
+                statusText,
+                description,
+                ShopOrder.ShopOrderType.DELIVERING,
+                false,
+                null,
+                status
+        );
+    }
+
+    private ShopOrder.DeliveryOverallStatus mapToShopStatus(com.example.secondchance.data.model.Order.DeliveryOverallStatus apiStatus) {
+        if (apiStatus == null) return ShopOrder.DeliveryOverallStatus.PACKAGED;
+
+        try {
+            return ShopOrder.DeliveryOverallStatus.valueOf(apiStatus.name());
+        } catch (IllegalArgumentException e) {
+            return ShopOrder.DeliveryOverallStatus.PACKAGED;
+        }
     }
 
     @Override
@@ -67,62 +205,15 @@ public class DeliveringShopFragment extends Fragment {
         super.onDestroyView();
     }
 
-    // ===================================
-    // === HÀM loatDummyData ĐÃ CẬP NHẬT ===
-    // === (Thêm 2 loại đơn hàng)      ===
-    // ===================================
-    private void loadDummyData() {
-        shopOrderList.clear();
-
-        // --- ĐƠN 1: ĐANG GIAO (Sử dụng layout item_shop_delivering_order) ---
-        List<ShopOrderProduct> items1 = new ArrayList<>();
-        items1.add(new ShopOrderProduct("P-301", "Đơn giao nhẫn kim cương", "Giá cố định", "50.000", R.drawable.ic_ring, 1));
-        shopOrderList.add(new ShopOrder(
-                "SHOPDELIV001", // id
-                items1, // List<ShopOrderProduct>
-                "50.000", // totalPrice
-                "18/06/2025", // date
-                "Đã đến bưu cục Trần Thị ABC", // statusText
-                "Đang trên đường giao", // description
-                null, // type
-                false, // isEvaluated
-                null, // refundStatus
-                ShopOrder.DeliveryOverallStatus.AT_POST_OFFICE // <--- TRẠNG THÁI 1
-        ));
-
-        // --- ĐƠN 2: CHƯA GIAO (Sử dụng layout item_shop_not_yet_delivering_order) ---
-        List<ShopOrderProduct> items2 = new ArrayList<>();
-        items2.add(new ShopOrderProduct("P-302", "Bình gốm sứ", "Hàng dễ vỡ", "150.000", R.drawable.sample_flower, 1));
-        shopOrderList.add(new ShopOrder(
-                "SHOPDELIV002", // id
-                items2, // List<ShopOrderProduct>
-                "150.000", // totalPrice
-                "19/06/2025", // date
-                "Bạn chưa giao đơn hàng cho bưu cục", // statusText
-                "Đã xác nhận, đang đóng gói", // description
-                null, // type
-                false, // isEvaluated
-                null, // refundStatus
-                ShopOrder.DeliveryOverallStatus.PACKAGED // <--- TRẠNG THÁI 2
-        ));
-
-
-        if (adapter != null) adapter.notifyDataSetChanged();
-    }
-
     private interface OnShopOrderClick {
         void openDetail(String shopOrderId, @Nullable ShopOrder.DeliveryOverallStatus deliveryStatus);
     }
 
-    // ===================================
-    // === ADAPTER ĐÃ NÂNG CẤP ĐỂ HỖ TRỢ 2 VIEW TYPE ===
-    // ===================================
     private static class DeliveringShopAdapter extends RecyclerView.Adapter<DeliveringShopAdapter.ShopOrderViewHolder> {
 
         private final List<ShopOrder> items;
         private final OnShopOrderClick listener;
 
-        // Định nghĩa 2 loại view
         private static final int VIEW_TYPE_NOT_YET_DELIVERING = 1;
         private static final int VIEW_TYPE_DELIVERING = 2;
 
@@ -134,11 +225,9 @@ public class DeliveringShopFragment extends Fragment {
         @Override
         public int getItemViewType(int position) {
             ShopOrder order = items.get(position);
-            // Dựa vào trạng thái đơn hàng để quyết định dùng layout nào
             if (order.getDeliveryStatus() == ShopOrder.DeliveryOverallStatus.PACKAGED) {
                 return VIEW_TYPE_NOT_YET_DELIVERING;
             } else {
-                // Các trạng thái AT_POST_OFFICE, DELIVERING, DELIVERED dùng layout còn lại
                 return VIEW_TYPE_DELIVERING;
             }
         }
@@ -148,11 +237,9 @@ public class DeliveringShopFragment extends Fragment {
         public ShopOrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View v;
-
-            // Inflate layout chính xác dựa trên viewType
             if (viewType == VIEW_TYPE_NOT_YET_DELIVERING) {
                 v = inflater.inflate(R.layout.item_shop_not_yet_delivering_order, parent, false);
-            } else { // VIEW_TYPE_DELIVERING
+            } else {
                 v = inflater.inflate(R.layout.item_shop_delivering_order, parent, false);
             }
             return new ShopOrderViewHolder(v, listener);
@@ -164,20 +251,17 @@ public class DeliveringShopFragment extends Fragment {
         }
 
         @Override
-        public int getItemCount() {
-            return items != null ? items.size() : 0;
-        }
+        public int getItemCount() { return items != null ? items.size() : 0; }
 
-        // ViewHolder này có thể dùng chung cho cả 2 layout vì ID của view giống hệt nhau
         static class ShopOrderViewHolder extends RecyclerView.ViewHolder {
             TextView tvTitle, tvPrice, tvQuantity, tvStatus, tvDescription;
-            ImageView imgProduct; // <-- Thêm ImageView
+            ImageView imgProduct;
             final OnShopOrderClick listener;
 
             ShopOrderViewHolder(@NonNull View itemView, OnShopOrderClick listener) {
                 super(itemView);
                 this.listener = listener;
-                imgProduct = itemView.findViewById(R.id.imgProduct); // <-- Ánh xạ
+                imgProduct = itemView.findViewById(R.id.imgProduct);
                 tvTitle = itemView.findViewById(R.id.tvTitle);
                 tvPrice = itemView.findViewById(R.id.tvPrice);
                 tvQuantity = itemView.findViewById(R.id.tvQuantity);
@@ -185,25 +269,26 @@ public class DeliveringShopFragment extends Fragment {
                 tvDescription = itemView.findViewById(R.id.tvDescription);
             }
 
-            // Hàm bind đã sửa (giống như code bạn đã dán, đã chính xác)
             void bind(final ShopOrder shopOrder) {
-
-                // Gán dữ liệu chung của đơn hàng
                 tvStatus.setText(shopOrder.getStatusText());
                 tvDescription.setText(shopOrder.getDescription());
                 tvPrice.setText(shopOrder.getTotalPrice());
 
-                // Lấy thông tin từ SẢN PHẨM ĐẦU TIÊN
                 if (shopOrder.getItems() != null && !shopOrder.getItems().isEmpty()) {
                     ShopOrderProduct firstProduct = shopOrder.getItems().get(0);
 
                     tvTitle.setText(firstProduct.getTitle());
-                    // Cập nhật text cho tvQuantity (layout XML của bạn là "Số lượng: 1")
                     tvQuantity.setText("Số lượng: " + firstProduct.getQuantity());
-                    imgProduct.setImageResource(firstProduct.getImageRes()); // Gán ảnh
+
+                    if (firstProduct.getImageUrl() != null && !firstProduct.getImageUrl().isEmpty()) {
+                        Glide.with(itemView.getContext())
+                                .load(firstProduct.getImageUrl())
+                                .into(imgProduct);
+                    } else {
+                        imgProduct.setImageResource(firstProduct.getImageRes() != 0 ? firstProduct.getImageRes() : R.drawable.sample_flower);
+                    }
 
                 } else {
-                    // Trường hợp dự phòng
                     tvTitle.setText("Đơn hàng lỗi");
                     tvQuantity.setText("Số lượng: 0");
                 }

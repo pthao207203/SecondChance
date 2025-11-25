@@ -35,7 +35,6 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
-                <!-- RecyclerView cho danh sách sản phẩm -->
                     <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvOrderItems"
                     android:layout_width="match_parent"
@@ -59,7 +58,20 @@
                         android:id="@+id/imgEvidence1"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:src="@drawable/sample_flower"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/imgEvidence2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp"/>
+
+                    <ImageView
+                        android:id="@+id/imgEvidence3"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:scaleType="centerCrop"
                         android:layout_marginEnd="8dp"/>
                 </LinearLayout>
@@ -82,7 +94,6 @@
                         android:id="@+id/tvReason"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sản phẩm khác mô tả, hoàn toàn không giống..."
                         android:textColor="@color/darkerDay"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="8dp"/>
@@ -130,9 +141,9 @@
                             android:layout_marginStart="12dp"/>
 
                         <TextView
+                            android:id="@+id/tvOrderId"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="XYZY1234RTY"
                             android:textColor="@color/normalDay"
                             android:textStyle="bold"
                             android:layout_alignParentEnd="true"

@@ -1,4 +1,3 @@
-// data/remote/ProductApi.java
 package com.example.secondchance.data.remote;
 
 import com.example.secondchance.dto.request.NegotiationCreateRequest;
@@ -23,13 +22,9 @@ import java.util.List;
 
 public interface ProductApi {
 
-    // IMPORTANT: Keep /api/ prefix to match RetrofitProvider base URL pattern
-    // RetrofitProvider base: "http://10.0.2.2:3000/api/"
-    // When path starts with /, it replaces the base path entirely
-
     @GET("/api/products/{id}")
     Call<ProductEnvelope> getProductById(@Path("id") String productId);
-    
+
     @GET("/api/products")
     Call<ProductListResponse> getProducts(
       @Query("page") Integer page,
@@ -43,7 +38,7 @@ public interface ProductApi {
       @Query("priceType") Integer priceType,
       @Query("categoryId") String categoryId
     );
-    
+
     @GET("/api/products/auctions")
     Call<AuctionListResponse> getAuctions(
             @Query("page") Integer page,
@@ -104,6 +99,7 @@ public interface ProductApi {
     @GET("/admin/products/{id}")
     Call<AdminProductDetailResponse> getAdminProductById(@Path("id") String id);
 
+
     // ============================================
     // ORDER SHIPPING UPDATE
     // ============================================
@@ -113,8 +109,8 @@ public interface ProductApi {
             @Path("id") String orderId,
             @Body UpdateShippingRequest body
     );
-    
-    
+
+
     // ============================================
     // NEGOTIATIONS
     // ============================================

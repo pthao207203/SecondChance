@@ -2,103 +2,99 @@ package com.example.secondchance.ui.shoporder;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewbinding.ViewBinding; // <-- Import ViewBinding
+import androidx.viewbinding.ViewBinding;
 
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-// === MODEL ĐỒNG BỘ ===
+
 import com.example.secondchance.data.model.ShopOrder;
 import com.example.secondchance.data.model.ShopOrderProduct;
-//
-// === IMPORT TẤT CẢ BINDING CẦN THIẾT ===
+import com.example.secondchance.data.model.ShopTrackingStatus;
+import com.example.secondchance.data.remote.OrderApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.dto.response.OrderDetailResponse;
 import com.example.secondchance.databinding.FragmentShopRefundConfirmedDetailBinding;
 import com.example.secondchance.databinding.FragmentShopRefundDeliveringDetailBinding;
 import com.example.secondchance.databinding.FragmentShopRefundNotConfirmedDetailBinding;
 import com.example.secondchance.databinding.FragmentShopRefundSuccessfulDetailBinding;
-//
+import com.example.secondchance.ui.shoporder.adapter.ShopTrackingStatusAdapter;
 import com.example.secondchance.viewmodel.SharedViewModel;
+
+import java.text.NumberFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RefundShopOrderDetailFragment extends Fragment {
-    private static final String TAG = "RefundShopOrderDetail";
 
-    // Một biến ViewBinding chung
     private ViewBinding binding;
-
     private SharedViewModel sharedViewModel;
+    private OrderApi orderApi;
+
     private String receivedOrderId;
     private ShopOrder.RefundStatus receivedRefundStatus;
 
-    // === ADAPTER VÀ LIST SẢN PHẨM ===
     private ShopOrderProductDetailAdapter productAdapter;
     private final List<ShopOrderProduct> productList = new ArrayList<>();
+
+    private final List<ShopTrackingStatus> trackingList = new ArrayList<>();
+    private ShopTrackingStatusAdapter trackingAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        // Lấy arguments TRƯỚC để quyết định layout
         if (getArguments() != null) {
             receivedOrderId = getArguments().getString("orderId");
             try {
                 receivedRefundStatus = (ShopOrder.RefundStatus) getArguments().getSerializable("refundStatus");
             } catch (Exception e) {
-                Log.e(TAG, "Error getting refundStatus from arguments", e);
-                receivedRefundStatus = ShopOrder.RefundStatus.NOT_CONFIRMED; // Mặc định
+                receivedRefundStatus = ShopOrder.RefundStatus.NOT_CONFIRMED;
             }
         } else {
-            Log.e(TAG, "Arguments are null!");
-            Toast.makeText(getContext(), "Lỗi tải đơn hàng", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).popBackStack();
             return null;
         }
 
-        // === LOGIC CHỌN LAYOUT DỰA TRÊN STATUS (ĐÃ KHỚP VỚI ADAPTER) ===
-        // (Khớp với logic Adapter của RefundShopFragment)
         switch (receivedRefundStatus) {
             case CONFIRMED:
-                // Adapter dùng: item_shop_refund_confirmed
-                // Layout chi tiết: fragment_shop_refund_confirmed_detail
-                FragmentShopRefundConfirmedDetailBinding confirmedBinding = FragmentShopRefundConfirmedDetailBinding.inflate(inflater, container, false);
-                binding = confirmedBinding;
+                binding = FragmentShopRefundConfirmedDetailBinding.inflate(inflater, container, false);
                 break;
             case DELIVERING:
-                // Adapter dùng: item_shop_refund_delivering
-                // Layout chi tiết: fragment_shop_refund_delivering_detail
-                FragmentShopRefundDeliveringDetailBinding deliveringBinding = FragmentShopRefundDeliveringDetailBinding.inflate(inflater, container, false);
-                binding = deliveringBinding;
+                binding = FragmentShopRefundDeliveringDetailBinding.inflate(inflater, container, false);
                 break;
             case SUCCESSFUL:
-                // Adapter dùng: item_shop_refund_successful
-                // Layout chi tiết: fragment_shop_refund_successful_detail
-                FragmentShopRefundSuccessfulDetailBinding successfulBinding = FragmentShopRefundSuccessfulDetailBinding.inflate(inflater, container, false);
-                binding = successfulBinding;
+                binding = FragmentShopRefundSuccessfulDetailBinding.inflate(inflater, container, false);
                 break;
             case NOT_CONFIRMED:
             default:
-                // Adapter dùng: item_shop_refund_not_confirmed
-                // Layout chi tiết: fragment_shop_refund_not_confirmed_detail
-                FragmentShopRefundNotConfirmedDetailBinding notConfirmedBinding = FragmentShopRefundNotConfirmedDetailBinding.inflate(inflater, container, false);
-                binding = notConfirmedBinding;
+                binding = FragmentShopRefundNotConfirmedDetailBinding.inflate(inflater, container, false);
                 break;
         }
-
         return binding.getRoot();
     }
 
@@ -106,150 +102,297 @@ public class RefundShopOrderDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        orderApi = RetrofitProvider.order();
 
-        // 1. Tải dữ liệu sản phẩm
-        loadDummyProductData(receivedOrderId);
-
-        // 2. Gán listener cho các nút (Đã sửa logic)
         setupButtonListeners();
+        setupRecyclerViews(view);
 
-        // 3. Cài đặt hiển thị sản phẩm (Đã sửa logic)
-        // Chỉ layout DELIVERING có RecyclerView (rvOrderItems)
-        // 3 layout còn lại (NOT_CONFIRMED, CONFIRMED, SUCCESSFUL) dùng View tĩnh
-        if (receivedRefundStatus == ShopOrder.RefundStatus.DELIVERING) {
-            RecyclerView rvOrderItems = view.findViewById(R.id.rvOrderItems);
-            if (rvOrderItems != null) {
-                setupProductRecyclerView(rvOrderItems);
-                if(productAdapter != null) productAdapter.notifyDataSetChanged();
-            } else {
-                Log.e(TAG, "Lỗi: layout delivering không có rvOrderItems!");
+        if (receivedOrderId != null) {
+            loadOrderDetail(receivedOrderId);
+        }
+    }
+
+    private void setupRecyclerViews(View view) {
+        RecyclerView rvItems = view.findViewById(R.id.rvOrderItems);
+        if (rvItems != null) {
+            productAdapter = new ShopOrderProductDetailAdapter(getContext(), productList);
+            rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
+            rvItems.setAdapter(productAdapter);
+            rvItems.setNestedScrollingEnabled(false);
+        }
+
+        RecyclerView rvTracking = view.findViewById(R.id.rvTrackingStatus);
+        if (rvTracking != null) {
+            trackingAdapter = new ShopTrackingStatusAdapter(getContext(), trackingList);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setReverseLayout(true);
+            layoutManager.setStackFromEnd(true);
+            rvTracking.setLayoutManager(layoutManager);
+            rvTracking.setAdapter(trackingAdapter);
+            rvTracking.setNestedScrollingEnabled(false);
+        }
+    }
+
+    private void loadOrderDetail(String id) {
+        orderApi.getOrderDetail(id).enqueue(new Callback<OrderDetailResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderDetailResponse> call, @NonNull Response<OrderDetailResponse> res) {
+                if (!isAdded()) return;
+                if (!res.isSuccessful() || res.body() == null || res.body().data == null) {
+                    Toast.makeText(requireContext(), "Không tải được dữ liệu", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bindDataToUI(res.body().data);
             }
-        } else {
-            // 3 trạng thái còn lại dùng View tĩnh, gán dữ liệu
-            if (!productList.isEmpty()) {
-                bindStaticProductData(view, productList.get(0));
+
+            @Override
+            public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void bindDataToUI(OrderDetailResponse.Data data) {
+        if (data.order != null && data.order.orderItems != null) {
+            productList.clear();
+            for (OrderDetailResponse.OrderItem dto : data.order.orderItems) {
+                productList.add(new ShopOrderProduct(
+                        "ID",
+                        dto.name,
+                        "Mã đơn: " + (data.order.id != null ? data.order.id.toUpperCase() : ""),
+                        formatVnd(dto.price),
+                        0,
+                        dto.qty,
+                        dto.imageUrl
+                ));
+            }
+
+            if (productAdapter != null) {
+                productAdapter.notifyDataSetChanged();
+            } else if (!productList.isEmpty()) {
+                bindStaticProductData(binding.getRoot(), productList.get(0));
+            }
+        }
+
+        bindReturnReason(binding.getRoot(), data);
+        bindEvidenceImages(binding.getRoot(), data);
+
+        if (receivedRefundStatus == ShopOrder.RefundStatus.DELIVERING && data.shipment != null) {
+            trackingList.clear();
+            if (data.shipment.events != null) {
+                for (OrderDetailResponse.Event e : data.shipment.events) {
+                    trackingList.add(new ShopTrackingStatus(
+                            formatVnTime(e.eventTime),
+                            mapStatusTitle(e),
+                            false
+                    ));
+                }
+                if (!trackingList.isEmpty()) {
+                    trackingList.get(trackingList.size() - 1).setActive(true);
+                }
+                if (trackingAdapter != null) trackingAdapter.notifyDataSetChanged();
+            }
+            updateStepperUI(binding.getRoot(), data.shipment.currentStatus);
+        }
+    }
+
+    private void bindEvidenceImages(View view, OrderDetailResponse.Data data) {
+        ImageView img1 = view.findViewById(R.id.imgEvidence1);
+        ImageView img2 = view.findViewById(R.id.imgEvidence2);
+        ImageView img3 = view.findViewById(R.id.imgEvidence3);
+
+        if (img1 == null) return;
+
+        img1.setVisibility(View.GONE);
+        img2.setVisibility(View.GONE);
+        img3.setVisibility(View.GONE);
+
+        if (data.order != null && data.order.returnRequest != null && data.order.returnRequest.media != null) {
+            List<String> mediaList = data.order.returnRequest.media;
+
+            if (mediaList.size() > 0) {
+                img1.setVisibility(View.VISIBLE);
+                Glide.with(this).load(mediaList.get(0)).into(img1);
+            }
+
+            if (mediaList.size() > 1) {
+                img2.setVisibility(View.VISIBLE);
+                Glide.with(this).load(mediaList.get(1)).into(img2);
+            }
+
+            if (mediaList.size() > 2) {
+                img3.setVisibility(View.VISIBLE);
+                Glide.with(this).load(mediaList.get(2)).into(img3);
             }
         }
     }
 
-    // === HÀM MỚI: Gán dữ liệu cho 3 layout dùng View tĩnh ===
     private void bindStaticProductData(View view, ShopOrderProduct product) {
         try {
-            ImageView imgProduct = view.findViewById(R.id.imgProduct);
-            TextView tvTitle = view.findViewById(R.id.tvTitle);
-            TextView tvPrice = view.findViewById(R.id.tvPrice);
-            TextView tvQuantity = view.findViewById(R.id.tvQuantity);
-            TextView tvDescription = view.findViewById(R.id.tvDescription);
+            ImageView img = view.findViewById(R.id.imgProduct);
+            TextView title = view.findViewById(R.id.tvTitle);
+            TextView price = view.findViewById(R.id.tvPrice);
+            TextView qty = view.findViewById(R.id.tvQuantity);
+            TextView desc = view.findViewById(R.id.tvDescription);
 
-            if(imgProduct != null) imgProduct.setImageResource(product.getImageRes());
-            if(tvTitle != null) tvTitle.setText(product.getTitle());
-            if(tvPrice != null) tvPrice.setText(product.getPrice());
-            if(tvQuantity != null) tvQuantity.setText("Số lượng: " + product.getQuantity());
-            if(tvDescription != null) tvDescription.setText(product.getSubtitle());
+            if (title != null) title.setText(product.getTitle());
+            if (price != null) price.setText(product.getPrice());
+            if (qty != null) qty.setText("Số lượng: " + product.getQuantity());
+            if (desc != null) desc.setText(product.getSubtitle());
 
+            if (img != null) {
+                if (product.getImageUrl() != null) {
+                    Glide.with(this).load(product.getImageUrl()).into(img);
+                } else {
+                    img.setImageResource(R.drawable.sample_flower);
+                }
+            }
         } catch (Exception e) {
-            Log.e(TAG, "Lỗi khi gán dữ liệu tĩnh cho sản phẩm", e);
         }
     }
 
-    // === HÀM ĐÃ SỬA LỖI LOGIC (KHÔNG BỊ HOÁN ĐỔI) ===
-    private void setupButtonListeners() {
-        switch (receivedRefundStatus) {
+    private void bindReturnReason(View view, OrderDetailResponse.Data data) {
+        if (data.order == null || data.order.returnRequest == null) return;
+        String reason = data.order.returnRequest.description;
 
-            // LOGIC CHO SHOP (chờ khách gửi hàng)
-            case CONFIRMED:
-                // Layout: fragment_shop_refund_confirmed_detail (Shop đã chấp nhận)
-                // Nút: btnAccept (Shop đồng ý), btnResendRequest (Shop khiếu nại)
-                ((FragmentShopRefundConfirmedDetailBinding) binding).btnAccept.setOnClickListener(v -> {
-                    Log.d(TAG, "Shop 'Đồng ý' với yêu cầu (chờ khách gửi)");
-                    navigateBack();
-                });
-                ((FragmentShopRefundConfirmedDetailBinding) binding).btnResendRequest.setOnClickListener(v -> {
-                    Log.d(TAG, "Shop 'Khiếu nại' (chờ khách gửi)");
-                    Toast.makeText(getContext(), "Đang xử lý khiếu nại...", Toast.LENGTH_SHORT).show();
-                });
-                break;
-
-            // LOGIC CHO SHOP (Shop chờ nhận hàng về)
-            case DELIVERING:
-                // Layout: fragment_shop_refund_delivering_detail
-                ((FragmentShopRefundDeliveringDetailBinding) binding).layoutStatusNotConfirmed.setVisibility(View.VISIBLE);
-                // Nút: btnReceiveOrder (Shop xác nhận đã nhận hàng)
-                ((FragmentShopRefundDeliveringDetailBinding) binding).btnReceiveOrder.setOnClickListener(v -> {
-                    Log.d(TAG, "Shop XÁC NHẬN ĐÃ NHẬN LẠI HÀNG");
-                    // TODO: Gọi API cập nhật trạng thái -> SUCCESSFUL
-                    Toast.makeText(getContext(), "Đã xác nhận nhận lại hàng", Toast.LENGTH_SHORT).show();
-                    navigateBack();
-                });
-                break;
-
-            // LOGIC CHO SHOP (đã xong)
-            case SUCCESSFUL:
-                // Layout: fragment_shop_refund_successful_detail
-                // Không có nút
-                break;
-
-            // LOGIC CHO SHOP (Shop cần duyệt)
-            case NOT_CONFIRMED:
-            default:
-                // Layout: fragment_shop_refund_not_confirmed_detail
-                // Nút: btnSendRequest (Shop HỦY yêu cầu)
-                // LƯU Ý: Layout của bạn đang có nút "Hủy yêu cầu" (btnSendRequest)
-                // Lẽ ra nó phải là "Chấp nhận" và "Từ chối"
-                ((FragmentShopRefundNotConfirmedDetailBinding) binding).btnSendRequest.setOnClickListener(v -> {
-                    Log.d(TAG, "Shop 'HỦY YÊU CẦU' hoàn trả của khách");
-                    // TODO: Gọi API hủy
-                    Toast.makeText(getContext(), "Đã hủy yêu cầu hoàn trả", Toast.LENGTH_SHORT).show();
-                    navigateBack();
-                });
-                break;
-        }
-    }
-
-    // Hàm quay lại và refresh
-    private void navigateBack() {
-        sharedViewModel.refreshOrderLists();
-        sharedViewModel.requestTabChange(4); // Chuyển về tab Refund
-        NavController navController = NavHostFragment.findNavController(this);
-        navController.popBackStack();
-    }
-
-    // Cài đặt RecyclerView (chỉ dùng cho 1 trạng thái)
-    private void setupProductRecyclerView(RecyclerView rv) {
-        productAdapter = new ShopOrderProductDetailAdapter(getContext(), productList);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(productAdapter);
-        rv.setNestedScrollingEnabled(false);
-    }
-
-    // Tải data sản phẩm (khớp với RefundShopFragment)
-    private void loadDummyProductData(String shopOrderId) {
-        productList.clear();
-
-        if ("REFUND001".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-401", "Giỏ gỗ cắm hoa", "Sản phẩm lỗi", "50.000", R.drawable.sample_flower, 1));
-        } else if ("REFUND002".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-402", "Tranh sơn mài", "Khác mô tả", "250.000", R.drawable.sample_flower, 1));
-        } else if ("REFUND003".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-403", "Bình gốm cổ", "Bị vỡ", "150.000", R.drawable.sample_flower, 1));
-        } else if ("REFUND004".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-404", "Nhẫn kim cương", "Giao sai mẫu", "500.000", R.drawable.sample_flower, 1));
+        TextView tvReason = view.findViewById(R.id.tvReason);
+        if (tvReason != null) {
+            tvReason.setText(reason);
         } else {
-            productList.add(new ShopOrderProduct("P-ERR", "Lỗi tải sản phẩm", "", "0", R.drawable.sample_flower, 0));
+            EditText etReason = view.findViewById(R.id.etReason);
+            if (etReason != null) {
+                etReason.setText(reason);
+                etReason.setFocusable(false);
+                etReason.setClickable(false);
+            }
         }
+    }
+
+    private void updateStepperUI(View view, int shipmentStatus) {
+        if (view == null || getContext() == null) return;
+
+        ImageView step1 = view.findViewById(R.id.step1_icon);
+        ImageView step2 = view.findViewById(R.id.step2_icon);
+        ImageView step3 = view.findViewById(R.id.step3_icon);
+        ImageView step4 = view.findViewById(R.id.step4_icon);
+
+        View line1 = view.findViewById(R.id.step1_line);
+        View line2 = view.findViewById(R.id.step2_line);
+        View line3 = view.findViewById(R.id.step3_line);
+
+        TextView label1 = view.findViewById(R.id.step1_label);
+        TextView label2 = view.findViewById(R.id.step2_label);
+        TextView label3 = view.findViewById(R.id.step3_label);
+        TextView label4 = view.findViewById(R.id.step4_label);
+
+        if (step1 == null) return;
+
+        int activeColor = ContextCompat.getColor(requireContext(), R.color.highLight5);
+        int inactiveColor = ContextCompat.getColor(requireContext(), R.color.highLight4);
+        int activeTextColor = ContextCompat.getColor(requireContext(), R.color.highLight5);
+        int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
+        int activeIcon = R.drawable.ic_active;
+        int inactiveIcon = R.drawable.ic_inactive;
+
+        step1.setBackgroundResource(inactiveIcon);
+        step2.setBackgroundResource(inactiveIcon);
+        step3.setBackgroundResource(inactiveIcon);
+        step4.setBackgroundResource(inactiveIcon);
+        line1.setBackgroundColor(inactiveColor);
+        line2.setBackgroundColor(inactiveColor);
+        line3.setBackgroundColor(inactiveColor);
+        label1.setTextColor(inactiveTextColor);
+        label2.setTextColor(inactiveTextColor);
+        label3.setTextColor(inactiveTextColor);
+        label4.setTextColor(inactiveTextColor);
+
+        if (shipmentStatus >= 5) {
+            step4.setBackgroundResource(activeIcon);
+            label4.setTextColor(activeTextColor);
+            line3.setBackgroundColor(activeColor);
+        }
+        if (shipmentStatus >= 4) {
+            step3.setBackgroundResource(activeIcon);
+            label3.setTextColor(activeTextColor);
+            line2.setBackgroundColor(activeColor);
+        }
+        if (shipmentStatus >= 2) {
+            step2.setBackgroundResource(activeIcon);
+            label2.setTextColor(activeTextColor);
+            line1.setBackgroundColor(activeColor);
+        }
+        if (shipmentStatus >= 1) {
+            step1.setBackgroundResource(activeIcon);
+            label1.setTextColor(activeTextColor);
+        }
+    }
+
+    private void setupButtonListeners() {
+        if (binding instanceof FragmentShopRefundConfirmedDetailBinding) {
+            FragmentShopRefundConfirmedDetailBinding b = (FragmentShopRefundConfirmedDetailBinding) binding;
+            b.btnAccept.setOnClickListener(v -> handleShopAction("ACCEPT_CONFIRM"));
+//            b.btnResendRequest.setOnClickListener(v -> handleShopAction("COMPLAIN"));
+        } else if (binding instanceof FragmentShopRefundDeliveringDetailBinding) {
+            FragmentShopRefundDeliveringDetailBinding b = (FragmentShopRefundDeliveringDetailBinding) binding;
+            b.btnReceiveOrder.setOnClickListener(v -> handleShopAction("CONFIRM_RECEIVED"));
+        } else if (binding instanceof FragmentShopRefundNotConfirmedDetailBinding) {
+            FragmentShopRefundNotConfirmedDetailBinding b = (FragmentShopRefundNotConfirmedDetailBinding) binding;
+            b.btnRejectRequest.setOnClickListener(v -> handleShopAction("REJECT_REQUEST"));
+            b.btnAcceptRequest.setOnClickListener(v -> handleShopAction("ACCEPT_REQUEST"));
+        }
+    }
+
+    private void handleShopAction(String action) {
+        String message = "";
+        switch (action) {
+            case "ACCEPT_REQUEST":
+                message = "Đã chấp nhận yêu cầu hoàn trả";
+                break;
+            case "REJECT_REQUEST":
+                message = "Đã từ chối yêu cầu";
+                break;
+            case "ACCEPT_CONFIRM":
+                message = "Đã đồng ý hoàn tiền";
+                break;
+            case "COMPLAIN":
+                message = "Đã gửi khiếu nại";
+                break;
+            case "CONFIRM_RECEIVED":
+                message = "Đã nhận được hàng hoàn";
+                break;
+        }
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+
+        sharedViewModel.refreshOrderLists();
+        sharedViewModel.requestTabChange(4);
+        NavHostFragment.findNavController(this).popBackStack();
+    }
+
+    private String formatVnd(long amount) {
+        return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount);
+    }
+
+    private String formatVnTime(String iso) {
+        try {
+            ZonedDateTime z = ZonedDateTime.parse(iso).withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
+            return z.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private String mapStatusTitle(OrderDetailResponse.Event e) {
+        return (e != null && e.description != null) ? e.description : "Cập nhật";
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null; // Hủy binding chung
+        binding = null;
     }
 
-    // =================================================================
-    // === ADAPTER NÀY CHỈ DÙNG CHO TRẠNG THÁI 'DELIVERING' ===
-    // =================================================================
     private static class ShopOrderProductDetailAdapter extends RecyclerView.Adapter<ShopOrderProductDetailAdapter.ProductViewHolder> {
-
         private final List<ShopOrderProduct> productList;
         private final Context context;
 
@@ -261,17 +404,13 @@ public class RefundShopOrderDetailFragment extends Fragment {
         @NonNull
         @Override
         public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // **LƯU Ý:**
-            // Bạn cần tạo 1 file layout item (ví dụ: item_shop_order_product_detail.xml)
-            // TẠM DÙNG R.layout.item_canceled_order
             View view = LayoutInflater.from(context).inflate(R.layout.item_canceled_order, parent, false);
             return new ProductViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-            ShopOrderProduct product = productList.get(position);
-            holder.bind(product);
+            holder.bind(productList.get(position));
         }
 
         @Override
@@ -294,10 +433,12 @@ public class RefundShopOrderDetailFragment extends Fragment {
             void bind(ShopOrderProduct product) {
                 tvTitle.setText(product.getTitle());
                 tvPrice.setText(product.getPrice());
-                imgProduct.setImageResource(product.getImageRes());
-                if (tvSubtitle != null) {
-                    tvSubtitle.setText(product.getSubtitle());
+                if (product.getImageUrl() != null) {
+                    Glide.with(itemView.getContext()).load(product.getImageUrl()).into(imgProduct);
+                } else {
+                    imgProduct.setImageResource(product.getImageRes());
                 }
+                if (tvSubtitle != null) tvSubtitle.setText(product.getSubtitle());
             }
         }
     }
