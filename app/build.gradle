@@ -114,14 +114,14 @@ dependencies {
     implementation libs.community.material.typeface.v70961kotlin
     implementation libs.weather.icons.typeface
 
-    // zalopay
-    implementation("com.squareup.okhttp3:okhttp:4.6.0")
-    implementation("commons-codec:commons-codec:1.14")
-
     // AI
     implementation(libs.generativeai)
     implementation libs.logging.interceptor.v4110
     implementation libs.core
+
+    // zalopay
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("commons-codec:commons-codec:1.14")
 
     // Cloudinary
     implementation libs.okhttp
