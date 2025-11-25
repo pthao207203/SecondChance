@@ -208,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
     }
   }
   private void openChatScreen() {
-    Toast.makeText(this, "Mở Chat", Toast.LENGTH_SHORT).show();
+    if (navController.getCurrentDestination() != null && navController.getCurrentDestination().getId() != R.id.messageFragment) {
+      navController.navigate(R.id.action_global_to_messageFragment);
+    }
   }
   private void openNotificationScreen() {
     Toast.makeText(this, "Mở Thông báo", Toast.LENGTH_SHORT).show();
