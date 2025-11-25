@@ -73,6 +73,10 @@
         <item name="cornerSizeBottomLeft">@dimen/card_corner_16dp</item>
         <item name="cornerSizeBottomRight">@dimen/card_corner_16dp</item>
     </style>
+    <style name="RoundedImageView_12dp">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
     <style name="RoundedImageView_8dp">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>

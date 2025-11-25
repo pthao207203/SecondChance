@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="request"
+            type="com.example.secondchance.ui.negotiation.NegotiationCancelled" />
+        <variable
+            name="hasReply"
+            type="boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        >
+
+        <!-- ==================== CARD SẢN PHẨM (RelativeLayout) ==================== -->
+        <LinearLayout
+            android:id="@+id/headerSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <!-- Avatar -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <!-- Ảnh avatar -->
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgShopAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="avatar"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avatar1"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView_20dp" />
+
+                <!-- Badge "Đã xác thực" -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.SecondChance.Card.Number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-8dp"
+                    app:cardBackgroundColor="@color/lighterDay"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/darkerDay"
+                    app:cardElevation="0dp">
+
+                    <TextView
+                        android:id="@+id/tvtag"
+                        android:layout_width="74dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:paddingHorizontal="2dp"
+                        android:paddingVertical="2dp"
+                        android:text="Khách"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13"
+                        android:textStyle="normal" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- Thông tin người dùng -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvShopName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fish can Fly"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="18/02/2025"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_13" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvLastMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Shop ơi cho em hỏi cái này với em đã mua cái ip, nhưng.."
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_13"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/tvRead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginStart="2dp"
+                android:contentDescription="star"
+                android:src="@drawable/ellipse_12" />
+            </LinearLayout>
+
+    </RelativeLayout>
+
+
+</layout>

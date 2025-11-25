@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <!-- Hiện chưa dùng DataBinding biến nào, để trống cũng không sao -->
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whiteDay">
+
+        <!-- ================== TOOLBAR + DIVIDER ================== -->
+        <LinearLayout
+            android:id="@+id/toolbarContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- TOOLBAR -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/whiteDay">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Avatar tròn trên toolbar -->
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgToolbarAvatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/avatar1"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView_20dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/whiteDay" />
+
+                    <!-- Tên người chat -->
+                    <TextView
+                        android:id="@+id/tvToolbarTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Shop Thời Trang Xinh Xinh"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <!-- Divider dưới toolbar -->
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/normalDay" />
+        </LinearLayout>
+
+        <!-- ================== DANH SÁCH TIN NHẮN ================== -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMessages"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:transcriptMode="normal"
+            app:layout_constraintTop_toBottomOf="@id/toolbarContainer"
+            app:layout_constraintBottom_toTopOf="@id/dividerBottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Divider trên khu preview + input -->
+        <View
+            android:id="@+id/dividerBottom"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/normalDay"
+            app:layout_constraintBottom_toTopOf="@id/imagePreviewContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- ================== PREVIEW ẢNH ĐÃ CHỌN ================== -->
+        <LinearLayout
+            android:id="@+id/imagePreviewContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/inputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/imgPreview"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_light_active_outline"
+                android:contentDescription="Ảnh xem trước" />
+
+            <ImageButton
+                android:id="@+id/btnRemoveImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Xoá ảnh" />
+        </LinearLayout>
+
+        <!-- ================== HỘP NHẬP TIN NHẮN ================== -->
+        <LinearLayout
+            android:id="@+id/inputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:background="@color/whiteDay"
+            android:gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/imgicon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/image_01"
+                android:background="@color/whiteDay"
+                android:contentDescription="Upload ảnh"
+                android:scaleType="centerInside" />
+
+            <EditText
+                android:id="@+id/edtMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_light_active_outline"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="8dp"
+                android:hint="Nhập tin nhắn"
+                android:textStyle="normal"
+                android:textSize="@dimen/text_16"
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/btnSend"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/paper_plane"
+                android:background="@color/whiteDay"
+                android:contentDescription="Gửi tin nhắn"
+                android:scaleType="centerInside" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

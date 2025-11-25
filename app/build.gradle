@@ -10,6 +10,7 @@ def GEMINI_API_KEY = localProps.getProperty("GEMINI_API_KEY")
 android {
     namespace 'com.example.secondchance'
     compileSdk 36
+    experimentalProperties["android.enableAdvancedLayoutFeatures"] = true
 
     signingConfigs {
         release {

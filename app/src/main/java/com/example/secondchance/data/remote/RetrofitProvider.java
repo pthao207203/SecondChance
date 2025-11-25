@@ -27,6 +27,7 @@ public class RetrofitProvider {
   private static volatile CartApi cartApi;
   private static volatile ProductApi productApi;
   private static volatile CloudinaryApi cloudinaryApi;
+  private static volatile MessageApi messageApi;
   private static Context appCtx;
   private static final AtomicBoolean logoutInProgress = new AtomicBoolean(false);
   private static volatile PaymentApi paymentApi;
@@ -90,7 +91,7 @@ public class RetrofitProvider {
             .build();
 
     retrofit = new Retrofit.Builder()
-      .baseUrl("https://nt118.hius.io.vn/api/")
+      .baseUrl("http://10.0.2.2:3000")
       .client(ok)
       .addConverterFactory(GsonConverterFactory.create())
       .build();
@@ -131,7 +132,10 @@ public class RetrofitProvider {
     if (cloudinaryApi == null) cloudinaryApi = ensureRetrofit().create(CloudinaryApi.class);
     return cloudinaryApi;
   }
-  
+  public static MessageApi message() {
+    if (messageApi == null) messageApi = ensureRetrofit().create(MessageApi.class);
+    return messageApi;
+  }
   
   public static Retrofit getRetrofit() {
     return ensureRetrofit();
