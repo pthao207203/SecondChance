@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
 import com.example.secondchance.ui.product.Product;
 
@@ -105,17 +107,19 @@ public class ProductAuctionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(Product product, OnProductClickListener listener, ProductAuctionAdapter adapter, int position) {
             tvName.setText(product.getName());
             tvPrice.setText(String.format("%,.0f", product.getPrice()));
-
+            
             if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
                 String imageUrl = product.getImageUrls().get(0);
-                try {
-                    int resId = Integer.parseInt(imageUrl);
-                    imgProduct.setImageResource(resId);
-                } catch (NumberFormatException e) {
-                    imgProduct.setImageURI(Uri.parse(imageUrl));
-                }
+                Glide.with(itemView.getContext())
+                  .load(imageUrl)
+                  .placeholder(R.drawable.ic_launcher_background)
+                  .error(R.drawable.ic_launcher_background)
+                  .into(imgProduct);
+            } else {
+                imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
-
+            
+            
             long remainingTime = product.getEndTime() - System.currentTimeMillis();
 
             if (timer != null) {
@@ -167,17 +171,19 @@ public class ProductAuctionAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(Product product, OnProductClickListener listener) {
             tvName.setText(product.getName());
             tvPrice.setText(String.format("%,.0f", product.getPrice()));
-
+            
             if (product.getImageUrls() != null && !product.getImageUrls().isEmpty()) {
                 String imageUrl = product.getImageUrls().get(0);
-                try {
-                    int resId = Integer.parseInt(imageUrl);
-                    imgProduct.setImageResource(resId);
-                } catch (NumberFormatException e) {
-                    imgProduct.setImageURI(Uri.parse(imageUrl));
-                }
+                Glide.with(itemView.getContext())
+                  .load(imageUrl)
+                  .placeholder(R.drawable.ic_launcher_background)
+                  .error(R.drawable.ic_launcher_background)
+                  .into(imgProduct);
+            } else {
+                imgProduct.setImageResource(R.drawable.ic_launcher_background);
             }
-
+            
+            
             itemView.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putString("productId", product.getId());

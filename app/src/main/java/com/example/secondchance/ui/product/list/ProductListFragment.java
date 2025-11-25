@@ -1,29 +1,41 @@
 package com.example.secondchance.ui.product.list;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.secondchance.R;
-import com.example.secondchance.data.product.SampleProductData;
+import com.example.secondchance.data.remote.ProductApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.dto.response.AdminProductListResponse;
 import com.example.secondchance.ui.product.Product;
 import com.example.secondchance.ui.product.adapter.ProductAdapter;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductListFragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class ProductListFragment extends Fragment {
+    
     private static final String ARG_TAB_TYPE = "tab_type";
     private String tabType;
     private RecyclerView recyclerView;
-
+    private ProductAdapter adapter;
+    
     public static ProductListFragment newInstance(String tabType) {
         ProductListFragment fragment = new ProductListFragment();
         Bundle args = new Bundle();
@@ -31,7 +43,7 @@ public class ProductListFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +51,7 @@ public class ProductListFragment extends Fragment {
             tabType = getArguments().getString(ARG_TAB_TYPE);
         }
     }
-
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -47,47 +59,110 @@ public class ProductListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_product_fixed_list, container, false);
         recyclerView = view.findViewById(R.id.recycler_products);
         setupRecyclerView();
-        loadProducts();
+        loadProductsFromApi();
         return view;
     }
-
+    
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         
-        // The adapter is now specific to the product type via ProductViewPagerAdapter
-        ProductAdapter defaultAdapter = new ProductAdapter(new ProductAdapter.OnProductClickListener() {
+        adapter = new ProductAdapter(new ProductAdapter.OnProductClickListener() {
             @Override
             public void onProductClick(Product product) {
                 handleDefaultNavigation(product);
             }
-
+            
             @Override
             public void onViewDetailsClick(Product product) {
                 handleDefaultNavigation(product);
             }
         });
-        recyclerView.setAdapter(defaultAdapter);
+        recyclerView.setAdapter(adapter);
     }
-
-    private void loadProducts() {
-        List<Product> products = getProductsByType(tabType);
-        if (recyclerView.getAdapter() instanceof ProductAdapter) {
-            ((ProductAdapter) recyclerView.getAdapter()).setProducts(products);
+    
+    /** Gọi API /admin/products?priceType=1 và bind vào adapter */
+    private void loadProductsFromApi() {
+        // Fragment này dùng cho tab fixed → lấy priceType = 1
+        if (!"fixed".equals(tabType)) {
+            adapter.setProducts(new ArrayList<>());
+            return;
         }
+        
+        ProductApi api = RetrofitProvider.product();
+        
+        Call<AdminProductListResponse> call =
+          api.getAdminProducts(
+            1,
+            false,
+            1,   // page
+            10   // pageSize
+          );
+        
+        call.enqueue(new Callback<AdminProductListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<AdminProductListResponse> call,
+                                   @NonNull Response<AdminProductListResponse> response) {
+                if (!isAdded()) return;
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    AdminProductListResponse body = response.body();
+                    Gson gson = new Gson();
+                    Log.d("ProductListFragment", "onResponse: " + gson.toJson(body));
+                    if (body.success && body.data != null && body.data.items != null) {
+                        List<Product> uiProducts = mapAdminProductsToUi(body.data.items);
+                        adapter.setProducts(uiProducts);
+                    } else {
+                        Toast.makeText(getContext(),
+                          "Không lấy được danh sách sản phẩm",
+                          Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(),
+                      "Lỗi server: " + response.code(),
+                      Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(@NonNull Call<AdminProductListResponse> call,
+                                  @NonNull Throwable t) {
+                if (!isAdded()) return;
+                t.printStackTrace();
+                Toast.makeText(getContext(),
+                  "Lỗi kết nối: " + t.getMessage(),
+                  Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
-    private List<Product> getProductsByType(String type) {
-        if ("fixed".equals(type)) {
-            return SampleProductData.getFixedProducts();
+    
+    /** Map từ AdminProduct (API) → ui.product.Product (dùng trong adapter) */
+    private List<Product> mapAdminProductsToUi(List<AdminProductListResponse.AdminProduct> items) {
+        List<Product> result = new ArrayList<>();
+        for (AdminProductListResponse.AdminProduct item : items) {
+            Product p = new Product();
+            
+            // ⚠️ Đảm bảo class Product của bạn có các setter tương ứng
+            p.setId(item.id);
+            p.setName(item.name);
+            p.setPrice(item.price);
+            p.setQuantity(item.quantity);
+            
+            // Thumbnail → list 1 phần tử cho imageUrls
+            List<String> imageUrls = new ArrayList<>();
+            if (item.thumbnail != null && !item.thumbnail.isEmpty()) {
+                imageUrls.add(item.thumbnail);
+            }
+            p.setImageUrls(imageUrls);
+            
+            result.add(p);
         }
-        return new ArrayList<>();
+        return result;
     }
-
+    
     private void handleDefaultNavigation(Product product) {
-        // This fragment is now only for 'fixed' type
         navigateToDetail(product, R.id.action_productList_to_productDetailFixed);
     }
-
+    
     private void navigateToDetail(Product product, int actionId) {
         Bundle bundle = new Bundle();
         bundle.putString("productId", product.getId());
