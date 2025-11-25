@@ -70,10 +70,11 @@
                         android:text="₫ "
                         android:textColor="@color/normalDay"
                         android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/tvShippingFee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50.000"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -112,10 +113,11 @@
                         android:textColor="@color/normalDay"
                         android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/tvTotalAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="200.000"
                         android:textColor="@color/darkerDay"
                         android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
@@ -141,9 +143,9 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cá biết bay"
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
 
@@ -161,9 +163,9 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0333 333 xxx"
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
 
@@ -181,10 +183,10 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxWidth="220dp"
-                            android:text="Thôn Cá, xã Biết, quận bay, thành phố Fish Can Fly..."
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
                 </LinearLayout>
@@ -220,9 +222,9 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvPaymentMethod"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tiền trong ví"
                             android:textColor="@color/normalDay"
                             android:textStyle="bold" />
                     </LinearLayout>

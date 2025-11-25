@@ -1,4 +1,3 @@
-// data/remote/ProductApi.java
 package com.example.secondchance.data.remote;
 
 import com.example.secondchance.dto.response.AdminProductDetailResponse;
@@ -35,7 +34,7 @@ public interface ProductApi {
 
     @GET("/admin/products/meta")
     Call<ProductMetaResponse> getProductMeta();
-    
+
     @GET("/admin/products")
     Call<AdminProductListResponse> getAdminProducts(
       @Query("priceType") Integer priceType,
@@ -43,8 +42,10 @@ public interface ProductApi {
       @Query("page") Integer page,
       @Query("pageSize") Integer pageSize
     );
+
     @GET("/admin/products/{id}")
     Call<AdminProductDetailResponse> getAdminProductById(@Path("id") String id);
+
     class ProductEnvelope {
         @SerializedName("success")
         public boolean success;

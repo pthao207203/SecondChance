@@ -1,36 +1,45 @@
 package com.example.secondchance.ui.shoporder;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView; // <-- THÊM IMPORT
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.bumptech.glide.Glide;
+import com.example.secondchance.viewmodel.SharedViewModel;
 import com.example.secondchance.R;
+import com.example.secondchance.data.model.OrderWrapper;
+import com.example.secondchance.data.model.OrderItem;
+import com.example.secondchance.data.repo.OrderRepository;
 import com.example.secondchance.data.model.ShopOrder;
 import com.example.secondchance.data.model.ShopOrderProduct;
 import com.example.secondchance.databinding.FragmentCancelOrderBinding;
-import com.example.secondchance.viewmodel.SharedViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CancelShopFragment extends Fragment {
 
+    private static final String TAG = "CancelShopFrag";
     private FragmentCancelOrderBinding binding;
     private CancelOrdersAdapter adapter;
-    private final List<ShopOrder> dummyOrderList = new ArrayList<>();
-
+    private final List<ShopOrder> shopOrderList = new ArrayList<>();
     private SharedViewModel sharedViewModel;
+    private OrderRepository orderRepository;
+    private String currentShopId = null;
 
     @Nullable
     @Override
@@ -44,60 +53,103 @@ public class CancelShopFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        orderRepository = new OrderRepository();
+
+        currentShopId = sharedViewModel.getCurrentShopId();
+        if (currentShopId == null || currentShopId.isEmpty()) {
+            Toast.makeText(requireContext(), "Không tìm thấy ID Shop. Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         binding.rvCancelOrders.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        loadDummyData();
-
-        adapter = new CancelOrdersAdapter(dummyOrderList, orderId -> {
+        adapter = new CancelOrdersAdapter(shopOrderList, orderId -> {
             try {
                 NavController nav = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main);
                 Bundle args = new Bundle();
-                args.putString("orderId", orderId);
-                // Bạn có thể cần sửa action này cho đúng
+                args.putString("shopOrderId", orderId);
                 nav.navigate(R.id.action_shopOrderFragment_to_canceledShopOrderDetailFragment, args);
             } catch (Exception e) {
+                Log.e(TAG, "Navigation error", e);
                 Toast.makeText(requireContext(), "Không thể mở chi tiết đơn hàng đã hủy.", Toast.LENGTH_SHORT).show();
             }
         });
 
         binding.rvCancelOrders.setAdapter(adapter);
 
+        loadData();
+
         sharedViewModel.getRefreshLists().observe(getViewLifecycleOwner(), shouldRefresh -> {
             if (shouldRefresh != null && shouldRefresh) {
-                Log.d("CancelFragment", "Got refresh signal! Reloading data...");
-                loadDummyData();
+                Log.d(TAG, "Got refresh signal! Reloading data...");
+                loadData();
             }
         });
     }
 
-    // Hàm này đã CHÍNH XÁC
-    public void loadDummyData() {
-        dummyOrderList.clear();
-        // Bước 1: Tạo danh sách sản phẩm cho đơn hàng này
-        List<ShopOrderProduct> items = new ArrayList<>();
-        items.add(new ShopOrderProduct(
-                "P-201", // ID sản phẩm (dummy)
-                "Giỏ gỗ cắm hoa", // title
-                "Giá cố định", // subtitle (Lấy từ tham số 5 cũ)
-                "50.000", // price
-                R.drawable.sample_flower, // ảnh (dummy)
-                1 // quantity (Đã đổi "x1" thành 1)
-        ));
+    private void loadData() {
+        if (currentShopId == null || currentShopId.isEmpty()) return;
 
-        // Bước 2: Tạo ShopOrder (model mới) với constructor 10 tham số
-        dummyOrderList.add(new ShopOrder(
-                "CANCELED001", // 1. id
-                items, // 2. List<ShopOrderProduct>
-                "50.000", // 3. totalPrice
-                "17/06/2025", // 4. date (Lấy từ tham số 6 cũ)
-                "Đã hủy", // 5. statusText (Lấy từ tham số 7 cũ)
-                null, // 6. description
-                ShopOrder.ShopOrderType.UNCONFIRMED, // 7. type
-                false, // 8. isEvaluated
-                null, // 9. refundStatus
-                null // 10. deliveryStatus
-        ));
-        if (adapter != null) adapter.notifyDataSetChanged();
+        orderRepository.fetchOrdersForShop(currentShopId, "3", new OrderRepository.RepoCallback<List<OrderWrapper>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onSuccess(List<OrderWrapper> data) {
+                if (!isAdded()) return;
+
+                shopOrderList.clear();
+                if (data != null) {
+                    for (OrderWrapper wrapper : data) {
+                        if (wrapper.order != null && wrapper.order.status == 3) {
+                            shopOrderList.add(convertToShopOrder(wrapper));
+                        }
+                    }
+                }
+
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+
+                if (shopOrderList.isEmpty()) {
+                    Log.d(TAG, "Danh sách đơn hủy trống");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Lỗi tải đơn hàng: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private ShopOrder convertToShopOrder(OrderWrapper wrapper) {
+        List<ShopOrderProduct> products = new ArrayList<>();
+        OrderItem firstItem = wrapper.order.getFirstItem();
+
+        if (firstItem != null) {
+            products.add(new ShopOrderProduct(
+                    "ID",
+                    firstItem.getName(),
+                    "Mã đơn: " + wrapper.order.getId().substring(0, Math.min(8, wrapper.order.getId().length())),
+                    wrapper.order.getPrice(),
+                    0,
+                    firstItem.getQuantity(),
+                    firstItem.getImageUrl()
+            ));
+        }
+
+        return new ShopOrder(
+                wrapper.order.getId(),
+                products,
+                wrapper.order.getPrice(),
+                wrapper.order.getDate(),
+                "Đã hủy",
+                "Đơn hàng đã bị hủy",
+                ShopOrder.ShopOrderType.CANCELED,
+                false,
+                null,
+                null
+        );
     }
 
     @Override
@@ -125,9 +177,8 @@ public class CancelShopFragment extends Fragment {
         @NonNull
         @Override
         public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Đã ĐÚNG: Chỉ inflate 1 layout
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_canceled_order, parent, false);
+                    .inflate(R.layout.item_shop_canceled_order, parent, false);
             return new OrderViewHolder(view, listener);
         }
 
@@ -137,41 +188,40 @@ public class CancelShopFragment extends Fragment {
         }
 
         @Override
-        public int getItemCount() {
-            return items != null ? items.size() : 0;
-        }
+        public int getItemCount() { return items != null ? items.size() : 0; }
 
-        // ===================================
-        // === VIEWHOLDER ĐÃ SỬA (THÊM ẢNH) ===
-        // ===================================
         static class OrderViewHolder extends RecyclerView.ViewHolder {
-            ImageView imgProduct; // <-- THÊM
+            ImageView imgProduct;
             TextView tvTitle, tvDate, tvPrice;
             private final OnOrderClick listener;
 
             OrderViewHolder(@NonNull View itemView, OnOrderClick listener) {
                 super(itemView);
                 this.listener = listener;
-                imgProduct = itemView.findViewById(R.id.imgProduct); // <-- THÊM
+
+                imgProduct = itemView.findViewById(R.id.imgProduct);
                 tvTitle = itemView.findViewById(R.id.tvTitle);
                 tvDate = itemView.findViewById(R.id.tvSubtitleDate);
                 tvPrice = itemView.findViewById(R.id.tvPrice);
             }
 
-            // HÀM BIND ĐÃ SỬA (THÊM ẢNH)
             void bind(final ShopOrder order) {
-
-                // Lấy dữ liệu chung của đơn hàng
-                tvDate.setText(order.getDate());
+                tvDate.setText("Ngày hủy: " + order.getDate());
                 tvPrice.setText(order.getTotalPrice());
 
-                // Lấy dữ liệu từ sản phẩm đầu tiên
                 if (order.getItems() != null && !order.getItems().isEmpty()) {
                     ShopOrderProduct firstProduct = order.getItems().get(0);
                     tvTitle.setText(firstProduct.getTitle());
-                    imgProduct.setImageResource(firstProduct.getImageRes()); // <-- THÊM
+
+                    if (firstProduct.getImageUrl() != null && !firstProduct.getImageUrl().isEmpty()) {
+                        Glide.with(itemView.getContext())
+                                .load(firstProduct.getImageUrl())
+                                .into(imgProduct);
+                    } else {
+                        imgProduct.setImageResource(R.drawable.sample_flower);
+                    }
                 } else {
-                    tvTitle.setText("Đơn hàng lỗi"); // Dự phòng
+                    tvTitle.setText("Đơn hàng lỗi");
                 }
 
                 itemView.setOnClickListener(v -> {

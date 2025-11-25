@@ -1,12 +1,10 @@
 package com.example.secondchance.ui.shoporder;
 
-import android.content.Context; // <-- Thêm
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button; // <-- Thêm
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,81 +13,73 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController; // <-- Thêm
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView; // <-- Thêm
+import androidx.recyclerview.widget.RecyclerView;
 
-// === THAY ĐỔI BINDING ===
-import com.example.secondchance.databinding.FragmentShopDeliveringOrderDetailBinding;
-import com.example.secondchance.databinding.FragmentShopNotYetDeliveringOrderDetailBinding;
-//
+import com.bumptech.glide.Glide;
 import com.example.secondchance.R;
-// === MODEL ĐỒNG BỘ ===
+
+import com.example.secondchance.databinding.FragmentShopDeliveringOrderDetailBinding;
+
 import com.example.secondchance.data.model.ShopOrder;
 import com.example.secondchance.data.model.ShopOrderProduct;
-import com.example.secondchance.data.model.ShopTrackingStatus; // (Giả sử bạn dùng model này)
-//
+import com.example.secondchance.data.model.ShopTrackingStatus;
+import com.example.secondchance.data.remote.OrderApi;
+import com.example.secondchance.data.remote.RetrofitProvider;
+import com.example.secondchance.dto.response.OrderDetailResponse;
+
 import com.example.secondchance.ui.shoporder.adapter.ShopTrackingStatusAdapter;
 import com.example.secondchance.viewmodel.SharedViewModel;
+
+import java.text.NumberFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DeliveringShopOrderDetailFragment extends Fragment {
-    private static final String TAG = "DeliveringShopOrderDetail";
+    private static final String TAG = "DelivShopDetail";
 
-    // === BINDING CHO 2 LAYOUT ===
-    private FragmentShopDeliveringOrderDetailBinding deliveringBinding;
-    private FragmentShopNotYetDeliveringOrderDetailBinding notYetBinding;
-    //
+    private FragmentShopDeliveringOrderDetailBinding binding;
 
     private String receivedShopOrderId;
     private ShopOrder.DeliveryOverallStatus receivedDeliveryStatus;
-    private SharedViewModel sharedViewModel; // <-- Thêm
+    private SharedViewModel sharedViewModel;
+    private OrderApi orderApi;
 
-    // === SẢN PHẨM (ĐÃ ĐỒNG BỘ MODEL) ===
     private ShopOrderProductAdapter productAdapter;
     private final List<ShopOrderProduct> productList = new ArrayList<>();
 
-    // === TRACKING (CHỈ DÙNG CHO 1 LAYOUT) ===
     private List<ShopTrackingStatus> trackingList = new ArrayList<>();
     private ShopTrackingStatusAdapter trackingAdapter;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        // Lấy arguments TRƯỚC để quyết định layout
         if (getArguments() != null) {
             receivedShopOrderId = getArguments().getString("shopOrderId");
             try {
                 receivedDeliveryStatus = (ShopOrder.DeliveryOverallStatus) getArguments().getSerializable("deliveryStatus");
             } catch (Exception e) {
-                Log.e(TAG, "Error getting deliveryStatus from arguments", e);
-                // Mặc định là PACKAGED nếu có lỗi
+
                 receivedDeliveryStatus = ShopOrder.DeliveryOverallStatus.PACKAGED;
             }
         } else {
-            Log.e(TAG, "Arguments are null!");
-            // Nếu không có arguments, không thể làm gì, quay lại
             Toast.makeText(getContext(), "Lỗi tải đơn hàng", Toast.LENGTH_SHORT).show();
             NavHostFragment.findNavController(this).popBackStack();
+            return null;
         }
 
-        View rootView;
-        // === LOGIC CHỌN LAYOUT ===
-        if (receivedDeliveryStatus == ShopOrder.DeliveryOverallStatus.PACKAGED) {
-            // Trạng thái "Chưa giao" -> Inflate layout "not_yet"
-            notYetBinding = FragmentShopNotYetDeliveringOrderDetailBinding.inflate(inflater, container, false);
-            rootView = notYetBinding.getRoot();
-        } else {
-            // Trạng thái "Đang giao", "Đã đến bưu cục"... -> Inflate layout "delivering"
-            deliveringBinding = FragmentShopDeliveringOrderDetailBinding.inflate(inflater, container, false);
-            rootView = deliveringBinding.getRoot();
-        }
-        return rootView;
+        binding = FragmentShopDeliveringOrderDetailBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -97,79 +87,97 @@ public class DeliveringShopOrderDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        orderApi = RetrofitProvider.order();
 
-        // Logic UI phân nhánh dựa trên layout đã inflate
-        if (receivedDeliveryStatus == ShopOrder.DeliveryOverallStatus.PACKAGED && notYetBinding != null) {
-            // --- CÀI ĐẶT CHO LAYOUT "CHƯA GIAO" ---
-            setupProductRecyclerView(notYetBinding.rvOrderItems);
-            updateStepper(notYetBinding.stepperLayout); // Dùng stepper layout này
-            setupNotYetDeliveringListeners(); // Cài đặt nút "Đã giao bưu cục"
+        setupProductRecyclerView(binding.rvOrderItems);
+        setupTrackingRecyclerView(binding.rvTrackingStatus);
+        updateStepper(binding.getRoot(), receivedDeliveryStatus);
 
-        } else if (deliveringBinding != null) {
-            // --- CÀI ĐẶT CHO LAYOUT "ĐANG GIAO" ---
-            setupProductRecyclerView(deliveringBinding.rvOrderItems);
-            updateStepper(deliveringBinding.stepperLayout); // Dùng stepper layout này
-            setupTrackingRecyclerView(deliveringBinding.rvTrackingStatus); // Layout này mới có tracking
-            loadTrackingDataBasedOnStatus(receivedDeliveryStatus); // Tải data tracking
-            if (trackingAdapter != null) {
-                trackingAdapter.notifyDataSetChanged();
-            }
-        } else {
-            Log.e(TAG, "Binding bị null, không thể cài đặt UI!");
-            return;
-        }
-
-        // Tải dữ liệu sản phẩm (chung cho cả 2 layout)
         if (receivedShopOrderId != null) {
-            loadDummyProductData(receivedShopOrderId);
-            if (productAdapter != null) {
-                productAdapter.notifyDataSetChanged();
-                Log.d(TAG, "ShopOrder product list updated for RecyclerView");
-            }
-        } else {
-            Log.e(TAG, "ShopOrder ID is null.");
-            Toast.makeText(getContext(), "Lỗi tải chi tiết đơn giao hàng của shop.", Toast.LENGTH_SHORT).show();
+            loadOrderDetail(receivedShopOrderId);
         }
+
     }
 
-    // === CÀI ĐẶT NÚT CHO LAYOUT "CHƯA GIAO" ===
-    private void setupNotYetDeliveringListeners() {
-        notYetBinding.btnShipOrder.setOnClickListener(v -> {
-            Log.d(TAG, "Shop đã xác nhận 'GIAO CHO BƯU CỤC' cho đơn: " + receivedShopOrderId);
-            Toast.makeText(getContext(), "Đã xác nhận giao bưu cục!", Toast.LENGTH_SHORT).show();
+    private void loadOrderDetail(String id) {
+        orderApi.getOrderDetail(id).enqueue(new Callback<OrderDetailResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderDetailResponse> call, @NonNull Response<OrderDetailResponse> res) {
+                if (!isAdded()) return;
 
-            // TODO: Gọi API, cập nhật trạng thái đơn hàng sang AT_POST_OFFICE
-
-            // Sau khi xong, refresh list và quay lại
-            sharedViewModel.refreshOrderLists();
-            // Yêu cầu tab "Đang giao" (index 1) được chọn (vì nó vẫn ở tab này)
-            sharedViewModel.requestTabChange(1);
-            NavHostFragment.findNavController(this).popBackStack();
+                if (!res.isSuccessful() || res.body() == null || res.body().data == null) {
+                    Toast.makeText(requireContext(), "Không tải được chi tiết đơn", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bindDataToUI(res.body().data);
+            }
+            @Override public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    // === SỬA: DÙNG ShopOrderProductAdapter ===
+    private void bindDataToUI(OrderDetailResponse.Data data) {
+
+        productList.clear();
+        if (data.order != null && data.order.orderItems != null) {
+            for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
+                productList.add(new ShopOrderProduct(
+                        "ID", dtoItem.name,
+                        "Mã đơn: " + (data.order.id != null ? data.order.id.toUpperCase() : ""),
+                        formatVnd(dtoItem.price), 0, dtoItem.qty, dtoItem.imageUrl
+                ));
+            }
+        }
+        if (productAdapter != null) productAdapter.notifyDataSetChanged();
+
+        View rootView = binding.getRoot();
+        bindReceiverInfo(rootView, data);
+
+        if (data.shipment != null) {
+            trackingList.clear();
+            if (data.shipment.events != null) {
+                for (OrderDetailResponse.Event e : data.shipment.events) {
+                    trackingList.add(new ShopTrackingStatus(formatVnTime(e.eventTime), mapStatusTitle(e), false));
+                }
+                if (!trackingList.isEmpty()) trackingList.get(trackingList.size() - 1).setActive(true);
+            }
+            if (trackingAdapter != null) trackingAdapter.notifyDataSetChanged();
+
+            updateStepperFromApi(binding.getRoot(), data.shipment.currentStatus, data.order.orderStatus);
+        }
+    }
+
+    private void bindReceiverInfo(View rootView, OrderDetailResponse.Data data) {
+        TextView tvName = rootView.findViewById(R.id.tvReceiverName);
+        TextView tvPhone = rootView.findViewById(R.id.tvReceiverPhone);
+        TextView tvAddress = rootView.findViewById(R.id.tvReceiverAddress);
+        TextView tvOrderId = rootView.findViewById(R.id.tvOrderId);
+
+        if (data.order != null) {
+            if (tvOrderId != null) tvOrderId.setText(data.order.id != null ? data.order.id.toUpperCase() : "");
+
+            if (data.order.orderShippingAddress != null) {
+                var a = data.order.orderShippingAddress;
+                if (tvName != null) tvName.setText(safe(a.name));
+                if (tvPhone != null) tvPhone.setText(safe(a.phone));
+
+                if (tvAddress != null) {
+                    String fullAddr = safe(a.street) + ", " + safe(a.ward) + ", " + safe(a.province);
+                    tvAddress.setText(fullAddr);
+                }
+            }
+        }
+    }
+
     private void setupProductRecyclerView(RecyclerView rv) {
         productAdapter = new ShopOrderProductAdapter(getContext(), productList);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         rv.setAdapter(productAdapter);
         rv.setNestedScrollingEnabled(false);
-        Log.d(TAG, "ShopOrder product RecyclerView setup complete.");
     }
 
-    // === SỬA: Tải ShopOrderProduct (khớp với DeliveringShopFragment) ===
-    private void loadDummyProductData(String shopOrderId) {
-        productList.clear();
-        if ("SHOPDELIV001".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-301", "Đơn giao nhẫn kim cương", "Giá cố định", "50.000", R.drawable.ic_ring, 1));
-        } else if ("SHOPDELIV002".equals(shopOrderId)) {
-            productList.add(new ShopOrderProduct("P-302", "Bình gốm sứ", "Hàng dễ vỡ", "150.000", R.drawable.sample_flower, 1));
-        } else {
-            productList.add(new ShopOrderProduct("P-ERR", "Lỗi tải sản phẩm", "", "0", R.drawable.sample_flower, 0));
-        }
-    }
-
-    // === CÀI ĐẶT TRACKING (CHO LAYOUT "ĐANG GIAO") ===
     private void setupTrackingRecyclerView(RecyclerView rv) {
         trackingAdapter = new ShopTrackingStatusAdapter(getContext(), trackingList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -178,39 +186,23 @@ public class DeliveringShopOrderDetailFragment extends Fragment {
         rv.setLayoutManager(layoutManager);
         rv.setAdapter(trackingAdapter);
         rv.setNestedScrollingEnabled(false);
-        Log.d(TAG, "Tracking RecyclerView setup complete (Reverse Layout).");
     }
 
-    // Tải data tracking (Giữ nguyên)
-    private void loadTrackingDataBasedOnStatus(ShopOrder.DeliveryOverallStatus status) {
-        trackingList.clear();
-        List<ShopTrackingStatus> temp = new ArrayList<>();
-
-        if (status.ordinal() >= ShopOrder.DeliveryOverallStatus.PACKAGED.ordinal()) {
-            temp.add(new ShopTrackingStatus("10:00, 25/10/2025", "Shop đã đóng gói sản phẩm", false));
-        }
-        if (status.ordinal() >= ShopOrder.DeliveryOverallStatus.AT_POST_OFFICE.ordinal()) {
-            temp.add(new ShopTrackingStatus("15:30, 25/10/2025", "Đơn giao đã đến bưu cục", false));
-        }
-        if (status.ordinal() >= ShopOrder.DeliveryOverallStatus.DELIVERING.ordinal()) {
-            temp.add(new ShopTrackingStatus("08:00, 26/10/2025", "Đang giao đến khách hàng", false));
-        }
-        if (status.ordinal() >= ShopOrder.DeliveryOverallStatus.DELIVERED.ordinal()) {
-            temp.add(new ShopTrackingStatus("XX:XX, XX/XX/2025", "Khách hàng đã nhận hàng", false));
+    private void updateStepperFromApi(View view, int shipmentStatus, int orderStatus) {
+        ShopOrder.DeliveryOverallStatus currentStatus = ShopOrder.DeliveryOverallStatus.PACKAGED;
+        if (orderStatus >= 3) {
+            currentStatus = ShopOrder.DeliveryOverallStatus.DELIVERED;
+        } else if (shipmentStatus >= 5) {
+            currentStatus = ShopOrder.DeliveryOverallStatus.DELIVERING;
+        } else if (shipmentStatus >= 2) {
+            currentStatus = ShopOrder.DeliveryOverallStatus.AT_POST_OFFICE;
         }
 
-        trackingList.addAll(temp);
-
-        if (!trackingList.isEmpty()) {
-            trackingList.get(trackingList.size() - 1).setActive(true);
-        }
+        updateStepper(view, currentStatus);
     }
 
-    // === SỬA: Dùng View stepperLayout thay vì binding ===
-    private void updateStepper(View stepperLayout) {
+    private void updateStepper(View stepperLayout, ShopOrder.DeliveryOverallStatus status) {
         if (stepperLayout == null || getContext() == null) return;
-
-        Log.d(TAG, "Updating shop stepper for status: " + receivedDeliveryStatus);
 
         ImageView step1Icon = stepperLayout.findViewById(R.id.step1_icon);
         ImageView step2Icon = stepperLayout.findViewById(R.id.step2_icon);
@@ -226,60 +218,76 @@ public class DeliveringShopOrderDetailFragment extends Fragment {
         TextView step3Label = stepperLayout.findViewById(R.id.step3_label);
         TextView step4Label = stepperLayout.findViewById(R.id.step4_label);
 
+        if (step1Icon == null) return;
+
         int activeColor = ContextCompat.getColor(requireContext(), R.color.highLight5);
         int inactiveColor = ContextCompat.getColor(requireContext(), R.color.highLight4);
         int activeTextColor = ContextCompat.getColor(requireContext(), R.color.highLight5);
         int inactiveTextColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
-        int activeIcon = R.drawable.ic_active;
+        int activeIconRes = R.drawable.ic_active;
         int inactiveIcon = R.drawable.ic_inactive;
 
-        // Reset
-        step1Icon.setBackgroundResource(inactiveIcon);
-        step2Icon.setBackgroundResource(inactiveIcon);
-        step3Icon.setBackgroundResource(inactiveIcon);
-        step4Icon.setBackgroundResource(inactiveIcon);
-        step1Line.setBackgroundColor(inactiveColor);
-        step2Line.setBackgroundColor(inactiveColor);
-        step3Line.setBackgroundColor(inactiveColor);
-        step1Label.setTextColor(inactiveTextColor);
-        step2Label.setTextColor(inactiveTextColor);
-        step3Label.setTextColor(inactiveTextColor);
-        step4Label.setTextColor(inactiveTextColor);
+        step1Icon.setBackgroundResource(inactiveIcon); step2Icon.setBackgroundResource(inactiveIcon);
+        step3Icon.setBackgroundResource(inactiveIcon); step4Icon.setBackgroundResource(inactiveIcon);
+        step1Line.setBackgroundColor(inactiveColor); step2Line.setBackgroundColor(inactiveColor); step3Line.setBackgroundColor(inactiveColor);
+        step1Label.setTextColor(inactiveTextColor); step2Label.setTextColor(inactiveTextColor);
+        step3Label.setTextColor(inactiveTextColor); step4Label.setTextColor(inactiveTextColor);
 
-        switch (receivedDeliveryStatus) {
+        switch (status) {
             case DELIVERED:
-                step4Icon.setBackgroundResource(activeIcon);
+                step4Icon.setBackgroundResource(activeIconRes);
                 step4Label.setTextColor(activeTextColor);
                 step3Line.setBackgroundColor(activeColor);
+
             case DELIVERING:
-                step3Icon.setBackgroundResource(activeIcon);
+                step3Icon.setBackgroundResource(activeIconRes);
                 step3Label.setTextColor(activeTextColor);
                 step2Line.setBackgroundColor(activeColor);
+
             case AT_POST_OFFICE:
-                step2Icon.setBackgroundResource(activeIcon);
+                step2Icon.setBackgroundResource(activeIconRes);
                 step2Label.setTextColor(activeTextColor);
                 step1Line.setBackgroundColor(activeColor);
+
             case PACKAGED:
-                step1Icon.setBackgroundResource(activeIcon);
+                step1Icon.setBackgroundResource(activeIconRes);
                 step1Label.setTextColor(activeTextColor);
                 break;
         }
     }
 
+    private String formatVnd(long amount) {
+        return java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN")).format(amount);
+    }
+
+    private String formatVnTime(String iso) {
+        try {
+            ZonedDateTime z = ZonedDateTime.parse(iso).withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
+            return z.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        } catch (Exception e) { return iso != null ? iso : ""; }
+    }
+
+    private String mapStatusTitle(OrderDetailResponse.Event e) {
+        if (e == null || e.eventCode == null) return safe(e != null ? e.description : "");
+        switch (e.eventCode) {
+            case 1: return "Đã lấy hàng";
+            case 2: return "Đến bưu cục";
+            case 3: return "Rời bưu cục";
+            case 4: return "Đang giao";
+            case 5: return "Giao thành công";
+            default: return "Cập nhật";
+        }
+    }
+
+    private String safe(String s) { return s == null ? "" : s; }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Đặt cả hai binding về null
-        deliveringBinding = null;
-        notYetBinding = null;
-        Log.d(TAG, "onDestroyView called");
+        binding = null;
     }
 
-    // =================================================================
-    // === ADAPTER MỚI ĐỂ HIỂN THỊ ShopOrderProduct ===
-    // =================================================================
     private static class ShopOrderProductAdapter extends RecyclerView.Adapter<ShopOrderProductAdapter.ProductViewHolder> {
-
         private final List<ShopOrderProduct> productList;
         private final Context context;
 
@@ -291,23 +299,17 @@ public class DeliveringShopOrderDetailFragment extends Fragment {
         @NonNull
         @Override
         public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // **LƯU Ý:** Bạn cần tạo một file layout cho item này
-            // Ví dụ: R.layout.item_shop_order_product_detail
-            // Tôi sẽ tạm dùng layout cũ 'item_canceled_order' vì nó có các ID gần giống
             View view = LayoutInflater.from(context).inflate(R.layout.item_canceled_order, parent, false);
             return new ProductViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-            ShopOrderProduct product = productList.get(position);
-            holder.bind(product);
+            holder.bind(productList.get(position));
         }
 
         @Override
-        public int getItemCount() {
-            return productList.size();
-        }
+        public int getItemCount() { return productList.size(); }
 
         static class ProductViewHolder extends RecyclerView.ViewHolder {
             ImageView imgProduct;
@@ -317,17 +319,23 @@ public class DeliveringShopOrderDetailFragment extends Fragment {
                 super(itemView);
                 imgProduct = itemView.findViewById(R.id.imgProduct);
                 tvTitle = itemView.findViewById(R.id.tvTitle);
-                tvSubtitle = itemView.findViewById(R.id.tvSubtitleDate); // Tạm dùng ID này
+                tvSubtitle = itemView.findViewById(R.id.tvSubtitleDate);
                 tvPrice = itemView.findViewById(R.id.tvPrice);
             }
 
             void bind(ShopOrderProduct product) {
                 tvTitle.setText(product.getTitle());
                 tvPrice.setText(product.getPrice());
-                imgProduct.setImageResource(product.getImageRes());
-                if (tvSubtitle != null) {
-                    tvSubtitle.setText(product.getSubtitle());
+
+                if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
+                    Glide.with(itemView.getContext())
+                            .load(product.getImageUrl())
+                            .into(imgProduct);
+                } else {
+                    imgProduct.setImageResource(product.getImageRes());
                 }
+
+                if (tvSubtitle != null) tvSubtitle.setText(product.getSubtitle());
             }
         }
     }
