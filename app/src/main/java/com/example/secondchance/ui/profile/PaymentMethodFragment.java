@@ -1,9 +1,13 @@
 package com.example.secondchance.ui.profile;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,6 +22,7 @@ public class PaymentMethodFragment extends Fragment {
     private ProfileViewModel viewModel;
     private RecyclerView rvPaymentMethods;
     private PaymentMethodAdapter adapter;
+    private boolean isDeleting = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +62,23 @@ public class PaymentMethodFragment extends Fragment {
                     .navigate(R.id.action_paymentMethod_to_addBank, bundle);
         });
 
+        // Xử lý sự kiện xóa
+        adapter.setOnPaymentMethodDeleteListener(this::showConfirmDeleteDialog);
+
         // Observe LiveData
         viewModel.getPaymentMethodList().observe(getViewLifecycleOwner(), paymentMethods -> {
             adapter.submitList(paymentMethods);
+        });
+
+        // Observe Operation Success for Deletion
+        viewModel.getOperationSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null && success) {
+                if (isDeleting) {
+                    showDeleteSuccessDialog();
+                    isDeleting = false;
+                    viewModel.resetOperationSuccess();
+                }
+            }
         });
 
         // Nút thêm ngân hàng mới
@@ -69,5 +88,46 @@ public class PaymentMethodFragment extends Fragment {
             Navigation.findNavController(v)
                     .navigate(R.id.action_paymentMethod_to_addBank, bundle);
         });
+        
+        // Load lại dữ liệu khi vào màn hình này, để đảm bảo danh sách ngân hàng luôn mới
+        viewModel.fetchUserProfile();
+    }
+
+    private void showConfirmDeleteDialog(PaymentMethodItem item) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_delete_payment_method);
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialog.findViewById(R.id.btnConfirmDeletePaymentMethod).setOnClickListener(v -> {
+            isDeleting = true;
+            viewModel.removePaymentMethod(item.getBankName());
+            dialog.dismiss();
+        });
+
+        dialog.findViewById(R.id.btnCancelDeletePaymentMethod).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void showDeleteSuccessDialog() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_delete_success);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        dialog.findViewById(R.id.btnCloseSuccess).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }
