@@ -269,6 +269,7 @@ public class RegisterFragment extends Fragment {
                     String bearer = data.getBearerToken();
                     if (bearer != null) {
                       Prefs.saveToken(requireContext(), bearer);
+                      Prefs.saveLoginType(requireContext(), Prefs.TYPE_GOOGLE);
                       toast("Đăng nhập thành công!");
                       goToMainAndFinish();
                       return;
@@ -387,6 +388,7 @@ public class RegisterFragment extends Fragment {
                   String bearer = res.body().data.getBearerToken();
                   if (bearer != null) {
                     Prefs.saveToken(requireContext(), bearer);
+                    Prefs.saveLoginType(requireContext(), Prefs.TYPE_GOOGLE);
                     toast("Hoàn tất đăng ký thành công!");
                     goToMainAndFinish();
                     return;

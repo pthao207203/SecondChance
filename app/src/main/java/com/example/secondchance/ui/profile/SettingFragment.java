@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.example.secondchance.R;
+import com.example.secondchance.util.Prefs;
 
 public class SettingFragment extends Fragment {
 
@@ -28,10 +29,29 @@ public class SettingFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_setting_to_editProfile)
         );
 
-        // Nút Chỉnh sửa tài khoản
-        view.findViewById(R.id.btnAccountSettings).setOnClickListener(v ->
-                Navigation.findNavController(v).navigate(R.id.action_setting_to_accountSettings)
-        );
+        // Xử lý hiển thị phần Cài đặt tài khoản dựa trên loại đăng nhập
+        View llAccountSettingsContainer = view.findViewById(R.id.llAccountSettingsContainer);
+        String loginType = Prefs.getLoginType(requireContext());
+
+        if (Prefs.TYPE_GOOGLE.equals(loginType)) {
+            // Nếu đăng nhập bằng Google, ẩn phần cài đặt tài khoản (đổi pass, username)
+            if (llAccountSettingsContainer != null) {
+                llAccountSettingsContainer.setVisibility(View.GONE);
+            }
+        } else {
+            // Nếu đăng nhập thường, hiển thị và gán sự kiện click
+            if (llAccountSettingsContainer != null) {
+                llAccountSettingsContainer.setVisibility(View.VISIBLE);
+            }
+            
+            // Nút Chỉnh sửa tài khoản
+            View btnAccountSettings = view.findViewById(R.id.btnAccountSettings);
+            if (btnAccountSettings != null) {
+                btnAccountSettings.setOnClickListener(v ->
+                        Navigation.findNavController(v).navigate(R.id.action_setting_to_accountSettings)
+                );
+            }
+        }
 
         // Nút Cài đặt hệ thống
         view.findViewById(R.id.btnSystemSettings).setOnClickListener(v ->

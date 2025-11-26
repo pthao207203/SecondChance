@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.example.secondchance.R;
 
@@ -21,6 +22,13 @@ public class AccountSettingFragment extends Fragment {
 
     private EditText etUsername, etCurrentPassword, etNewPassword, etConfirmPassword;
     private AppCompatButton btnUpdate;
+    private ProfileViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+    }
 
     @Nullable
     @Override
@@ -39,6 +47,31 @@ public class AccountSettingFragment extends Fragment {
         etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
         btnUpdate = view.findViewById(R.id.btnUpdate);
 
+        // Populate username (read-only or just pre-filled)
+        viewModel.getName().observe(getViewLifecycleOwner(), name -> {
+            if (name != null) etUsername.setText(name);
+        });
+
+        // Observe operation success
+        viewModel.getOperationSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null) {
+                if (success) {
+                    showUpdateSuccessDialog();
+                    // Clear fields after success?
+                    etCurrentPassword.setText("");
+                    etNewPassword.setText("");
+                    etConfirmPassword.setText("");
+                }
+                viewModel.resetOperationSuccess();
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         btnUpdate.setOnClickListener(v -> updateAccount());
     }
 
@@ -53,24 +86,28 @@ public class AccountSettingFragment extends Fragment {
             return;
         }
 
-        if (!newPass.isEmpty()) {
-            if (currentPass.isEmpty()) {
-                Toast.makeText(requireContext(), "Vui lòng nhập mật khẩu hiện tại", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (!newPass.equals(confirmPass)) {
-                Toast.makeText(requireContext(), "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (newPass.length() < 6) {
-                Toast.makeText(requireContext(), "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (newPass.isEmpty()) {
+             // Assuming user must enter a password to update it
+             Toast.makeText(requireContext(), "Vui lòng nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
+             return;
         }
 
-        showUpdateSuccessDialog();
+        if (currentPass.isEmpty()) {
+            Toast.makeText(requireContext(), "Vui lòng nhập mật khẩu hiện tại", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!newPass.equals(confirmPass)) {
+            Toast.makeText(requireContext(), "Mật khẩu xác nhận không khớp", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (newPass.length() < 6) {
+            Toast.makeText(requireContext(), "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        viewModel.updatePassword(currentPass, newPass);
     }
 
     private void showUpdateSuccessDialog() {
