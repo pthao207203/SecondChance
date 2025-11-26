@@ -9,7 +9,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.secondchance.data.model.AddressData;
 import com.example.secondchance.data.model.UserData;
 import com.example.secondchance.data.model.UserProfileResponse;
+import com.example.secondchance.dto.request.AddressRequest;
 import com.example.secondchance.dto.request.BankRequest;
+import com.example.secondchance.dto.response.AddressItemResponse;
+import com.example.secondchance.dto.response.AddressListResponse;
 import com.example.secondchance.dto.response.BankItemResponse;
 import com.example.secondchance.dto.response.BankListResponse;
 
@@ -26,6 +29,7 @@ public class ProfileViewModel extends ViewModel {
     private static final String TAG = "ProfileViewModel";
 
     private final MutableLiveData<List<AddressItem>> addressListLiveData = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<AddressItem> addressDetailLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<PaymentMethodItem>> paymentMethodListLiveData = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Uri> avatarUriLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> nameLiveData = new MutableLiveData<>();
@@ -34,7 +38,7 @@ public class ProfileViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     // Add LiveData to notify success/failure of add/edit operations
     private final MutableLiveData<Boolean> operationSuccess = new MutableLiveData<>();
-    
+
     // LiveData for bank detail (when edit)
     private final MutableLiveData<PaymentMethodItem> bankDetailLiveData = new MutableLiveData<>();
 
@@ -47,13 +51,17 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<Boolean> getOperationSuccess() {
         return operationSuccess;
     }
-    
+
     public void resetOperationSuccess() {
         operationSuccess.setValue(null);
     }
-    
+
     public LiveData<PaymentMethodItem> getBankDetail() {
         return bankDetailLiveData;
+    }
+
+    public LiveData<AddressItem> getAddressDetail() {
+        return addressDetailLiveData;
     }
 
     public void fetchUserProfile() {
@@ -74,22 +82,8 @@ public class ProfileViewModel extends ViewModel {
                     phoneLiveData.setValue(data.getPhone());
                     emailLiveData.setValue(data.getMail());
 
-                    // Xử lý địa chỉ
-                    if (data.getAddress() != null) {
-                        AddressData apiAddress = data.getAddress();
-                        String formattedAddress = formatAddress(apiAddress);
-                        AddressItem uiAddress = new AddressItem(
-                                apiAddress.getName(),
-                                apiAddress.getPhone(),
-                                formattedAddress,
-                                apiAddress.isDefault()
-                        );
-                        List<AddressItem> newList = new ArrayList<>();
-                        newList.add(uiAddress);
-                        addressListLiveData.setValue(newList);
-                    } else {
-                        addressListLiveData.setValue(new ArrayList<>());
-                    }
+                    // Fetch addresses
+                    fetchAddressList();
 
                     // Gọi fetchBankList không tham số
                     fetchBankList();
@@ -101,6 +95,209 @@ public class ProfileViewModel extends ViewModel {
             @Override
             public void onFailure(Call<UserProfileResponse> call, Throwable t) {
                 errorMessage.setValue("Lỗi kết nối mạng: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchAddressList() {
+        Call<AddressListResponse> call = meApi.getAddresses();
+        call.enqueue(new Callback<AddressListResponse>() {
+            @Override
+            public void onResponse(Call<AddressListResponse> call, Response<AddressListResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    AddressListResponse.Data data = response.body().data;
+                    if (data != null && data.items != null) {
+                        List<AddressItem> uiList = new ArrayList<>();
+                        for (AddressData item : data.items) {
+                            AddressData.Location loc = item.getLocation();
+                            double lat = loc != null ? loc.lat : 0;
+                            double lng = loc != null ? loc.lng : 0;
+
+                            uiList.add(new AddressItem(
+                                    item.getId(),
+                                    item.getName(),
+                                    item.getPhone(),
+                                    item.getStreet(),
+                                    item.getWard(),
+                                    item.getProvince(),
+                                    item.getCountry(),
+                                    item.getLabel(),
+                                    item.isDefault(),
+                                    lat,
+                                    lng
+                            ));
+                        }
+                        addressListLiveData.setValue(uiList);
+                    }
+                } else {
+                    errorMessage.setValue("Không thể tải danh sách địa chỉ");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressListResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi tải danh sách địa chỉ: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchAddressDetail(String addressId) {
+        Call<AddressItemResponse> call = meApi.getAddressDetail(addressId);
+        call.enqueue(new Callback<AddressItemResponse>() {
+            @Override
+            public void onResponse(Call<AddressItemResponse> call, Response<AddressItemResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    AddressData data = response.body().data;
+                    if (data != null) {
+                         AddressData.Location loc = data.getLocation();
+                         double lat = loc != null ? loc.lat : 0;
+                         double lng = loc != null ? loc.lng : 0;
+                         AddressItem item = new AddressItem(
+                                data.getId(),
+                                data.getName(),
+                                data.getPhone(),
+                                data.getStreet(),
+                                data.getWard(),
+                                data.getProvince(),
+                                data.getCountry(),
+                                data.getLabel(),
+                                data.isDefault(),
+                                lat,
+                                lng
+                         );
+                         addressDetailLiveData.setValue(item);
+                    }
+                } else {
+                    errorMessage.setValue("Không thể lấy chi tiết địa chỉ");
+                }
+            }
+            @Override
+            public void onFailure(Call<AddressItemResponse> call, Throwable t) {
+                 errorMessage.setValue("Lỗi mạng khi lấy chi tiết địa chỉ: " + t.getMessage());
+            }
+        });
+    }
+
+    public void addAddress(AddressItem item) {
+        // Use default lat/lng for now as per requirement snippet or hardcoded
+        double lat = item.getLat() != 0 ? item.getLat() : 10.776889;
+        double lng = item.getLng() != 0 ? item.getLng() : 106.700806;
+
+        AddressRequest request = new AddressRequest(
+                item.getName(),
+                item.getPhone(),
+                item.getStreet(),
+                item.getWard(),
+                item.getProvince(),
+                item.getCountry(),
+                item.getLabel(),
+                item.isDefault(),
+                lat,
+                lng
+        );
+
+        Call<AddressItemResponse> call = meApi.addAddress(request);
+        call.enqueue(new Callback<AddressItemResponse>() {
+            @Override
+            public void onResponse(Call<AddressItemResponse> call, Response<AddressItemResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    operationSuccess.setValue(true);
+                    fetchAddressList();
+                } else {
+                    errorMessage.setValue("Thêm địa chỉ thất bại");
+                    operationSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressItemResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi thêm địa chỉ");
+                operationSuccess.setValue(false);
+            }
+        });
+    }
+
+    public void updateAddress(String addressId, AddressItem item) {
+        double lat = item.getLat() != 0 ? item.getLat() : 10.776888;
+        double lng = item.getLng() != 0 ? item.getLng() : 106.700806;
+
+        AddressRequest request = new AddressRequest(
+                item.getName(),
+                item.getPhone(),
+                item.getStreet(),
+                item.getWard(),
+                item.getProvince(),
+                item.getCountry(),
+                item.getLabel(),
+                item.isDefault(),
+                lat,
+                lng
+        );
+
+        Call<AddressItemResponse> call = meApi.updateAddress(addressId, request);
+        call.enqueue(new Callback<AddressItemResponse>() {
+            @Override
+            public void onResponse(Call<AddressItemResponse> call, Response<AddressItemResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    operationSuccess.setValue(true);
+                    fetchAddressList();
+                } else {
+                    errorMessage.setValue("Cập nhật địa chỉ thất bại");
+                    operationSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressItemResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi cập nhật địa chỉ");
+                operationSuccess.setValue(false);
+            }
+        });
+    }
+
+    public void removeAddress(String addressId) {
+        Call<AddressListResponse> call = meApi.deleteAddress(addressId);
+        call.enqueue(new Callback<AddressListResponse>() {
+            @Override
+            public void onResponse(Call<AddressListResponse> call, Response<AddressListResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().success) {
+                    AddressListResponse.Data data = response.body().data;
+                    if (data != null && data.items != null) {
+                        List<AddressItem> uiList = new ArrayList<>();
+                        for (AddressData item : data.items) {
+                            AddressData.Location loc = item.getLocation();
+                            double lat = loc != null ? loc.lat : 0;
+                            double lng = loc != null ? loc.lng : 0;
+
+                            uiList.add(new AddressItem(
+                                    item.getId(),
+                                    item.getName(),
+                                    item.getPhone(),
+                                    item.getStreet(),
+                                    item.getWard(),
+                                    item.getProvince(),
+                                    item.getCountry(),
+                                    item.getLabel(),
+                                    item.isDefault(),
+                                    lat,
+                                    lng
+                            ));
+                        }
+                        addressListLiveData.setValue(uiList);
+                    } else {
+                        fetchAddressList();
+                    }
+                    operationSuccess.setValue(true);
+                } else {
+                    errorMessage.setValue("Xóa địa chỉ thất bại");
+                    operationSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressListResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi xóa địa chỉ");
+                operationSuccess.setValue(false);
             }
         });
     }
@@ -117,7 +314,7 @@ public class ProfileViewModel extends ViewModel {
                     if (data != null && data.items != null) {
                         List<PaymentMethodItem> uiList = new ArrayList<>();
                         for (BankListResponse.BankItem item : data.items) {
-                            boolean isDef = item.isDefault; // Sửa lỗi: isDefault là boolean, không phải String
+                            boolean isDef = item.isDefault;
                             uiList.add(new PaymentMethodItem(
                                     item.accountHolder,
                                     item.bankName,
@@ -138,7 +335,7 @@ public class ProfileViewModel extends ViewModel {
             }
         });
     }
-    
+
     // Fetch single bank detail
     public void fetchBankDetail(String bankName) {
         Call<BankItemResponse> call = meApi.getBankDetail(bankName);
@@ -148,7 +345,7 @@ public class ProfileViewModel extends ViewModel {
                 if (response.isSuccessful() && response.body() != null && response.body().success) {
                     BankListResponse.BankItem item = response.body().data;
                     if (item != null) {
-                         boolean isDef = item.isDefault; // Sửa lỗi tương tự
+                         boolean isDef = item.isDefault;
                          PaymentMethodItem pItem = new PaymentMethodItem(
                                     item.accountHolder,
                                     item.bankName,
@@ -230,7 +427,7 @@ public class ProfileViewModel extends ViewModel {
                     if (data != null && data.items != null) {
                         List<PaymentMethodItem> uiList = new ArrayList<>();
                         for (BankListResponse.BankItem item : data.items) {
-                            boolean isDef = item.isDefault; // Sửa lỗi tương tự
+                            boolean isDef = item.isDefault;
                             uiList.add(new PaymentMethodItem(
                                     item.accountHolder,
                                     item.bankName,
@@ -272,9 +469,7 @@ public class ProfileViewModel extends ViewModel {
         if (address.getWard() != null && !address.getWard().isEmpty()) {
             sb.append(address.getWard()).append(", ");
         }
-        if (address.getDistrict() != null && !address.getDistrict().isEmpty()) {
-            sb.append(address.getDistrict()).append(", ");
-        }
+
         if (address.getProvince() != null && !address.getProvince().isEmpty()) {
             sb.append(address.getProvince());
         }
@@ -306,11 +501,6 @@ public class ProfileViewModel extends ViewModel {
     //ADDRESS METHODS
     public LiveData<List<AddressItem>> getAddressList() { return addressListLiveData; }
 
-    // Placeholder address methods to keep existing code compiling if used elsewhere
-    public void addAddress(AddressItem newAddress) {}
-    public void updateAddress(int position, AddressItem updatedAddress) {}
-    public void removeAddress(int position) {}
-    
     public AddressItem getDefaultAddress() {
         List<AddressItem> currentList = addressListLiveData.getValue();
         if (currentList == null) return null;

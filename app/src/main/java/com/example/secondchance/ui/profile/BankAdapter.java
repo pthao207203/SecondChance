@@ -39,13 +39,14 @@ public class BankAdapter extends ArrayAdapter<String> {
         }
 
         TextView textView = (TextView) convertView;
-        textView.setText(banks.get(position));
+
+        String item = getItem(position);
+        if (item != null) {
+            textView.setText(item);
+        }
 
         // Kiểm tra nếu là item cuối cùng
-        if (position == banks.size() - 1) {
-             // Item cuối cùng chỉ có nền trắng, không có viền dưới (hoặc nền trong suốt nếu muốn)
-             // Tuy nhiên, layout item_bank_dropdown đang dùng background có viền.
-             // Ta cần đổi background cho item cuối cùng.
+        if (position == getCount() - 1) {
              textView.setBackgroundResource(R.drawable.bg_dropdown_item_last);
         } else {
             // Các item khác giữ nguyên background có viền dưới
@@ -53,5 +54,16 @@ public class BankAdapter extends ArrayAdapter<String> {
         }
 
         return convertView;
+    }
+
+    @Override
+    public int getCount() {
+        return super.getCount();
+    }
+
+    @Nullable
+    @Override
+    public String getItem(int position) {
+        return super.getItem(position);
     }
 }

@@ -1,8 +1,11 @@
 package com.example.secondchance.data.remote;
 
 import com.example.secondchance.data.model.ShopProfileResponse;
+import com.example.secondchance.dto.request.AddressRequest;
 import com.example.secondchance.dto.request.BankListRequest;
 import com.example.secondchance.dto.request.BankRequest;
+import com.example.secondchance.dto.response.AddressItemResponse;
+import com.example.secondchance.dto.response.AddressListResponse;
 import com.example.secondchance.dto.response.BankItemResponse;
 import com.example.secondchance.dto.response.BankListResponse;
 import com.example.secondchance.dto.response.WalletHistoryResponse;
@@ -65,6 +68,23 @@ public interface MeApi {
 
   @DELETE("/api/me/banks/{bankId}")
   Call<BankListResponse> deleteBank(@Path("bankId") String bankId);
+
+  // --- ADDRESS APIs ---
+  @GET("/api/me/addresses")
+  Call<AddressListResponse> getAddresses();
+
+  @POST("/api/me/addresses")
+  Call<AddressItemResponse> addAddress(@Body AddressRequest request);
+
+  @GET("/api/me/addresses/{addressId}")
+  Call<AddressItemResponse> getAddressDetail(@Path("addressId") String addressId);
+
+  @PUT("/api/me/addresses/{addressId}")
+  Call<AddressItemResponse> updateAddress(@Path("addressId") String addressId, @Body AddressRequest request);
+
+  @DELETE("/api/me/addresses/{addressId}")
+  Call<AddressListResponse> deleteAddress(@Path("addressId") String addressId);
+
   // -----------------
 
   // === RESPONSE ENVELOPE ===
