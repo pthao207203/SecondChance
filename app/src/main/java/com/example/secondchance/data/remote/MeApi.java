@@ -1,9 +1,12 @@
 package com.example.secondchance.data.remote;
 
 import com.example.secondchance.data.model.ShopProfileResponse;
+import com.example.secondchance.data.model.UserProfileResponse;
+import com.example.secondchance.data.model.dto.BecomeSellerRequest;
 import com.example.secondchance.dto.request.AddressRequest;
-import com.example.secondchance.dto.request.BankListRequest;
 import com.example.secondchance.dto.request.BankRequest;
+import com.example.secondchance.dto.request.PasswordUpdateRequest;
+import com.example.secondchance.dto.request.ProfileUpdateRequest;
 import com.example.secondchance.dto.response.AddressItemResponse;
 import com.example.secondchance.dto.response.AddressListResponse;
 import com.example.secondchance.dto.response.BankItemResponse;
@@ -12,16 +15,16 @@ import com.example.secondchance.dto.response.WalletHistoryResponse;
 import com.example.secondchance.dto.response.WalletPurchasedHistoryResponse;
 import com.example.secondchance.dto.response.WalletReceivedHistoryResponse;
 import com.example.secondchance.ui.comment.Comment;
-import com.example.secondchance.data.model.UserProfileResponse;
+
 import java.util.List;
-import com.example.secondchance.data.model.dto.BecomeSellerRequest;
+
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.HTTP;
+import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.Call;
-import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -43,6 +46,12 @@ public interface MeApi {
 
   @GET("/api/me/profile")
   Call<UserProfileResponse> getUserProfile();
+
+  @PATCH("/api/me/profile")
+  Call<UserProfileResponse> updateProfile(@Body ProfileUpdateRequest request);
+
+  @PATCH("/api/me/password")
+  Call<UserProfileResponse> updatePassword(@Body PasswordUpdateRequest request);
 
   @GET("/api/me")
   Call<ShopProfileResponse> getShopProfile();

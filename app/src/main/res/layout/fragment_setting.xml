@@ -47,46 +47,54 @@
         android:layout_height="1dp"
         android:background="#E0E0E0" />
 
-    <!-- Account Settings Item -->
+    <!-- Account Settings Section Wrapper -->
     <LinearLayout
-        android:id="@+id/btnAccountSettings"
+        android:id="@+id/llAccountSettingsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical"
-        android:background="?attr/selectableItemBackground">
+        android:orientation="vertical">
+
+        <!-- Account Settings Item -->
+        <LinearLayout
+            android:id="@+id/btnAccountSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Chỉnh sửa tài khoản"
+                android:textColor="@color/blackDay"
+                android:textSize="@dimen/text_16"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/chevron_right"
+                app:tint="@color/darkerDay"
+                android:contentDescription="Xem" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Chỉnh sửa tài khoản"
-            android:textColor="@color/blackDay"
+            android:text="Tên người dùng, Mật khẩu"
             android:textSize="@dimen/text_16"
-            android:textStyle="bold" />
+            android:textColor="#666666"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/chevron_right"
-            app:tint="@color/darkerDay"
-            android:contentDescription="Xem" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0" />
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tên người dùng, Mật khẩu"
-        android:textSize="@dimen/text_16"
-        android:textColor="#666666"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E0E0E0" />
 
     <!-- System Settings Item -->
     <LinearLayout

@@ -75,6 +75,11 @@ public class EditProfileFragment extends Fragment {
         etPhone = view.findViewById(R.id.etPhone);
         etEmail = view.findViewById(R.id.etEmail);
 
+        // Bind existing data
+        viewModel.getName().observe(getViewLifecycleOwner(), name -> { if(name != null) etName.setText(name); });
+        viewModel.getPhone().observe(getViewLifecycleOwner(), phone -> { if(phone != null) etPhone.setText(phone); });
+        viewModel.getEmail().observe(getViewLifecycleOwner(), email -> { if(email != null) etEmail.setText(email); });
+
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addressList -> {
             AddressItem defaultAddress = viewModel.getDefaultAddress();
             if (defaultAddress != null) {
@@ -90,6 +95,23 @@ public class EditProfileFragment extends Fragment {
                 tvDefaultBank.setText(defaultPayment.getDisplayName());
             } else {
                 tvDefaultBank.setText("Chưa có ngân hàng");
+            }
+        });
+
+        // Observe operation success
+        viewModel.getOperationSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (success != null) {
+                if (success) {
+                    showUpdateSuccessDialog();
+                }
+                viewModel.resetOperationSuccess();
+            }
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                // Clear error message in VM if needed, or just show toast
             }
         });
 
@@ -124,14 +146,12 @@ public class EditProfileFragment extends Fragment {
             return;
         }
 
-        viewModel.setName(name);
-        viewModel.setPhone(phone);
-        viewModel.setEmail(email);
+        // Assuming avatar update is handled separately or not implemented in this API call as per requirements
         if (selectedImageUri != null) {
             viewModel.setAvatarUri(selectedImageUri);
         }
 
-        showUpdateSuccessDialog();
+        viewModel.updateUserProfile(name, phone, email);
     }
 
     private void showUpdateSuccessDialog() {

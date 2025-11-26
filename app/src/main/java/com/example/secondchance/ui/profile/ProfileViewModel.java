@@ -11,6 +11,8 @@ import com.example.secondchance.data.model.UserData;
 import com.example.secondchance.data.model.UserProfileResponse;
 import com.example.secondchance.dto.request.AddressRequest;
 import com.example.secondchance.dto.request.BankRequest;
+import com.example.secondchance.dto.request.PasswordUpdateRequest;
+import com.example.secondchance.dto.request.ProfileUpdateRequest;
 import com.example.secondchance.dto.response.AddressItemResponse;
 import com.example.secondchance.dto.response.AddressListResponse;
 import com.example.secondchance.dto.response.BankItemResponse;
@@ -95,6 +97,56 @@ public class ProfileViewModel extends ViewModel {
             @Override
             public void onFailure(Call<UserProfileResponse> call, Throwable t) {
                 errorMessage.setValue("Lỗi kết nối mạng: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updateUserProfile(String name, String phone, String email) {
+        ProfileUpdateRequest request = new ProfileUpdateRequest(name, phone, email);
+        Call<UserProfileResponse> call = meApi.updateProfile(request);
+        call.enqueue(new Callback<UserProfileResponse>() {
+            @Override
+            public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    UserData data = response.body().getData();
+                    if (data != null) {
+                        nameLiveData.setValue(data.getName());
+                        phoneLiveData.setValue(data.getPhone());
+                        emailLiveData.setValue(data.getMail());
+                    }
+                    operationSuccess.setValue(true);
+                } else {
+                    errorMessage.setValue("Cập nhật hồ sơ thất bại: " + response.message());
+                    operationSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi cập nhật hồ sơ: " + t.getMessage());
+                operationSuccess.setValue(false);
+            }
+        });
+    }
+
+    public void updatePassword(String oldPassword, String newPassword) {
+        PasswordUpdateRequest request = new PasswordUpdateRequest(oldPassword, newPassword);
+        Call<UserProfileResponse> call = meApi.updatePassword(request);
+        call.enqueue(new Callback<UserProfileResponse>() {
+            @Override
+            public void onResponse(Call<UserProfileResponse> call, Response<UserProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    operationSuccess.setValue(true);
+                } else {
+                    errorMessage.setValue("Cập nhật mật khẩu thất bại: " + response.message());
+                    operationSuccess.setValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserProfileResponse> call, Throwable t) {
+                errorMessage.setValue("Lỗi mạng khi cập nhật mật khẩu: " + t.getMessage());
+                operationSuccess.setValue(false);
             }
         });
     }

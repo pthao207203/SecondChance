@@ -94,6 +94,7 @@ public class PaymentMethodAdapter extends ListAdapter<PaymentMethodItem, Payment
             new DiffUtil.ItemCallback<PaymentMethodItem>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull PaymentMethodItem oldItem, @NonNull PaymentMethodItem newItem) {
+                    // Compare item based on unique attribute
                     return oldItem.getAccountNumber().equals(newItem.getAccountNumber());
                 }
 

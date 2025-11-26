@@ -244,6 +244,7 @@ public class LoginFragment extends Fragment {
                                 String bearer = data.getBearerToken();
                                 if (bearer != null) {
                                     Prefs.saveToken(requireContext(), bearer);
+                                    Prefs.saveLoginType(requireContext(), Prefs.TYPE_GOOGLE);
                                     Toast.makeText(requireContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                                     goToMainAndFinish();
                                     return;
@@ -345,6 +346,7 @@ public class LoginFragment extends Fragment {
                             String bearer = res.body().data.getBearerToken();
                             if (bearer != null) {
                                 Prefs.saveToken(requireContext(), bearer);
+                                Prefs.saveLoginType(requireContext(), Prefs.TYPE_GOOGLE);
                                 Toast.makeText(requireContext(), "Hoàn tất đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 goToMainAndFinish();
                                 return;
@@ -404,6 +406,7 @@ public class LoginFragment extends Fragment {
                             String bearer = res.body().data.getBearerToken();
                             if (bearer != null) {
                                 Prefs.saveToken(requireContext(), bearer);
+                                Prefs.saveLoginType(requireContext(), Prefs.TYPE_NORMAL);
                                 Toast.makeText(requireContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                                 goToMainAndFinish();
                                 return;
