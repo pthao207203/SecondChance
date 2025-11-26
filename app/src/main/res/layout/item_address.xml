@@ -4,34 +4,75 @@
     android:id="@+id/llAddressRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="0dp"
     android:orientation="vertical"
     android:padding="16dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
     android:background="@drawable/selector_address_item">
+    
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_profile0"
-        android:layout_marginEnd="8dp"
-        app:tint="@color/selector_address_tint_blue" android:duplicateParentState="true" android:contentDescription="Người nhận" />
-
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cá Biệt Bay"
-        android:textSize="@dimen/text_16"
-        android:textColor="@color/darkerDay" />
-</LinearLayout>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/ivLabel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_house"
+            app:tint="@color/selector_address_tint_blue" 
+            android:duplicateParentState="true"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="Label Icon"/>
+            
+        <TextView
+            android:id="@+id/tvLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nhà"
+            android:textColor="@color/darkerDay"
+            android:textSize="@dimen/text_16" />
+
+        <ImageView
+            android:id="@+id/ivDelete"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_circle_minus"
+            app:tint="@color/selector_address_tint_blue" 
+            android:duplicateParentState="true"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="Delete address"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_profile0"
+            android:layout_marginEnd="8dp"
+            app:tint="@color/selector_address_tint_blue" android:duplicateParentState="true" android:contentDescription="Người nhận" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Cá Biệt Bay"
+            android:textSize="@dimen/text_16"
+            android:textColor="@color/darkerDay" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,9 +1,13 @@
 package com.example.secondchance.ui.profile;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +23,7 @@ public class AddressListFragment extends Fragment {
     private ProfileViewModel viewModel;
     private RecyclerView rvAddressList;
     private AddressListAdapter adapter;
+    private boolean isWaitingForDelete = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +54,10 @@ public class AddressListFragment extends Fragment {
         // Xử lý click vào item
         adapter.setOnAddressClickListener(addressItem -> {
             // Khi click vào địa chỉ, mở fragment chỉnh sửa
-            int position = viewModel.getAddressList().getValue().indexOf(addressItem);
+            int position = -1;
+            if (viewModel.getAddressList().getValue() != null) {
+                 position = viewModel.getAddressList().getValue().indexOf(addressItem);
+            }
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("address", addressItem);
@@ -59,10 +67,24 @@ public class AddressListFragment extends Fragment {
             Navigation.findNavController(view)
                     .navigate(R.id.action_addressList_to_addAddress, bundle);
         });
+        
+        adapter.setOnDeleteClickListener(this::showConfirmDeleteDialog);
 
         // Observe LiveData từ ViewModel
         viewModel.getAddressList().observe(getViewLifecycleOwner(), addressList -> {
             adapter.submitList(addressList);
+        });
+        
+        viewModel.getOperationSuccess().observe(getViewLifecycleOwner(), success -> {
+            if (isWaitingForDelete && success != null) {
+                isWaitingForDelete = false;
+                if (success) {
+                    showDeleteSuccessDialog();
+                } else {
+                    Toast.makeText(requireContext(), "Xóa địa chỉ thất bại", Toast.LENGTH_SHORT).show();
+                }
+                viewModel.resetOperationSuccess();
+            }
         });
 
         // Nút thêm địa chỉ mới
@@ -72,5 +94,52 @@ public class AddressListFragment extends Fragment {
             Navigation.findNavController(v)
                     .navigate(R.id.action_addressList_to_addAddress, bundle);
         });
+        
+        viewModel.fetchAddressList();
+    }
+    
+    private void showConfirmDeleteDialog(AddressItem item) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_delete_address);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.setCancelable(true);
+
+        View btnConfirm = dialog.findViewById(R.id.btnConfirmDeleteAddress);
+        View btnCancel = dialog.findViewById(R.id.btnCancelDeleteAddress);
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            deleteAddress(item);
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void deleteAddress(AddressItem item) {
+        isWaitingForDelete = true;
+        viewModel.resetOperationSuccess();
+        viewModel.removeAddress(item.getId());
+    }
+
+    private void showDeleteSuccessDialog() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_delete_success);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        dialog.setCancelable(false);
+
+        View btnClose = dialog.findViewById(R.id.btnCloseSuccess);
+        if (btnClose != null) {
+            btnClose.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        dialog.show();
     }
 }

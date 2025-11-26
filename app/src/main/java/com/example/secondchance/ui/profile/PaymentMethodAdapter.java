@@ -69,20 +69,12 @@ public class PaymentMethodAdapter extends ListAdapter<PaymentMethodItem, Payment
         }
 
         public void bind(PaymentMethodItem item, OnPaymentMethodClickListener listener, OnPaymentMethodDeleteListener deleteListener) {
-            tvBankName.setText(item.getBankName());
-            tvBankDescription.setText(item.getAccountNumber() + " - " + item.getAccountHolderName());
+            tvBankName.setText(item.getBankName() + " " + item.getAccountNumber());
+            tvBankDescription.setText(item.getAccountHolderName());
 
-            // Sử dụng selector bằng cách set state `selected` cho item view
+            // Use selector by setting state `selected` for item view
             boolean isSelected = item.isDefault();
             itemView.setSelected(isSelected);
-
-            Context context = itemView.getContext();
-            // Đổi màu icon khi được chọn sang highLight4 như yêu cầu
-            int iconColor = isSelected ? R.color.highLight5 : R.color.darkerDay;
-            ColorStateList colorStateList = ColorStateList.valueOf(ContextCompat.getColor(context, iconColor));
-            
-            ImageViewCompat.setImageTintList(ivBankLogo, colorStateList);
-            ImageViewCompat.setImageTintList(ivDelete, colorStateList);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -102,7 +94,6 @@ public class PaymentMethodAdapter extends ListAdapter<PaymentMethodItem, Payment
             new DiffUtil.ItemCallback<PaymentMethodItem>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull PaymentMethodItem oldItem, @NonNull PaymentMethodItem newItem) {
-                    // So sánh item dựa trên thuộc tính duy nhất
                     return oldItem.getAccountNumber().equals(newItem.getAccountNumber());
                 }
 
