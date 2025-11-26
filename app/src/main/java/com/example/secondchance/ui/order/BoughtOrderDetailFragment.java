@@ -7,46 +7,40 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import androidx.navigation.Navigation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.example.secondchance.data.remote.MeApi;
+
+import com.example.secondchance.R;
 import com.example.secondchance.data.remote.OrderApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
 import com.example.secondchance.databinding.FragmentBoughtOrderDetailBinding;
-import com.example.secondchance.R;
-import com.example.secondchance.data.model.Order;
 import com.example.secondchance.data.model.OrderItem;
 import com.example.secondchance.dto.response.OrderDetailResponse;
 import com.example.secondchance.ui.order.dialog.RefundConfirmDialogFragment;
 import com.example.secondchance.ui.order.adapter.OrderItemAdapter;
-import com.example.secondchance.data.model.TrackingStatus;
-import com.example.secondchance.ui.order.adapter.TrackingStatusAdapter;
-import com.google.gson.Gson;
+
 import java.text.NumberFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BoughtOrderDetailFragment extends Fragment implements RefundConfirmDialogFragment.RefundConfirmListener {
-    private static final String TAG = "BoughtDetailFrag";
+
+    private static final String TAG = "DEBUG_ORDER";
+
     private FragmentBoughtOrderDetailBinding binding;
     private String receivedOrderId;
     private boolean receivedIsEvaluated;
+
     private OrderItemAdapter productAdapter;
-    private List<OrderItem> productList = new ArrayList<>();
-    private TrackingStatusAdapter trackingAdapter;
-    private List<TrackingStatus> trackingList = new ArrayList<>();
+    private final List<OrderItem> productList = new ArrayList<>();
     private OrderApi orderApi;
 
     @Nullable
@@ -57,6 +51,9 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
         if (getArguments() != null) {
             receivedOrderId = getArguments().getString("orderId");
             receivedIsEvaluated = getArguments().getBoolean("isEvaluated");
+            Log.d(TAG, "1. onCreateView: Nhận được OrderID = " + receivedOrderId);
+        } else {
+            Log.e(TAG, "1. onCreateView: Không có arguments!");
         }
 
         return binding.getRoot();
@@ -65,109 +62,150 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "2. Bắt đầu onViewCreated");
 
-        productAdapter = new OrderItemAdapter(requireContext(), productList);
-        binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvOrderItems.setAdapter(productAdapter);
-        binding.rvOrderItems.setNestedScrollingEnabled(false);
+        try {
+            orderApi = RetrofitProvider.order();
+            Log.d(TAG, "3. Khởi tạo Retrofit API thành công");
+        } catch (Exception e) {
+            Log.e(TAG, "3. LỖI khởi tạo API: " + e.getMessage());
+        }
+
+        Log.d(TAG, "4. Chuẩn bị setup RecyclerView");
+        setupProductRecyclerView();
+        Log.d(TAG, "5. Setup RecyclerView hoàn tất");
 
         updateBottomButtons();
-        
+
         binding.btnReturnOrder.setOnClickListener(v -> showRefundConfirmDialog());
 
         if (receivedOrderId == null || receivedOrderId.isEmpty()) {
-            Toast.makeText(requireContext(), "Thiếu orderId", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "Lỗi: Không tìm thấy mã đơn hàng", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "LỖI: OrderID bị null hoặc rỗng -> Dừng xử lý");
             return;
         }
-        orderApi = RetrofitProvider.order();
+
+        Log.d(TAG, "6. Gọi hàm loadOrderDetail với ID: " + receivedOrderId);
         loadOrderDetail(receivedOrderId);
     }
+
     private void loadOrderDetail(String id) {
-        showLoading(true);
+        Log.d(TAG, "7. Đang thực thi API call (enqueue)...");
+
         orderApi.getOrderDetail(id).enqueue(new Callback<OrderDetailResponse>() {
-            @Override public void onResponse(@NonNull Call<OrderDetailResponse> call,
-                                             @NonNull Response<OrderDetailResponse> res) {
-                showLoading(false);
+            @Override
+            public void onResponse(@NonNull Call<OrderDetailResponse> call, @NonNull Response<OrderDetailResponse> res) {
+                Log.d(TAG, "8. API đã phản hồi! Code: " + res.code());
+
                 if (!res.isSuccessful() || res.body() == null || res.body().data == null) {
-                    Toast.makeText(requireContext(), "Không tải được chi tiết đơn", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "LỖI: Response không thành công hoặc body null");
+                    Toast.makeText(requireContext(), "Không thể tải thông tin đơn hàng", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                bindOrder(res.body().data);
+
+                Log.d(TAG, "9. Dữ liệu hợp lệ. Bắt đầu bindOrderData...");
+                bindOrderData(res.body().data);
+                Log.d(TAG, "10. Bind dữ liệu hoàn tất! (Giao diện đã cập nhật)");
             }
-            
-            @Override public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
-                showLoading(false);
-                Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+            @Override
+            public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "LỖI MẠNG/API onFailure: " + t.getMessage());
+                t.printStackTrace();
+                Toast.makeText(requireContext(), "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-    
+
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
-    private void bindOrder(OrderDetailResponse.Data data) {
-
-        productList.clear();
-        if (data.order != null && data.order.orderItems != null) {
-
-            for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
-
-                com.example.secondchance.data.model.OrderItem modelItem = new com.example.secondchance.data.model.OrderItem();
-
-                modelItem.name = dtoItem.name;
-                modelItem.imageUrl = dtoItem.imageUrl;
-                modelItem.price = dtoItem.price;
-                modelItem.quantity = dtoItem.qty;
-
-                productList.add(modelItem);
+    private void bindOrderData(OrderDetailResponse.Data data) {
+        try {
+            if (data.order == null) {
+                Log.e(TAG, "Lỗi: data.order bị null");
+                return;
             }
 
-        }
-        productAdapter.notifyDataSetChanged();
 
-        if (data.order != null) {
-            binding.tvOrderId.setText("#" + data.order.id.toUpperCase(Locale.ROOT));
-            binding.tvShippingFee.setText(formatVnd(data.order.orderShippingFee));
-            binding.tvTotalAmount.setText(formatVnd(data.order.orderTotalAmount));
-            binding.tvPaymentMethod.setText(safe(data.order.orderPaymentMethod).equals("cod") ? "Tiền mặt" : "Ví của tôi");
-            
+            productList.clear();
+            if (data.order.orderItems != null) {
+                for (OrderDetailResponse.OrderItem dtoItem : data.order.orderItems) {
+                    OrderItem modelItem = new OrderItem();
+                    modelItem.name = dtoItem.name;
+                    modelItem.imageUrl = dtoItem.imageUrl;
+                    modelItem.price = dtoItem.price;
+                    modelItem.quantity = dtoItem.qty;
+                    productList.add(modelItem);
+                }
+            }
+
+            if (productAdapter != null) {
+                productAdapter.notifyDataSetChanged();
+            }
+
+            String orderId = data.order.id != null ? data.order.id : "---";
+            binding.tvOrderId.setText("#" + orderId.toUpperCase(Locale.ROOT));
+
+            long shipFee = data.order.orderShippingFee;
+            long totalAmt = data.order.orderTotalAmount;
+            binding.tvShippingFee.setText(formatVnd(shipFee));
+            binding.tvTotalAmount.setText(formatVnd(totalAmt));
+
+            String methodCode = data.order.orderPaymentMethod;
+            String methodText = "Thanh toán điện tử";
+            if (methodCode != null) {
+                switch (methodCode.toLowerCase()) {
+                    case "cod": methodText = "Thanh toán khi nhận hàng"; break;
+                    case "zalopay": methodText = "Ví điện tử ZaloPay"; break;
+                    case "wallet": methodText = "Tiền trong ví"; break;
+                    case "bank": methodText = "Chuyển khoản ngân hàng"; break;
+                }
+            }
+            binding.tvPaymentMethod.setText(methodText);
+
             if (data.order.orderShippingAddress != null) {
-                var a = data.order.orderShippingAddress;
-                binding.tvReceiverName.setText(safe(a.name));
-                binding.tvReceiverPhone.setText(safe(a.phone));
-                binding.tvReceiverAddress.setText(safe(a.street) + ", " + safe(a.ward) + ", " + safe(a.province));
+                var addressData = data.order.orderShippingAddress;
+                binding.tvReceiverName.setText(safeString(addressData.name));
+                binding.tvReceiverPhone.setText(safeString(addressData.phone));
+
+                String fullAddress = buildSafeAddress(
+                        safeString(addressData.street),
+                        safeString(addressData.ward),
+                        safeString(addressData.province)
+                );
+                binding.tvReceiverAddress.setText(fullAddress);
             }
-            
-//            binding.tvCreatedAt.setText(formatVnTime(data.order.createdAt));
-//            binding.tvUpdatedAt.setText(formatVnTime(data.order.updatedAt));
-        }
-        
-        // 3) Timeline vận chuyển
-//        trackingList.clear();
-//        if (data.shipment != null && data.shipment.events != null) {
-//            for (OrderDetailResponse.Event e : data.shipment.events) {
-//                trackingList.add(new com.example.secondchance.data.model.TrackingStatus(
-//                  mapStatusTitle(e),                 // title
-//                  formatVnTime(e.eventTime),         // time
-//                  safe(e.description)                // subtitle / description
-//                ));
-//            }
-//            // (tùy UI) sort theo thời gian tăng hoặc giảm
-//            Collections.sort(trackingList, Comparator.comparing(ts -> ts.getTime()));
-//        }
-//        trackingAdapter.notifyDataSetChanged();
-    }
-    
-    private String mapStatusTitle(OrderDetailResponse.Event e) {
-        if (e == null) return "Cập nhật";
-        if (e.eventCode == null) return upperFirst(safe(e.description));
-        switch (e.eventCode) {
-            case 1: return "Nhận hàng từ shop";
-            case 2: return "Đến kho";
-            case 3: return "Rời kho";
-            case 4: return "Phát/Hoàn trả";
-            case 5: return "Đã giao";
-            default: return "Cập nhật";
+
+            Log.d(TAG, "10. Bind dữ liệu hoàn tất! (Giao diện đã cập nhật)");
+
+        } catch (Exception e) {
+
+            Log.e(TAG, "CRASH ERROR trong bindOrderData: " + e.getMessage());
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Lỗi hiển thị dữ liệu: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    private void setupProductRecyclerView() {
+        Log.d(TAG, "   -> Bên trong setupProductRecyclerView");
+        productAdapter = new OrderItemAdapter(requireContext(), productList);
+        binding.rvOrderItems.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        binding.rvOrderItems.setAdapter(productAdapter);
+        binding.rvOrderItems.setNestedScrollingEnabled(false);
+        Log.d(TAG, "   -> Đã setAdapter xong");
+    }
+
+    private void updateBottomButtons() {
+        if (receivedIsEvaluated) {
+            binding.btnRateShop.setVisibility(View.GONE);
+        } else {
+            binding.btnRateShop.setVisibility(View.VISIBLE);
+            binding.btnRateShop.setOnClickListener(v -> {
+                Toast.makeText(getContext(), "Chức năng Đánh giá đang phát triển", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
     private void showRefundConfirmDialog() {
         RefundConfirmDialogFragment dialog = new RefundConfirmDialogFragment();
         dialog.setListener(this);
@@ -176,63 +214,44 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
 
     @Override
     public void onRefundConfirmed() {
-        Toast.makeText(requireContext(), "Đã xác nhận. Chuyển sang màn hình TẠO YÊU CẦU HOÀN TRẢ...", Toast.LENGTH_LONG).show();
-
         Bundle bundle = new Bundle();
-
-        if (receivedOrderId != null) {
-            bundle.putString("orderId", receivedOrderId);
-        }
+        if (receivedOrderId != null) bundle.putString("orderId", receivedOrderId);
 
         try {
-
             Navigation.findNavController(requireView()).navigate(
                     R.id.action_boughtOrderDetailFragment_to_createOrderReturnRequestFragment,
                     bundle
             );
         } catch (Exception e) {
-            Log.e(TAG, "Lỗi điều hướng đến CreateOrderReturnRequestFragment", e);
-            Toast.makeText(requireContext(), "Lỗi: Không thể chuyển màn hình. Thiếu action điều hướng.", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "Lỗi điều hướng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Lỗi điều hướng: " + e.getMessage());
         }
     }
 
     @Override
-    public void onRefundCancelled() {
-        Toast.makeText(requireContext(), "Yêu cầu hoàn trả đã bị hủy.", Toast.LENGTH_SHORT).show();
-    }
+    public void onRefundCancelled() { }
 
-
-    private void updateBottomButtons() {
-        if (receivedIsEvaluated) {
-            binding.btnRateShop.setVisibility(View.GONE);
-            Log.d(TAG, "Order already evaluated. Hiding Rate button.");
-        } else {
-            binding.btnRateShop.setVisibility(View.VISIBLE);
-            Log.d(TAG, "Order NOT evaluated. Showing Rate button.");
-
-            binding.btnRateShop.setOnClickListener(v -> {
-                Log.d(TAG, "Rate Shop clicked for order: " + receivedOrderId);
-                Toast.makeText(getContext(), "Mở màn hình Đánh giá...", Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
-    private void showLoading(boolean show) {
-//        if (binding.progress != null) binding.progress.setVisibility(show ? View.VISIBLE : View.GONE);
-        binding.getRoot().setAlpha(show ? 0.6f : 1f);
-    }
-    
     private String formatVnd(long amount) {
-        return NumberFormat.getInstance(new Locale("vi","VN")).format(amount);
+        return NumberFormat.getInstance(new Locale("vi", "VN")).format(amount);
     }
-    private String formatVnTime(String iso) {
-        try {
-            ZonedDateTime z = ZonedDateTime.parse(iso).withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
-            return z.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-        } catch (Exception e) { return iso; }
-    }
-    private String safe(String s) { return s == null ? "" : s; }
-    private String upperFirst(String s) { return s.isEmpty()? s : s.substring(0,1).toUpperCase()+s.substring(1); }
 
+    private String buildSafeAddress(String street, String ward, String province) {
+        StringBuilder sb = new StringBuilder();
+        if (!street.isEmpty()) sb.append(street);
+        if (!ward.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(ward);
+        }
+        if (!province.isEmpty()) {
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(province);
+        }
+        return sb.toString();
+    }
+
+    private String safeString(String s) {
+        return s == null ? "" : s.trim();
+    }
 
     @Override
     public void onDestroyView() {

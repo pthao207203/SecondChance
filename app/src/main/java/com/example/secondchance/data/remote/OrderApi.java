@@ -23,8 +23,18 @@ public interface OrderApi {
     @GET("/api/orders")
     Call<OrderListEnvelope> getOrdersByStatus(@Query("status") String status);
 
+    @GET("shops/{shopId}/orders")
+    Call<OrderListEnvelope> getShopOrdersByStatus(
+            @Path("shopId") String shopId,
+            @Query("status") String status
+    );
+
     @GET("/api/orders/{id}")
     Call<OrderDetailResponse> getOrderDetail(@Path("id") String orderId);
+
+    @POST("orders/{id}/confirm")
+    Call<BasicResponse> confirmOrder(@Path("id") String orderId);
+
 
     @POST("/api/orders/{id}/cancel")
     Call<BasicResponse> cancelOrder(@Path("id") String orderId);
@@ -127,8 +137,6 @@ public interface OrderApi {
         @SerializedName("lng") public double lng;
     }
 
-
-    // --- Các lớp đã có ---
 
     class ReturnRequestBody {
         @SerializedName("description") public String description;

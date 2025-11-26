@@ -74,22 +74,6 @@
             android:layout_marginTop="-24dp"
             android:layout_marginEnd="0dp">
 
-            <TextView
-                android:id="@+id/tvViewInvoiceText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xem chi tiết"
-                android:textColor="@color/darkerDay"
-                android:textSize="@dimen/text_13"
-                android:textStyle="normal" />
-
-            <ImageView
-                android:id="@+id/imgViewInvoiceArrow"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/ic_arrow_forward"
-                android:layout_marginStart="4dp"
-                app:tint="@color/darkerDay" />
         </LinearLayout>
 
     </RelativeLayout>

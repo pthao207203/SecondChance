@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteDay"
@@ -10,34 +11,77 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/padding_default"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/info_box_bg">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/grayLight"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:id="@+id/ic_info_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_info"
+                        app:tint="@color/highLight5"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mã đơn"
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"
+                        android:layout_toEndOf="@id/ic_info_icon"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"/>
+
+                    <TextView
+                        android:id="@+id/tvOrderId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/normalDay"
+                        android:textStyle="bold"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sản phẩm mua hàng"
+                android:text="Sản phẩm"
                 android:textColor="@color/darkerDay"
                 android:textStyle="bold"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- RecyclerView cho danh sách sản phẩm -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvOrderItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 app:cardCornerRadius="@dimen/corner_medium"
-                app:cardUseCompatPadding="false"
                 app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/highlight4blur">
 
@@ -47,30 +91,29 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="@dimen/padding_default">
-
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:src="@drawable/ic_shipping" />
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:text="Tiền vận chuyển"
-                        android:textStyle="bold"
-                        android:textColor="@color/darkerDay" />
+                        android:textColor="@color/darkerDay"
+                        android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="₫ "
                         android:textColor="@color/normalDay"
                         android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/tvShippingFee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50.000"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -83,7 +126,6 @@
                 android:background="@drawable/ic_dot_line"
                 android:layerType="software" />
 
-            <!-- Summary section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,6 +145,7 @@
                         android:text="Tổng cộng"
                         android:textColor="@color/darkerDay"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -110,10 +153,11 @@
                         android:textColor="@color/normalDay"
                         android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
+
                     <TextView
+                        android:id="@+id/tvTotalAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="200.000"
                         android:textColor="@color/darkerDay"
                         android:textSize="@dimen/text_16"
                         android:textStyle="bold" />
@@ -139,9 +183,9 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cá biết bay"
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
 
@@ -159,9 +203,9 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0333 333 xxx"
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
 
@@ -179,15 +223,15 @@
                             android:textColor="@color/darkerDay" />
 
                         <TextView
+                            android:id="@+id/tvReceiverAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:maxWidth="220dp"
-                            android:text="Thôn Cá, xã Biết, quận bay, thành phố Fish Can Fly..."
+                            android:gravity="end"
                             android:textColor="@color/darkerDay" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Payment method -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -215,13 +259,13 @@
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:text="Phương thức thanh toán"
-                            android:textStyle="bold"
-                            android:textColor="@color/darkerDay" />
+                            android:textColor="@color/darkerDay"
+                            android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/tvPaymentMethod"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tiền trong ví"
                             android:textColor="@color/normalDay"
                             android:textStyle="bold" />
                     </LinearLayout>

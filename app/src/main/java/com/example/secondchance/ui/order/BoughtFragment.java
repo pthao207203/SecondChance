@@ -45,7 +45,6 @@ public class BoughtFragment extends Fragment {
     }
     private BoughtOrderNavigationListener navigationListener;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

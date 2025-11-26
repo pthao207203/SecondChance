@@ -42,6 +42,8 @@ public class Order extends OrderWrapper implements Serializable {
 
     @SerializedName("returnRequest")
     public ReturnRequestData returnRequest;
+    @SerializedName("orderShippingAddress")
+    public ShippingAddress shippingAddress;
 
     public OrderItem getFirstItem() {
         if (items != null && !items.isEmpty()) {
@@ -148,8 +150,9 @@ public class Order extends OrderWrapper implements Serializable {
         return returnRequest.getStatus();
     }
     public DeliveryOverallStatus getDeliveryStatus() {
-        OrderWrapper.ShipmentData shipment = new OrderWrapper.ShipmentData();
+        if (shipment == null) return DeliveryOverallStatus.PACKAGED;
 
+        // Xử lý logic dựa trên biến shipment thật
         return switch (shipment.currentStatus) {
             case 2, 3 -> DeliveryOverallStatus.AT_POST_OFFICE;
             case 4 -> DeliveryOverallStatus.DELIVERING;
@@ -213,5 +216,13 @@ public class Order extends OrderWrapper implements Serializable {
             }
             return 0;
         }
+    }
+    public static class ShippingAddress implements Serializable {
+        @SerializedName("name") public String name;
+        @SerializedName("phone") public String phone;
+        @SerializedName("street") public String street;
+        @SerializedName("ward") public String ward;
+        @SerializedName("province") public String province;
+        // Thêm district nếu cần
     }
 }
