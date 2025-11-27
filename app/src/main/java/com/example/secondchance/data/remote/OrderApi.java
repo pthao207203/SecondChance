@@ -49,6 +49,33 @@ public interface OrderApi {
     @POST("/api/orders/place")
     Call<BasicResponse> placeOrder(@Body PaymentRequest request);
 
+    @POST("/api/orders/{id}/rate")
+    Call<RateOrderResponse> rateOrder(
+            @Path("id") String orderId,
+            @Body RateOrderRequest body
+    );
+
+    class RateOrderRequest {
+        @SerializedName("rate") public int rate;
+        @SerializedName("description") public String description;
+        @SerializedName("media") public List<String> media;
+
+        public RateOrderRequest(int rate, String description, List<String> media) {
+            this.rate = rate;
+            this.description = description;
+            this.media = media;
+        }
+    }
+
+    class RateOrderResponse {
+        @SerializedName("success") public boolean success;
+        @SerializedName("data") public RateOrderData data;
+    }
+
+    class RateOrderData {
+        @SerializedName("ok") public boolean ok;
+    }
+
     class PlaceOrderRequestBody {
         @SerializedName("items")
         public List<CartItemInfo> items;
