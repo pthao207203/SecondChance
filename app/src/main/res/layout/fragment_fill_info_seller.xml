@@ -109,7 +109,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginEnd="5dp"
-            android:background="@drawable/bg_dashed_orange_border"
+            android:background="@drawable/bg_border_dashed_orange"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"

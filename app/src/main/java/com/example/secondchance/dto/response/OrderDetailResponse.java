@@ -25,6 +25,7 @@ public class OrderDetailResponse {
     public String createdAt;
     public String updatedAt;
     public ReturnRequest returnRequest;
+    public boolean isReviewed;
   }
   
   public static class OrderItem {
