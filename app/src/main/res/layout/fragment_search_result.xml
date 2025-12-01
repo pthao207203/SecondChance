@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/whiteDay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <!-- Ô nhập text giống header, dùng riêng cho màn search -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/search_container_local"
+            style="@style/Widget.SecondChance.Card.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/lightDay"
+            app:cardCornerRadius="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="4dp">
+
+                <EditText
+                    android:id="@+id/search_bar_local"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints="search"
+                    android:hint="Bộ ấm trà cổ..."
+                    android:background="@null"
+                    android:textColor="@color/normalDay"
+                    android:textColorHint="@color/normalDay"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/text_16"/>
+
+                <ImageView
+                    android:id="@+id/icon_search_local"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/look"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Dải category icon tròn (tái dùng rvCategories của bạn) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:paddingVertical="8dp"
+                tools:listitem="@layout/item_category_chip" />
+        </LinearLayout>
+
+        <!-- Dòng: số kết quả + icon filter -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/tvResultCount"
+                style="@style/Text.SecondChance.Body16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="77 kết quả tương ứng"
+                android:textColor="@color/darkerDay" />
+
+            <ImageButton
+                android:id="@+id/btnFilter"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_filter"
+                app:tint="@color/darkerDay" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Có thể bạn sẽ thích"
+            android:textSize="@dimen/text_20"
+            android:textColor="@color/darkerDay"
+            android:textStyle="bold" />
+
+        <!-- Nhúng CardListFragment tại đây -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/cardListFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tag="CardListHost"
+            tools:layout="@layout/fragment_recycler_card" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

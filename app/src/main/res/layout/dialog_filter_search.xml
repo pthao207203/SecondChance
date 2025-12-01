@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="24dp">
+
+    <!-- Vùng nội dung chính: trái = địa chỉ, phải = menu filter -->
+    <LinearLayout
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!-- Cột trái: Lọc theo địa chỉ + grid Tp.HCM -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lọc theo địa chỉ"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/space_12"
+                android:layout_weight="1">
+
+                <GridLayout
+                    android:id="@+id/gridAddress1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:columnCount="2"
+                    android:rowCount="6"
+                    android:columnOrderPreserved="false">
+
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                    <TextView
+                        style="@style/Text.SecondChance.Body16"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:text="Tp.HCM"
+                        android:background="@drawable/bg_filter_chip"
+                        android:textColor="@color/darkerDay" />
+                </GridLayout>
+
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <!-- Divider dọc -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="0dp"
+            android:background="@color/highLight4" />
+
+        <!-- Cột phải: menu filter -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:gravity="top">
+
+            <ImageView
+                android:id="@+id/ivFilterIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/ic_filter"
+                android:layout_gravity="center_horizontal"
+                app:tint="@color/darkerDay" />
+
+            <!-- Item đang chọn (Địa chỉ) -->
+            <TextView
+                android:id="@+id/tvFilterAddress"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Địa chỉ"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:background="@drawable/bg_filter_menu_selected" />
+
+            <TextView
+                android:id="@+id/tvFilterRating"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Đánh giá"
+                android:textColor="@color/darkerDay" />
+
+            <TextView
+                android:id="@+id/tvFilterStatus"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Trạng thái"
+                android:textColor="@color/darkerDay" />
+
+            <TextView
+                android:id="@+id/tvFilterPrice"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Giá tiền"
+                android:textColor="@color/darkerDay" />
+
+            <TextView
+                android:id="@+id/tvFilterTypePrice"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:layout_marginTop="4dp"
+                android:text="Loại giá"
+                android:textColor="@color/darkerDay" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Chọn tất cả -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/checkbox"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_checkbox_unchecked"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="checkbox"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn tất cả"
+            android:textColor="@color/darkerDay"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <!-- Nút áp dụng -->
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Áp dụng"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        style="@style/Widget.SecondChance.Button.Primary"
+        android:textSize="16sp" />
+
+</LinearLayout>

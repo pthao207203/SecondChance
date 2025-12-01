@@ -6,6 +6,7 @@ import com.example.secondchance.dto.response.AdminProductListResponse;
 import com.example.secondchance.dto.response.AuctionListResponse;
 import com.example.secondchance.dto.request.ProductCreateRequest;
 import com.example.secondchance.dto.response.BasicResponse;
+import com.example.secondchance.dto.response.ProductListResponse;
 import com.example.secondchance.dto.response.ProductMetaResponse;
 import com.google.gson.annotations.SerializedName;
 import retrofit2.Call;
@@ -21,7 +22,21 @@ public interface ProductApi {
 
     @GET("/api/products/{id}")
     Call<ProductEnvelope> getProductById(@Path("id") String productId);
-
+    
+    @GET("/api/products")
+    Call<ProductListResponse> getProducts(
+      @Query("page") Integer page,
+      @Query("pageSize") Integer pageSize,
+      @Query("name") String name,
+      @Query("city") String pickupCity,
+      @Query("rating") Integer rating,
+      @Query("status") Integer status,
+      @Query("minPrice") Integer minPrice,
+      @Query("maxPrice") Integer maxPrice,
+      @Query("priceType") Integer priceType,
+      @Query("categoryId") String categoryId
+    );
+    
     @GET("/api/products/auctions")
     Call<AuctionListResponse> getAuctions(
       @Query("page") Integer page,
