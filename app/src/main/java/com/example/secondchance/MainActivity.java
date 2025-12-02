@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.secondchance.R;
@@ -163,7 +164,29 @@ public class MainActivity extends AppCompatActivity {
     binding.headerMain.iconCart.setOnClickListener(v -> openCartScreen());
     binding.headerMain.iconChat.setOnClickListener(v -> openChatScreen());
     binding.headerMain.iconNotify.setOnClickListener(v -> openNotificationScreen());
-    binding.headerMain.iconSearch.setOnClickListener(v -> Toast.makeText(this, "Tìm kiếm...", Toast.LENGTH_SHORT).show());
+    binding.headerMain.iconSearch.setOnClickListener(v -> {
+      // 1. Lấy text trong ô search
+      String keyword = "";
+      if (binding.headerMain.searchBar != null) { // đổi tên cho trùng id của bạn
+        keyword = binding.headerMain.searchBar.getText().toString().trim();
+      }
+      
+      if (keyword.isEmpty()) {
+        Toast.makeText(this, "Vui lòng nhập từ khoá tìm kiếm", Toast.LENGTH_SHORT).show();
+        return;
+      }
+      
+      // 2. Đóng gói Bundle gửi sang AuctionFilterFragment
+      Bundle bundle = new Bundle();
+      bundle.putString("searchName", keyword);  // 🔹 phải trùng KEY_SEARCH_NAME
+      
+      // 3. Điều hướng sang AuctionFilterFragment
+      NavController navController =
+        Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+      
+      // tuỳ nav_graph của bạn: có thể là action_global_auctionFilterFragment hoặc action_home_to_auctionFilterFragment
+      navController.navigate(R.id.action_home_to_auctionFilterFragment, bundle);
+    });
   }
 
   private void setupBottomMenuClickListeners() {

@@ -314,6 +314,7 @@ public class DetailProductFragment extends Fragment {
             
             @Override public void onFailure(@NonNull Call<ProductDetailResponse> call, @NonNull Throwable t) {
                 showLoading(false);
+                Log.e("DetailProductFragment", "onFailure: ", t);
                 Toast.makeText(requireContext(), "Lỗi kết nối server", Toast.LENGTH_SHORT).show();
             }
         });

@@ -13,6 +13,9 @@
         app:popUpTo="@id/mobile_navigation"
         app:popUpToInclusive="true" />
     <action
+        android:id="@+id/action_home_to_auctionFilterFragment"
+        app:destination="@id/auctionFilterFragment"/>
+    <action
         android:id="@+id/action_global_detail_product"
         app:destination="@id/navigation_detail_product"
         app:launchSingleTop="true"
@@ -155,6 +158,12 @@
             app:argType="java.io.Serializable"
             app:nullable="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/auctionFilterFragment"
+        android:name="com.example.secondchance.ui.product.search.AuctionFilterFragment"
+        android:label="Tìm kiếm"
+        tools:layout="@layout/fragment_search_result" />
 
     <fragment
         android:id="@+id/navigation_rule_auction"
