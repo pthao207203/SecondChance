@@ -25,7 +25,7 @@ public class ShopData {
     private String status;
 
     @SerializedName("walletBalance")
-    private double walletBalance;
+    private long walletBalance;
 
     // Getters
     public String getName() {
@@ -36,4 +36,5 @@ public class ShopData {
         return avatar;
     }
 
+    public long getWalletBalance() { return walletBalance; }
 }

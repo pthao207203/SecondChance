@@ -71,8 +71,9 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
         binding.rvOrderItems.setAdapter(productAdapter);
         binding.rvOrderItems.setNestedScrollingEnabled(false);
 
-        updateBottomButtons();
-        
+        // Ẩn container nút mặc định
+        binding.layoutActionButtons.setVisibility(View.GONE);
+
         binding.btnReturnOrder.setOnClickListener(v -> showRefundConfirmDialog());
 
         if (receivedOrderId == null || receivedOrderId.isEmpty()) {
@@ -87,23 +88,30 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
         orderApi.getOrderDetail(id).enqueue(new Callback<OrderDetailResponse>() {
             @Override public void onResponse(@NonNull Call<OrderDetailResponse> call,
                                              @NonNull Response<OrderDetailResponse> res) {
-                showLoading(false);
+                if (binding == null) return;
+                // Lưu ý: chưa gọi showLoading(false) ở đây ngay
+                // để tránh hiện UI rỗng trước khi bind
+                
                 if (!res.isSuccessful() || res.body() == null || res.body().data == null) {
+                    showLoading(false); // Lỗi thì tắt loading
                     Toast.makeText(requireContext(), "Không tải được chi tiết đơn", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 bindOrder(res.body().data);
+                showLoading(false); // Bind xong mới tắt loading và hiện content
             }
-            
+
             @Override public void onFailure(@NonNull Call<OrderDetailResponse> call, @NonNull Throwable t) {
+                if (binding == null) return;
                 showLoading(false);
                 Toast.makeText(requireContext(), "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-    
+
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     private void bindOrder(OrderDetailResponse.Data data) {
+        if (binding == null) return;
 
         productList.clear();
         if (data.order != null && data.order.orderItems != null) {
@@ -128,34 +136,44 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
             binding.tvShippingFee.setText(formatVnd(data.order.orderShippingFee));
             binding.tvTotalAmount.setText(formatVnd(data.order.orderTotalAmount));
             binding.tvPaymentMethod.setText(safe(data.order.orderPaymentMethod).equals("cod") ? "Tiền mặt" : "Ví của tôi");
-            
+
             if (data.order.orderShippingAddress != null) {
                 var a = data.order.orderShippingAddress;
                 binding.tvReceiverName.setText(safe(a.name));
                 binding.tvReceiverPhone.setText(safe(a.phone));
                 binding.tvReceiverAddress.setText(safe(a.street) + ", " + safe(a.ward) + ", " + safe(a.province));
             }
-            
-//            binding.tvCreatedAt.setText(formatVnTime(data.order.createdAt));
-//            binding.tvUpdatedAt.setText(formatVnTime(data.order.updatedAt));
+
+            // Cập nhật logic hiển thị nút dựa trên isReviewed từ API
+            boolean isEvaluated = data.order.isReviewed;
+            if (isEvaluated) {
+                // Đã đánh giá: Ẩn container
+                binding.layoutActionButtons.setVisibility(View.GONE);
+                Log.d(TAG, "Order evaluated. Hiding Rate and Return buttons.");
+            } else {
+                // Chưa đánh giá: Hiện container
+                binding.layoutActionButtons.setVisibility(View.VISIBLE);
+                binding.btnRateShop.setVisibility(View.VISIBLE);
+                binding.btnReturnOrder.setVisibility(View.VISIBLE);
+                Log.d(TAG, "Order NOT evaluated. Showing Rate and Return buttons.");
+
+                binding.btnRateShop.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("orderId", receivedOrderId);
+                    try {
+                        Navigation.findNavController(requireView()).navigate(
+                                R.id.action_boughtOrderDetailFragment_to_rateOrderFragment,
+                                bundle
+                        );
+                    } catch (Exception e) {
+                        Log.e(TAG, "Navigation error", e);
+                        Toast.makeText(getContext(), "Lỗi điều hướng", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
-        
-        // 3) Timeline vận chuyển
-//        trackingList.clear();
-//        if (data.shipment != null && data.shipment.events != null) {
-//            for (OrderDetailResponse.Event e : data.shipment.events) {
-//                trackingList.add(new com.example.secondchance.data.model.TrackingStatus(
-//                  mapStatusTitle(e),                 // title
-//                  formatVnTime(e.eventTime),         // time
-//                  safe(e.description)                // subtitle / description
-//                ));
-//            }
-//            // (tùy UI) sort theo thời gian tăng hoặc giảm
-//            Collections.sort(trackingList, Comparator.comparing(ts -> ts.getTime()));
-//        }
-//        trackingAdapter.notifyDataSetChanged();
     }
-    
+
     private String mapStatusTitle(OrderDetailResponse.Event e) {
         if (e == null) return "Cập nhật";
         if (e.eventCode == null) return upperFirst(safe(e.description));
@@ -201,24 +219,16 @@ public class BoughtOrderDetailFragment extends Fragment implements RefundConfirm
         Toast.makeText(requireContext(), "Yêu cầu hoàn trả đã bị hủy.", Toast.LENGTH_SHORT).show();
     }
 
-
-    private void updateBottomButtons() {
-        if (receivedIsEvaluated) {
-            binding.btnRateShop.setVisibility(View.GONE);
-            Log.d(TAG, "Order already evaluated. Hiding Rate button.");
-        } else {
-            binding.btnRateShop.setVisibility(View.VISIBLE);
-            Log.d(TAG, "Order NOT evaluated. Showing Rate button.");
-
-            binding.btnRateShop.setOnClickListener(v -> {
-                Log.d(TAG, "Rate Shop clicked for order: " + receivedOrderId);
-                Toast.makeText(getContext(), "Mở màn hình Đánh giá...", Toast.LENGTH_SHORT).show();
-            });
-        }
-    }
     private void showLoading(boolean show) {
-//        if (binding.progress != null) binding.progress.setVisibility(show ? View.VISIBLE : View.GONE);
-        binding.getRoot().setAlpha(show ? 0.6f : 1f);
+        if (binding != null) {
+            if (show) {
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.contentView.setVisibility(View.GONE); // Ẩn nội dung
+            } else {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.contentView.setVisibility(View.VISIBLE); // Hiện nội dung
+            }
+        }
     }
     
     private String formatVnd(long amount) {

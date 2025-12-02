@@ -13,12 +13,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -184,7 +180,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
@@ -195,7 +191,7 @@
                 android:layout_height="match_parent"
                 android:fillViewport="true">
 
-                <fragment
+                <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/AuctioneerFragment"
                     android:name="com.example.secondchance.ui.auction.AuctioneerFragment"
                     android:layout_width="match_parent"
@@ -220,213 +216,230 @@
                 android:background="@color/normalDay"
                 android:layout_marginBottom="16dp"
                 />
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="2nd"-->
-<!--                android:textColor="@color/darkerDay"-->
-<!--                android:paddingHorizontal="16dp"-->
-<!--                android:textSize="@dimen/text_16"-->
-<!--                android:textStyle="normal" />-->
 
+            <!-- PLACE BID LAYOUT (Visible when Ongoing) -->
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Đã trả:"
-                android:layout_marginEnd="5dp"
-                android:textColor="@color/darkerDay"
-                android:textSize="@dimen/text_16"
-                android:textStyle="normal" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="đ"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/myBidAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="8.500.000"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="start"-->
-<!--                    android:text="(+7.500.00)"-->
-<!--                    android:textColor="@color/darkerDay"-->
-<!--                    android:textSize="@dimen/text_16"-->
-<!--                    android:textStyle="normal" />-->
-            </LinearLayout>
-            <LinearLayout
+                android:id="@+id/layoutPlaceBid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Số dư:"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/darkerDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="normal" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="đ"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/userBalance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:text="8.500.00"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Giá cao nhất có thể trả:"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/darkerDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="normal" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text="đ"
-                    android:layout_marginEnd="5dp"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/userCan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:text="8.500.00"
-                    android:textColor="@color/normalDay"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:gravity="center"
-
-                >
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/userAvatar"
-                    android:layout_width="36dp"
-                    android:layout_height="35dp"
-                    android:contentDescription=""
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/avatar1"
-                    android:layout_marginEnd="10dp"
-                    app:shapeAppearanceOverlay="@style/RoundedImageView_20dp" />
-
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginBottom="4dp">
+                    android:paddingHorizontal="16dp"
+                    >
 
-                    <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.SecondChance.Card.Number"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Đã trả:"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="đ"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/normalDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/myBidAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="8.500.000"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_marginEnd="2dp"
-                    android:backgroundTint="@color/lightDay"
-                    app:cardElevation="0dp"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.LeftCorner">
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    >
 
-                    <!-- Ô nhập số tiền -->
-                    <EditText
-                        android:id="@+id/etBidAmount"
-                        android:padding="8dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Số dư:"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="normal" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="đ"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/normalDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/userBalance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nhập số tiền"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:background="@android:color/transparent"
-                        android:textColor="@color/normalDay"
-                        android:textColorHint="@color/normalDay"
-                        android:textSize="@dimen/text_16" />
-                </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardPlaceBid"
-                        style="@style/Widget.SecondChance.Card.Number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:layout_marginStart="2dp"
-                        android:backgroundTint="@color/normalDay"
-                        app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.RightCorner"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless">
+                        android:gravity="start"
+                        android:text="8.500.00"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    >
 
-                        <TextView
-                            android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Giá cao nhất có thể trả:"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="normal" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="đ"
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/normalDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/userCan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:text="8.500.00"
+                        android:textColor="@color/darkerDay"
+                        android:textSize="@dimen/text_16"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    android:gravity="center"
+                    >
+
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/userAvatar"
+                        android:layout_width="36dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="10dp"
+                        android:contentDescription=""
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/avatar1"
+                        app:shapeAppearanceOverlay="@style/RoundedImageView_20dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="4dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            style="@style/Widget.SecondChance.Card.Number"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:layout_marginEnd="2dp"
+                            android:backgroundTint="@color/lightDay"
+                            app:cardElevation="0dp"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.LeftCorner">
+
+                            <!-- Ô nhập số tiền -->
+                            <EditText
+                                android:id="@+id/etBidAmount"
+                                android:padding="8dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Nhập số tiền"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:background="@android:color/transparent"
+                                android:textColor="@color/normalDay"
+                                android:textColorHint="@color/normalDay"
+                                android:textSize="@dimen/text_16" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardPlaceBid"
+                            style="@style/Widget.SecondChance.Card.Number"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:paddingTop="8dp"
-                            android:paddingBottom="8dp"
-                            android:gravity="center"
-                            android:text="RA GIÁ"
-                            android:textColor="@color/whiteDay"
-                            android:textSize="@dimen/text_13" />
-                    </com.google.android.material.card.MaterialCardView>
+                            android:layout_weight="1"
+                            android:layout_marginStart="2dp"
+                            android:backgroundTint="@color/normalDay"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Card.RightCorner"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:paddingTop="8dp"
+                                android:paddingBottom="8dp"
+                                android:gravity="center"
+                                android:text="RA GIÁ"
+                                android:textColor="@color/whiteDay"
+                                android:textSize="@dimen/text_13" />
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- MY BIDS HISTORY LAYOUT (Visible when Ended/Success/Failed) -->
+            <LinearLayout
+                android:id="@+id/layoutMyBidsHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lịch sử bạn đã trả"
+                    android:textColor="@color/darkerDay"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvMyBids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_my_bid" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,13 +11,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil; // QUAN TRỌNG: Dùng cái này
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.secondchance.R; // Đảm bảo bạn import R
-
-// 1. Import class Binding của bạn (từ tên file item_auction_goingon_card.xml)
+import com.example.secondchance.R;
 import com.example.secondchance.databinding.ItemAuctionGoingonCardBinding;
 import com.example.secondchance.dto.response.AuctionListUserResponse;
 import com.google.gson.Gson;
@@ -25,7 +23,7 @@ import com.google.gson.Gson;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI
+public class AuctionDetailCardFragment extends Fragment {
 
     private ItemAuctionGoingonCardBinding binding;
 
@@ -34,17 +32,7 @@ public class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        // 3. Dùng DataBindingUtil.inflate vì file XML của bạn có thẻ <layout>
         binding = DataBindingUtil.inflate(inflater, R.layout.item_auction_goingon_card, container, false);
-
-        // 4. (Tùy chọn) Gán dữ liệu (DataBinding)
-        // Ví dụ: Lấy ID sản phẩm từ argument, gọi ViewModel, rồi gán
-        // AuctionGoingOn data = viewModel.getAuctionDetails(auctionId);
-        // binding.setRequest(data);
-        // binding.setHasReply(false);
-
-        // 5. Trả về root của layout đã binding
         return binding.getRoot();
     }
     
@@ -53,18 +41,25 @@ public class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI
         super.onViewCreated(v, savedInstanceState);
         getParentFragmentManager().setFragmentResultListener(
             AuctionDetailFragment.KEY_AUCTION_HEADER, this, (k, b) -> {
+                String json = b.getString(AuctionDetailFragment.KEY_AUCTION_JSON);
+                if (json == null) return;
+
                 AuctionListUserResponse.Data auction =
-                  new Gson().fromJson(b.getString(AuctionDetailFragment.KEY_AUCTION_JSON),
-                    AuctionListUserResponse.Data.class);
+                  new Gson().fromJson(json, AuctionListUserResponse.Data.class);
               
                 // Ví dụ bind nhanh:
                 ImageView img = requireView().findViewById(R.id.auctionImage);
                 TextView tvName = requireView().findViewById(R.id.product_name);
                 TextView tvQty  = requireView().findViewById(R.id.quantityText);
                 TextView tvCur  = requireView().findViewById(R.id.currentPrice);
+
+                // Ẩn phần "đã ra giá lần X" khi hiển thị trong màn hình chi tiết
+                View bidInfo = requireView().findViewById(R.id.bid_info_layout);
+                if (bidInfo != null) {
+                    bidInfo.setVisibility(View.GONE);
+                }
               
-                Glide.with(this).load(auction.imageUrl)
-                    .into(img);
+                Glide.with(this).load(auction.imageUrl).into(img);
               
                 tvName.setText(auction.title != null ? auction.title : "");
                 tvName.setSingleLine(true);
@@ -75,7 +70,6 @@ public class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI
                 NumberFormat vnd = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
                 tvCur.setText(vnd.format(auction.currentPrice));
               
-                // Countdown: tách giờ/phút/giây vào 3 TextView hours_text, minutes_text, seconds_text
                 startCountdown(auction.endsAt);
           }
         );
@@ -99,9 +93,12 @@ public class AuctionDetailCardFragment extends Fragment { // 2. Tên class MỚI
         timer.start();
     }
     private void setHMS(long h,long m,long s){
-        ((TextView) requireView().findViewById(R.id.hours_text)).setText(String.format(Locale.getDefault(), "%02d", h));
-        ((TextView) requireView().findViewById(R.id.minutes_text)).setText(String.format(Locale.getDefault(), "%02d", m));
-        ((TextView) requireView().findViewById(R.id.seconds_text)).setText(String.format(Locale.getDefault(), "%02d", s));
+        TextView tvH = requireView().findViewById(R.id.hours_text);
+        TextView tvM = requireView().findViewById(R.id.minutes_text);
+        TextView tvS = requireView().findViewById(R.id.seconds_text);
+        if(tvH!=null) tvH.setText(String.format(Locale.getDefault(), "%02d", h));
+        if(tvM!=null) tvM.setText(String.format(Locale.getDefault(), "%02d", m));
+        if(tvS!=null) tvS.setText(String.format(Locale.getDefault(), "%02d", s));
     }
     @Override public void onDestroyView(){
         super.onDestroyView();

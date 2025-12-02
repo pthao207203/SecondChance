@@ -27,6 +27,14 @@ public class AuctioneerAdapter extends RecyclerView.Adapter<AuctioneerAdapter.Bi
         this.data = data;
     }
 
+    public void updateData(List<AuctionListUserResponse.Bid> newData) {
+        this.data.clear();
+        if (newData != null) {
+            this.data.addAll(newData);
+        }
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public BidViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -74,19 +82,5 @@ public class AuctioneerAdapter extends RecyclerView.Adapter<AuctioneerAdapter.Bi
             super(binding.getRoot());
             this.binding = binding;
         }
-
-//        public void bind(Auctioneer bid) {
-//            binding.userName.setText(bid.getBidderName());
-//            binding.auctionDate.setText(bid.getBidTime());
-//            binding.price.setText(bid.getBidAmount());
-//            binding.priceplus.setText(" " + bid.getPriceDiff());
-//            String userAvatar = bid.getAvatarResId();
-//            Glide.with(this)
-//              .load()
-//              .circleCrop()
-//              .into(binding.userAvatar);
-//
-//            binding.priceplus.setVisibility(bid.getPriceDiff().isEmpty() ? View.GONE : View.VISIBLE);
-//        }
     }
 }
