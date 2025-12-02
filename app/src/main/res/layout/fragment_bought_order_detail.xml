@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,9 +8,12 @@
     android:background="@color/whiteDay">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -304,10 +307,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutActionButtons"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="24dp"
+                android:visibility="gone">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReturnOrder"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -332,10 +337,18 @@
                     android:textStyle="bold"
                     app:backgroundTint="@color/normalDay"
                     android:textColor="@color/whiteDay"
-                    app:cornerRadius="8dp"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    app:cornerRadius="8dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+
+    <!-- PROGRESS BAR LOADING -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:indeterminateTint="@color/highLight5"/>
+
+</FrameLayout>

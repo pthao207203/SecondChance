@@ -21,8 +21,11 @@ import com.example.secondchance.dto.response.BankListResponse;
 import com.example.secondchance.data.remote.MeApi;
 import com.example.secondchance.data.remote.RetrofitProvider;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +46,7 @@ public class ProfileViewModel extends ViewModel {
 
     // LiveData for bank detail (when edit)
     private final MutableLiveData<PaymentMethodItem> bankDetailLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> balanceLiveData = new MutableLiveData<>();
 
     private MeApi meApi;
 
@@ -66,6 +70,10 @@ public class ProfileViewModel extends ViewModel {
         return addressDetailLiveData;
     }
 
+    public LiveData<String> getBalance() {
+        return balanceLiveData;
+    }
+
     public void fetchUserProfile() {
         Log.d(TAG, "fetchUserProfile: Bắt đầu gọi API lấy profile...");
         Call<UserProfileResponse> call = meApi.getUserProfile();
@@ -83,6 +91,16 @@ public class ProfileViewModel extends ViewModel {
                     nameLiveData.setValue(data.getName());
                     phoneLiveData.setValue(data.getPhone());
                     emailLiveData.setValue(data.getMail());
+
+                    // Set avatar
+                    if (data.getAvatar() != null) {
+                        avatarUriLiveData.setValue(Uri.parse(data.getAvatar()));
+                    }
+
+                    // Format balance
+                    long balance = data.getWalletBalance();
+                    NumberFormat nf = NumberFormat.getInstance(new Locale("vi", "VN"));
+                    balanceLiveData.setValue(nf.format(balance));
 
                     // Fetch addresses
                     fetchAddressList();
