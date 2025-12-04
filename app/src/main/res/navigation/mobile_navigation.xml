@@ -374,6 +374,23 @@
         <action
             android:id="@+id/action_boughtOrderDetailFragment_to_createOrderReturnRequestFragment"
             app:destination="@id/navigation_create_order_return_request" />
+        
+        <action
+            android:id="@+id/action_boughtOrderDetailFragment_to_rateOrderFragment"
+            app:destination="@id/rateOrderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/rateOrderFragment"
+        android:name="com.example.secondchance.ui.order.RateOrderFragment"
+        android:label="Đánh giá đơn hàng"
+        tools:layout="@layout/fragment_bought_order_rate"> <!-- Đã sửa lại layout đúng -->
+        <argument
+            android:name="orderId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_rateOrderFragment_to_commentFragment"
+            app:destination="@id/fragment_comment" />
     </fragment>
 
     <fragment
