@@ -23,27 +23,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * AuthRepository
- * Gói toàn bộ luồng Precheck -> OTP -> Verify -> Register cho màn Đăng ký.
- * Tái sử dụng RetrofitProvider.auth() & AuthApi sẵn có.
- */
 public class AuthRepository {
-  
+
   private final AuthApi api;
   private final FirebaseAuth firebaseAuth;
-  
+
   public AuthRepository() {
     this.api = RetrofitProvider.auth();
     this.firebaseAuth = FirebaseAuth.getInstance();
   }
-  
-  // ---------- 1) PRECHECK (kiểm tra SĐT & lấy nonce) ----------
+
   public interface PrecheckCallback {
     void onSuccess(String nonce, long expiresInSec);
     void onError(String message);
   }
-  
+
   public void precheck(String rawPhone, PrecheckCallback cb) {
     if (TextUtils.isEmpty(rawPhone)) {
       cb.onError("Phone is empty");
@@ -69,17 +63,13 @@ public class AuthRepository {
       }
     });
   }
-  
-  // ---------- 2) GỬI OTP BẰNG FIREBASE ----------
+
   public interface OtpSendCallback {
     void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token);
     void onVerificationFailed(@NonNull String message);
     void onInstantVerified(@NonNull String idToken); // trong TH very hiếm, Firebase auto verify & trả luôn idToken
   }
-  
-  /**
-   * Gửi OTP. YÊU CẦU SĐT dạng E.164 (ví dụ +84xxxxxxxxx).
-   */
+
   public void startPhoneVerification(Activity activity,
                                      String e164Phone,
                                      OtpSendCallback cb) {
@@ -111,13 +101,13 @@ public class AuthRepository {
               });
             });
         }
-        
+
         @Override
         public void onVerificationFailed(@NonNull FirebaseException e) {
           Log.e("OTP", "onVerificationFailed: " + e);
           cb.onVerificationFailed(e.getMessage() != null ? e.getMessage() : e.toString());
         }
-        
+
         @Override
         public void onCodeSent(@NonNull String verificationId,
                                @NonNull PhoneAuthProvider.ForceResendingToken token) {
@@ -125,16 +115,16 @@ public class AuthRepository {
         }
       })
       .build();
-    
+
     PhoneAuthProvider.verifyPhoneNumber(options);
   }
-  
+
   // ---------- 3) XÁC THỰC OTP -> LẤY idToken ----------
   public interface OtpVerifyCallback {
     void onSuccess(@NonNull String idToken);
     void onError(@NonNull String message);
   }
-  
+
   public void verifyOtpAndGetIdToken(String verificationId, String code, OtpVerifyCallback cb) {
     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
     firebaseAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
@@ -161,13 +151,15 @@ public class AuthRepository {
       });
     });
   }
-  
+
   // ---------- 4) REGISTER (idToken + name + password + nonce) ----------
   public interface RegisterCallback {
     void onSuccess(@NonNull AuthApi.User user, @NonNull String jwt);
     void onError(@NonNull String message);
   }
-  
+
+  // Trong AuthRepository.java
+
   public void register(String idToken, String name, String password, String nonce, RegisterCallback cb) {
     AuthApi.RegisterRequest body = new AuthApi.RegisterRequest(idToken, name, password, nonce);
     api.register(body).enqueue(new Callback<AuthApi.RegisterEnvelope>() {
@@ -178,10 +170,13 @@ public class AuthRepository {
           return;
         }
         AuthApi.RegisterEnvelope env = res.body();
+
+        // ✅ FIX: Lấy chuỗi token trực tiếp từ Data object
         AuthApi.User user = env.getUser();
-        String token = env.getToken();
-        if (user != null && !TextUtils.isEmpty(token)) {
-          cb.onSuccess(user, token);
+        String jwt = env.data != null ? env.data.getTokenString() : null;
+
+        if (user != null && !TextUtils.isEmpty(jwt)) {
+          cb.onSuccess(user, jwt); // Pass chuỗi JWT đã lấy được
         } else {
           cb.onError("Register response invalid");
         }
@@ -191,9 +186,7 @@ public class AuthRepository {
       }
     });
   }
-  
-  // ---------- 5) Helper ----------
-  /** Chuẩn hoá số VN: 09xxxx -> +849xxxx. Nếu đã có + thì giữ nguyên. */
+
   public static String toE164(String phone) {
     if (phone == null) return "";
     String p = phone.replaceAll("\\s+", "");

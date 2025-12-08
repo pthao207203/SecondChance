@@ -69,12 +69,13 @@
                             android:layout_height="24dp"
                             android:src="@drawable/ic_people"
                             app:tint="@color/highLight5" />
+
                         <TextView
+                            android:id="@+id/tvReceiverName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cá Biết Bay"
-                            android:textColor="@color/darkerDay"
-                            android:layout_marginStart="12dp"/>
+                            android:layout_marginStart="12dp"
+                            android:textColor="@color/darkerDay" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -89,9 +90,9 @@
                             android:src="@drawable/ic_phone"
                             app:tint="@color/highLight5" />
                         <TextView
+                            android:id="@+id/tvReceiverPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0333 333 333"
                             android:textColor="@color/darkerDay"
                             android:layout_marginStart="12dp"/>
                     </LinearLayout>
@@ -108,9 +109,9 @@
                             android:src="@drawable/ic_location"
                             app:tint="@color/highLight5" />
                         <TextView
+                            android:id="@+id/tvReceiverAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Nhà số 33, đường T, huyện L, thành Phố C"
                             android:textColor="@color/darkerDay"
                             android:layout_marginStart="12dp"/>
                     </LinearLayout>
@@ -151,9 +152,9 @@
                         android:layout_marginStart="12dp"/>
 
                     <TextView
+                        android:id="@+id/tvOrderId"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="XYZY1234RTY"
                         android:textColor="@color/normalDay"
                         android:textStyle="bold"
                         android:layout_alignParentEnd="true"

@@ -46,7 +46,7 @@ public class OrderRepository {
                     callback.onError("Hủy đơn thất bại");
                 }
             }
-            
+
             @Override
             public void onFailure(@NonNull Call<BasicResponse> call, @NonNull Throwable t) {
                 callback.onError(t.getMessage() != null ? t.getMessage() : "Lỗi mạng");
@@ -93,6 +93,49 @@ public class OrderRepository {
         });
     }
 
+    // =========================================================
+    // PHƯƠNG THỨC MỚI ĐỂ HỖ TRỢ LỌC ĐƠN HÀNG THEO SHOP ID
+    // =========================================================
+    public void fetchOrdersForShop(String shopId, String status, RepoCallback<List<OrderWrapper>> callback) {
+        orderApi.getShopOrdersByStatus(shopId, status).enqueue(new Callback<OrderApi.OrderListEnvelope>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderApi.OrderListEnvelope> call, @NonNull Response<OrderApi.OrderListEnvelope> response) {
+
+                if (response.isSuccessful() &&
+                        response.body() != null &&
+                        response.body().success &&
+                        response.body().data != null &&
+                        response.body().data.orders != null)
+                {
+
+                    List<com.example.secondchance.data.model.OrderWrapper> wrappedList = response.body().data.orders;
+
+                    List<OrderWrapper> unwrappedList = new ArrayList<>();
+
+                    for (com.example.secondchance.data.model.OrderWrapper wrapper : wrappedList) {
+                        if (wrapper != null && wrapper.order != null) {
+
+                            wrapper.order.id = wrapper.id;
+
+                            unwrappedList.add(wrapper);
+                        }
+                    }
+
+                    callback.onSuccess(unwrappedList);
+
+                } else {
+                    String errorMsg = "Lỗi tải đơn hàng của Shop";
+                    callback.onError(errorMsg);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<OrderApi.OrderListEnvelope> call, @NonNull Throwable t) {
+                callback.onError("Lỗi mạng: " + t.getMessage());
+            }
+        });
+    }
+    // =========================================================
+
     public void getOrderDetails(String orderId, RepoCallback<OrderDetailResponse.Data> callback) {
         orderApi.getOrderDetail(orderId).enqueue(new Callback<OrderDetailResponse>() {
             @Override
@@ -115,7 +158,7 @@ public class OrderRepository {
             @Override
             public void onResponse(@NonNull Call<OrderApi.BaseEnvelope> call, @NonNull Response<OrderApi.BaseEnvelope> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().success) {
-                    callback.onSuccess(null); // Thành công
+                    callback.onSuccess(null);
                 } else {
 
                     String errorMsg = "Gửi yêu cầu thất bại (Không rõ lý do)";

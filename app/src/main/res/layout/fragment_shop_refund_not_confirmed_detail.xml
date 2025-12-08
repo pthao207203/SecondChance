@@ -18,89 +18,25 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sản phẩm muốn trả"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOrderItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="@color/grayDay">
-
-                    <ImageView
-                        android:id="@+id/imgProduct"
-                        android:layout_width="84dp"
-                        android:layout_height="85dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/sample_flower" />
-
-                    <TextView
-                        android:id="@+id/tvPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="500.000"
-                        android:textSize="@dimen/text_20"
-                        android:textStyle="bold"
-                        android:textColor="@color/darkerDay"
-                        android:layout_alignParentEnd="true" />
-
-                    <TextView
-                        android:id="@+id/tvđ"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="đ"
-                        android:textSize="@dimen/text_20"
-                        android:layout_marginEnd="5dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/normalDay"
-                        android:layout_toStartOf="@id/tvPrice" />
-
-                    <TextView
-                        android:id="@+id/tvTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Giỏ gỗ cắm hoa"
-                        android:textStyle="bold"
-                        android:textColor="@color/darkerDay"
-                        android:textSize="@dimen/text_16"
-                        android:layout_toEndOf="@id/imgProduct"
-                        android:layout_marginStart="8dp"
-                        android:layout_toStartOf="@id/tvđ"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:id="@+id/tvQuantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tvTitle"
-                        android:layout_toEndOf="@id/imgProduct"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Số lượng: 1"
-                        android:textColor="@color/darkerDay"
-                        android:textSize="@dimen/text_13" />
-
-                    <TextView
-                        android:id="@+id/tvDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tvQuantity"
-                        android:layout_toEndOf="@id/imgProduct"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Giỏ hoa loại 1 new 99%, của hàng abc thành phố Xuân Hợp he he"
-                        android:textColor="@color/darkerDay"
-                        android:textSize="@dimen/text_13" />
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+                android:nestedScrollingEnabled="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thêm ảnh/ video phản ánh"
-                android:textColor="#222222"
+                android:text="Hình ảnh/Video bằng chứng"
+                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
@@ -111,62 +47,100 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/imgEvidence1"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/sample_flower"
                     android:scaleType="centerCrop"
                     android:layout_marginEnd="8dp"/>
                 <ImageView
+                    android:id="@+id/imgEvidence2"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/sample_flower"
                     android:scaleType="centerCrop"
                     android:layout_marginEnd="8dp"/>
                 <ImageView
+                    android:id="@+id/imgEvidence3"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:src="@drawable/sample_flower"
                     android:scaleType="centerCrop"/>
-
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nguyên nhân"
-                android:textColor="#222222"
+                android:text="Nguyên nhân từ khách hàng"
+                android:textColor="@color/darkerDay"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/highlight4blur"
+                android:padding="12dp"
+                android:textColor="@color/darkerDay"
+                android:textSize="@dimen/text_13" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phản hồi của Shop"
+                android:textColor="@color/darkerDay"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"/>
 
             <EditText
-                android:id="@+id/etReason"
+                android:id="@+id/etShopFeedback"
                 android:layout_width="match_parent"
-                android:layout_height="228dp"
+                android:layout_height="120dp"
                 android:background="@drawable/edittext_border_gray"
                 android:gravity="top|start"
-                android:hint="Sản phẩm khác mô tả, hoàn toàn không giống..."
+                android:hint="Nhập lý do từ chối hoặc ghi chú cho khách hàng..."
                 android:inputType="textMultiLine"
                 android:padding="12dp"
                 android:textSize="@dimen/text_13" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSendRequest"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="0dp"
-                android:text="Hủy yêu cầu"
-                android:textSize="@dimen/text_16"
-                android:textStyle="bold"
-                app:backgroundTint="#E56D2D"
-                app:cornerRadius="8dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRejectRequest"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Từ chối"
+                    android:textColor="@color/orange_primary"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold"
+                    app:strokeColor="@color/orange_primary"
+                    app:cornerRadius="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAcceptRequest"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Đồng ý"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold"
+                    app:backgroundTint="#E56D2D"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -6,6 +6,17 @@ import androidx.lifecycle.ViewModel;
 
 public class SharedViewModel extends ViewModel {
 
+    private String shopId = null;
+
+    public void setCurrentShopId(String id) {
+        this.shopId = id;
+    }
+
+    public String getCurrentShopId() {
+        return shopId;
+    }
+
+
     private final MutableLiveData<String> currentTitle = new MutableLiveData<>();
     public LiveData<String> getCurrentTitle() {
         return currentTitle;
@@ -42,6 +53,4 @@ public class SharedViewModel extends ViewModel {
     public String[] getShopTabTitles() {
         return ShoptabTitles;
     }
-
-
 }
