@@ -13,16 +13,16 @@ public interface AuthApi {
   @POST("/api/auth/login")
   Call<LoginEnvelope> login(@Body LoginRequest body);
 
-  @POST("auth/precheck")
+  @POST("/api/auth/precheck")
   Call<PrecheckEnvelope> precheck(@Body PrecheckRequest body);
 
   @POST("/api/auth/register")
   Call<RegisterEnvelope> register(@Body RegisterRequest body);
 
-  @POST("auth/google")
+  @POST("/api/auth/google")
   Call<GoogleLoginEnvelope> loginGoogle(@Body LoginGoogleRequest body);
 
-  @POST("auth/google/complete")
+  @POST("/api/auth/google/complete")
   Call<LoginEnvelope> completeLoginGoogle(@Body CompleteSocialRequest body);
 
 
