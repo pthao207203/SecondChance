@@ -192,19 +192,37 @@ public class MyAuctionSuccessFragment extends Fragment {
                     Log.d(TAG, "Auto placed order success for " + item.title);
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() ->
-                                Toast.makeText(getContext(), "Đã tự động đặt hàng: " + item.title, Toast.LENGTH_SHORT).show()
+                          Toast.makeText(getContext(), "Đã tự động đặt hàng: " + item.title, Toast.LENGTH_SHORT).show()
                         );
                     }
                 } else {
-                    Log.e(TAG, "Place order failed: " + res.code() + " Msg: " + res.message());
+                    String errorBodyStr = null;
+                    try {
+                        if (res.errorBody() != null) {
+                            errorBodyStr = res.errorBody().string(); // CHỈ đọc được 1 lần
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading errorBody", e);
+                    }
+                    
+                    Log.e(TAG, "Place order failed: code=" + res.code()
+                      + " msg=" + res.message()
+                      + " errorBody=" + errorBodyStr);
+                    
                     if (getActivity() != null) {
-                         getActivity().runOnUiThread(() ->
-                             Toast.makeText(getContext(), "Lỗi đặt hàng: " + item.title, Toast.LENGTH_SHORT).show()
-                         );
+                        String toastMsg = "Lỗi đặt hàng: " + item.title;
+                        if (errorBodyStr != null) {
+                            // nếu muốn show luôn lỗi BE trả về
+                            toastMsg += "\n" + errorBodyStr;
+                        }
+                        
+                        String finalToastMsg = toastMsg;
+                        getActivity().runOnUiThread(() ->
+                          Toast.makeText(getContext(), finalToastMsg, Toast.LENGTH_LONG).show()
+                        );
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<OrderApi.PlaceOrderResponse> call, Throwable t) {
                 Log.e(TAG, "Place order error", t);

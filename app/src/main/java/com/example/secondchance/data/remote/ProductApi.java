@@ -1,11 +1,13 @@
 // data/remote/ProductApi.java
 package com.example.secondchance.data.remote;
 
+import com.example.secondchance.dto.request.NegotiationCreateRequest;
 import com.example.secondchance.dto.response.AdminProductDetailResponse;
 import com.example.secondchance.dto.response.AdminProductListResponse;
 import com.example.secondchance.dto.response.AuctionListResponse;
 import com.example.secondchance.dto.request.ProductCreateRequest;
 import com.example.secondchance.dto.response.BasicResponse;
+import com.example.secondchance.dto.response.NegotiationListResponse;
 import com.example.secondchance.dto.response.ProductListResponse;
 import com.example.secondchance.dto.response.ProductMetaResponse;
 import com.google.gson.annotations.SerializedName;
@@ -111,7 +113,22 @@ public interface ProductApi {
             @Path("id") String orderId,
             @Body UpdateShippingRequest body
     );
-
+    
+    
+    // ============================================
+    // NEGOTIATIONS
+    // ============================================
+    @GET("/api/products/negotiations")
+    Call<NegotiationListResponse> getNegotiations(
+      @Query("status") String status,      // "accepted"
+      @Query("page") int page,            // optional
+      @Query("pageSize") int pageSize     // optional
+    );
+    @POST("/api/products/negotiate/{productId}/buy")
+    Call<BasicResponse> createNegotiation(
+      @Path("productId") String productId,
+      @Body NegotiationCreateRequest body
+    );
     // ============================================
     // REQUEST/RESPONSE CLASSES
     // ============================================

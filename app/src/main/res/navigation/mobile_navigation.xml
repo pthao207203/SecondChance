@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_trade_to_detail_product"
             app:destination="@id/navigation_detail_product" />
+        <action
+            android:id="@+id/action_trade_to_messageDetail"
+            app:destination="@id/messageDetailFragment" />
     </fragment>
 
     <fragment

@@ -33,6 +33,7 @@ import com.example.secondchance.dto.request.MessageSendRequestDto;
 import com.example.secondchance.dto.response.MessageListResponseDto;
 import com.example.secondchance.dto.response.MessageSendResponseDto;
 import com.example.secondchance.util.CloudinaryUploader;
+import com.example.secondchance.util.LogApiError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ import retrofit2.Response;
 
 public class MessageDetailFragment extends Fragment {
     
-    private static final String ARG_PARTNER_ID = "partner_id";
-    private static final String ARG_PARTNER_NAME = "partner_name";
-    private static final String ARG_PARTNER_AVATAR = "partner_avatar";
+    private static final String ARG_PARTNER_ID = "partnerId";
+    private static final String ARG_PARTNER_NAME = "partnerName";
+    private static final String ARG_PARTNER_AVATAR = "partnerAvatar";
     
     private String partnerId;
     private String partnerName;
@@ -92,10 +93,9 @@ public class MessageDetailFragment extends Fragment {
         
         Bundle args = getArguments();
         if (args != null) {
-            // Lưu ý: tham số đi qua NavController dùng key "partnerId", "partnerName", "partnerAvatar"
-            partnerId = args.getString("partnerId");
-            partnerName = args.getString("partnerName");
-            partnerAvatar = args.getString("partnerAvatar");
+            partnerId = args.getString(ARG_PARTNER_ID);
+            partnerName = args.getString(ARG_PARTNER_NAME);
+            partnerAvatar = args.getString(ARG_PARTNER_AVATAR);
         }
         
         // Chọn ảnh từ gallery
@@ -498,9 +498,10 @@ public class MessageDetailFragment extends Fragment {
               @Override
               public void onFailure(@NonNull Call<MessageListResponseDto> call,
                                     @NonNull Throwable t) {
-                  Toast.makeText(getContext(),
-                    "Không tải được tin nhắn",
-                    Toast.LENGTH_SHORT).show();
+                  if (getContext() != null) {
+                      Toast.makeText(getContext(), "Không tải được tin nhắn", Toast.LENGTH_SHORT).show();
+                  }
+                  LogApiError.logFailure("MessageDetailFragment", "getMessages", t);
               }
           });
     }
