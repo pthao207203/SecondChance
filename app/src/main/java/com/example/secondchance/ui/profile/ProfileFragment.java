@@ -27,6 +27,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvPendingCount;
     private TextView tvShippingCount;
     private TextView tvName, tvPhone, tvAddress, tvEmail;
+    private TextView tvWalletBalance; // Add this
     private ImageView ivAvatar;
     private ProfileViewModel viewModel;
     private SellerViewModel sellerViewModel;
@@ -107,6 +108,7 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvEmail = view.findViewById(R.id.tvEmail);
         ivAvatar = view.findViewById(R.id.ivAvatar);
+        tvWalletBalance = view.findViewById(R.id.tvWalletBalance); // Initialize
         tvNoProduct = view.findViewById(R.id.tvNoProduct);
         btnBecomeSeller = view.findViewById(R.id.btnBecomeSeller);
         tvShop = view.findViewById(R.id.tvShop);
@@ -147,6 +149,12 @@ public class ProfileFragment extends Fragment {
         viewModel.getName().observe(getViewLifecycleOwner(), name -> tvName.setText(name));
         viewModel.getPhone().observe(getViewLifecycleOwner(), phone -> tvPhone.setText(phone));
         viewModel.getEmail().observe(getViewLifecycleOwner(), email -> tvEmail.setText(email));
+
+        viewModel.getBalance().observe(getViewLifecycleOwner(), balance -> { // Observe balance
+            if (balance != null) {
+                tvWalletBalance.setText(balance);
+            }
+        });
 
         viewModel.getAvatarUri().observe(getViewLifecycleOwner(), uri -> {
             if (uri != null) {
@@ -220,7 +228,7 @@ public class ProfileFragment extends Fragment {
 
         // Wallet
         view.findViewById(R.id.tvViewDetails).setOnClickListener(v -> navController.navigate(R.id.action_profile_to_wallet));
-        
+
         view.findViewById(R.id.tabLogout).setOnClickListener(v -> {
             com.example.secondchance.ui.auth.LogoutRouter.forceLogout(requireContext().getApplicationContext());
         });
@@ -312,4 +320,3 @@ public class ProfileFragment extends Fragment {
 //    }
     }
 }
-

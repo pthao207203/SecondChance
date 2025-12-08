@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserData {
 
+    @SerializedName("_id")
+    private String id;
+
+    @SerializedName("avatar")
+    private String avatar;
+
     @SerializedName("name")
     private String name;
     
@@ -15,13 +21,17 @@ public class UserData {
     @SerializedName("phone")
     private String phone;
 
-//    @SerializedName("banks")
-//    private BankData banks;
+    @SerializedName("walletBalance")
+    private long walletBalance;
 
     @SerializedName("address")
     private AddressData address;
 
     // Getters
+    public String getId() { return id; }
+    public String getAvatar() { return avatar; }
+    public long getWalletBalance() { return walletBalance; }
+
     public String getName() {
         return name;
     }
@@ -33,10 +43,6 @@ public class UserData {
     public String getPhone() {
         return phone;
     }
-
-//    public BankData getBanks() {
-//        return banks;
-//    }
 
     public AddressData getAddress() {
         return address;

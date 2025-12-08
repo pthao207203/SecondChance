@@ -16,6 +16,7 @@ public class AuctionListUserResponse {
     public String endsAt;
     public String condition;
     public boolean featured;
+    public String finalState;
     public int biddersCount;
     public List<Bid> bidHistory;
     public CurrentUser currentUser;
@@ -32,9 +33,14 @@ public class AuctionListUserResponse {
     public String name;
   }
   public static class CurrentUser {
-    public String id;
-    public String avatar;
-    public int balance;
-    public int myBidAmount;
+      public String id;
+      public String avatar;
+      public String name;
+
+      public long balance;
+      public Long myBidAmount;
+      public boolean isLeading;
+
+      public Long maxCanBid;
   }
 }

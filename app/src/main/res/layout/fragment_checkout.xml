@@ -271,6 +271,8 @@
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
                 android:focusable="true">
+
+                <!-- Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -301,6 +303,7 @@
                     android:padding="12dp"
                     android:layout_marginTop="12dp">
 
+                    <!-- Tên người nhận -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -316,6 +319,7 @@
                             android:contentDescription="Người nhận" />
 
                         <TextView
+                            android:id="@+id/tvReceiverName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cá Biết Bay"
@@ -324,6 +328,7 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
+                    <!-- SĐT -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -340,6 +345,7 @@
                             android:contentDescription="Số điện thoại" />
 
                         <TextView
+                            android:id="@+id/tvReceiverPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0333 333 333"
@@ -347,6 +353,7 @@
                             android:textSize="@dimen/text_16" />
                     </LinearLayout>
 
+                    <!-- Địa chỉ -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -362,6 +369,7 @@
                             android:contentDescription="Địa chỉ" />
 
                         <TextView
+                            android:id="@+id/tvReceiverAddress"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
