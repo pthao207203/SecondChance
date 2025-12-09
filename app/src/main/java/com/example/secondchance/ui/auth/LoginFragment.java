@@ -225,7 +225,13 @@ public class LoginFragment extends Fragment {
                     if (bearer != null) {
                       Prefs.saveToken(requireContext(), bearer);
 
-                      String userId = res.body().data.profile.id;
+                      String userId = null;
+                      if (data.user != null) {
+                        userId = data.user.id;
+                      } else if (data.profile != null) {
+                        userId = data.profile.id;
+                      }
+
                       if (userId != null) {
                         sharedViewModel.setCurrentShopId(userId);
                       }

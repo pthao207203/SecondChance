@@ -183,21 +183,13 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
 
     @Override
     public void onViewDetail(CartApi.CartItem item) {
-        ProductCard productCard = new ProductCard(
-                item.productId,
-                item.getImageUrl(),
-                item.getName(),
-                item.getDescription(),
-                item.qty,
-                0,
-                String.valueOf(item.price),
-                ProductCard.ProductType.FIXED,
-                null, 0
-        );
-
+        // Chỉnh sửa: Truyền đúng tham số productId mà DetailProductFragment cần
         Bundle bundle = new Bundle();
-        bundle.putSerializable("product", productCard);
-
+        bundle.putString("productId", item.productId);
+        bundle.putString("productName", item.getName());
+        bundle.putFloat("price", (float) item.price);
+        bundle.putString("imageUrl", item.getImageUrl());
+        
         try {
             Navigation.findNavController(requireView()).navigate(R.id.action_cartFragment_to_detailProductFragment, bundle);
         } catch (Exception e) {
