@@ -23,7 +23,7 @@ public interface OrderApi {
     @GET("/api/orders")
     Call<OrderListEnvelope> getOrdersByStatus(@Query("status") String status);
 
-    @GET("shops/{shopId}/orders")
+    @GET("/admin/orders/shops/{shopId}/orders")
     Call<OrderListEnvelope> getShopOrdersByStatus(
             @Path("shopId") String shopId,
             @Query("status") String status

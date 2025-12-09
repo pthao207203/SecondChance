@@ -7,6 +7,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface PaymentApi {
-    @POST("client/payment/create-url/zalopay")
+    @POST("api/client/payment/create-url/zalopay")
     Call<PaymentResponse> createZaloPayUrl(@Body PaymentRequest request);
 }

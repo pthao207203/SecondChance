@@ -6,6 +6,8 @@ import android.os.Looper;
 
 import com.example.secondchance.util.Prefs;
 import com.example.secondchance.ui.auth.LogoutRouter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -90,11 +92,15 @@ public class RetrofitProvider {
             .retryOnConnectionFailure(true)
             .build();
 
+    Gson gson = new GsonBuilder()
+            .setLenient()
+            .create();
+
     retrofit = new Retrofit.Builder()
-      .baseUrl("http://10.0.2.2:3000")
-      .client(ok)
-      .addConverterFactory(GsonConverterFactory.create())
-      .build();
+            .baseUrl("https://nt118.hius.io.vn")
+            .client(ok)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build();
 
     return retrofit;
   }
